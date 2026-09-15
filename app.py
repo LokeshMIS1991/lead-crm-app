@@ -14,31 +14,35 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# BRAND COLOR PALETTE & COMPLETE UI STYLING (NO DARK/BLACK THEME)
-# Primary Blue: #164194 | Accent Green: #00A859 | Background: #F0F4FA
+# BRAND STYLING & CUSTOM COLOR OVERRIDES
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Page & Container Background */
+    /* Global Background */
     .stApp {
-        background-color: #F0F4FA !important;
+        background-color: #F8FAFC !important;
     }
     
-    /* Sidebar Light Theme Styling */
+    /* 1. Left Panel Sidebar: Exact Brand Navy Blue from Logo */
     [data-testid="stSidebar"] {
-        background-color: #E8EEF7 !important;
-        border-right: 2px solid #CBD5E1 !important;
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border-right: 2px solid #0F3275 !important;
     }
 
-    /* Left Panel Oval Logo Container */
+    [data-testid="stSidebar"] * {
+        color: #FFFFFF !important;
+    }
+    
+    /* Sidebar Oval Logo Badge */
     .sidebar-oval-logo {
         background-color: #FFFFFF;
-        border: 3px solid #164194;
+        border: 2px solid #00A859;
         border-radius: 50px / 30px;
-        padding: 12px;
-        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.12);
+        padding: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
     
     .sidebar-oval-logo img {
@@ -88,7 +92,6 @@ st.markdown("""
         font-weight: 800;
         text-transform: uppercase;
         margin-bottom: 6px;
-        letter-spacing: 0.5px;
     }
     
     .kpi-card h2 {
@@ -98,22 +101,35 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Form Label Color Customization (Brand Blue) */
+    /* Form Field Label Color Customization (Brand Blue) */
     .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stDateInput label {
         color: #164194 !important;
         font-weight: 700 !important;
         font-size: 14px !important;
     }
 
-    /* Inputs White Background & Border */
-    .stTextInput>div>div>input, .stSelectbox>div>div, .stNumberInput>div>div>input, .stTextArea>div>div>textarea {
+    /* Input Field Standard Styling (Matches Address Details & Remarks) */
+    .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea {
         background-color: #FFFFFF !important;
-        border: 1.5px solid #164194 !important;
+        border: 1.5px solid #CBD5E1 !important;
         color: #0F172A !important;
         border-radius: 8px !important;
     }
 
-    /* Primary Action Buttons */
+    .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus, .stTextArea>div>div>textarea:focus {
+        border-color: #164194 !important;
+    }
+
+    /* 3. Quantity Box: Custom background with Brand Blue Font Color */
+    .stNumberInput>div>div>input {
+        background-color: #E0F2FE !important;
+        color: #164194 !important;
+        font-weight: 800 !important;
+        border: 1.5px solid #164194 !important;
+        border-radius: 8px !important;
+    }
+
+    /* 5. Save Lead Button: Logo Blue Color */
     .stButton>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -130,26 +146,23 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* Subheaders and Section Titles */
-    h3, h4, h5 {
-        color: #164194 !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Custom Tabs Styling */
+    /* Custom Tabs & 2. Master Leads Registry Tab Title (Red Color) */
     .stTabs [data-baseweb="tab-list"] button {
         color: #164194 !important;
         font-weight: 600 !important;
     }
 
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        color: #164194 !important;
-        border-bottom-color: #00A859 !important;
-        border-bottom-width: 4px !important;
+    .stTabs [data-baseweb="tab-list"] button:nth-child(2) p {
+        color: #DC2626 !important; /* Red Color for Master Leads Registry */
         font-weight: 800 !important;
     }
 
-    /* Form Containers Styling */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        border-bottom-color: #00A859 !important;
+        border-bottom-width: 4px !important;
+    }
+
+    /* Form Container Box */
     [data-testid="stForm"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -191,7 +204,7 @@ def render_header(title_text):
             st.image("Company_Logo.png", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-# Master Dropdown Data Options
+# Master Dropdown Options
 PRODUCT_LIST = [
     "Motorised Swing Gates", "Motorised Sliding Gates", "Automatic Rolling Shutters",
     "Dock Leveller", "Boom Barriers", "Rolling Shutter motor Part", "Spare Part"
@@ -202,10 +215,9 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION & OVAL LOGO DISPLAY
+# SIDEBAR NAVIGATION (NAVY BLUE LOGO COLOR BACKDROP)
 # ---------------------------------------------------------
 with st.sidebar:
-    # 📌 Oval Shaped Logo Badge in Left Panel
     st.markdown("<div class='sidebar-oval-logo'>", unsafe_allow_html=True)
     try:
         st.image("Company Logo.jpeg", use_container_width=True)
@@ -213,8 +225,8 @@ with st.sidebar:
         st.image("Company_Logo.png", use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<p style='text-align: center; font-size: 20px; font-weight: 800; color: #164194; margin-top: -5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859; margin-top: -12px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 20px; font-weight: 800; color: #FFFFFF !important; margin-top: -5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859 !important; margin-top: -12px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
