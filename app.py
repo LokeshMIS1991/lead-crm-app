@@ -18,12 +18,21 @@ st.set_page_config(
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Background */
+    /* Top Navigation Header Bar Override (Matches light background) */
+    header[data-testid="stHeader"] {
+        background-color: #F8FAFC !important;
+    }
+    
+    header[data-testid="stHeader"] * {
+        color: #164194 !important;
+    }
+
+    /* Global App Background */
     .stApp {
         background-color: #F8FAFC !important;
     }
     
-    /* 1. Left Panel Sidebar: Exact Brand Navy Blue from Logo */
+    /* Left Panel Sidebar: Exact Brand Navy Blue from Logo */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -68,7 +77,7 @@ st.markdown("""
         align-items: center;
         padding-bottom: 10px;
     }
-    
+
     /* KPI Summary Cards */
     .kpi-card {
         background: #FFFFFF;
@@ -101,36 +110,55 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Form Field Label Color Customization (Brand Blue) */
+    /* Form Field Label Color Customization */
     .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stDateInput label {
         color: #164194 !important;
         font-weight: 700 !important;
         font-size: 14px !important;
     }
 
-    /* Input Field Standard Styling (Matches Address Details & Remarks) */
-    .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea {
+    /* FORCE ALL INPUT BOXES (TEXTAREA, SELECTBOX, TEXT INPUT) TO BE LIGHT LIKE OTHERS */
+    .stTextInput>div>div>input, 
+    .stSelectbox>div>div, 
+    .stSelectbox [data-baseweb="select"]>div,
+    .stTextArea>div>div>textarea {
         background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
         color: #0F172A !important;
+        border: 1.5px solid #CBD5E1 !important;
         border-radius: 8px !important;
+    }
+
+    .stTextArea textarea {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
     }
 
     .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus, .stTextArea>div>div>textarea:focus {
         border-color: #164194 !important;
     }
 
-    /* 3. Quantity Box: Custom background with Brand Blue Font Color */
-    .stNumberInput>div>div>input {
+    /* Quantity Box: Custom background with Brand Blue Font Color */
+    .stNumberInput input {
         background-color: #E0F2FE !important;
         color: #164194 !important;
         font-weight: 800 !important;
+    }
+    
+    .stNumberInput>div>div {
+        background-color: #E0F2FE !important;
         border: 1.5px solid #164194 !important;
         border-radius: 8px !important;
     }
 
-    /* 5. Save Lead Button: Logo Blue Color */
-    .stButton>button {
+    /* Quantity Step Buttons (+/-) */
+    .stNumberInput button {
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+    }
+
+    /* Save Lead Button: Logo Blue Color */
+    .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border-radius: 8px !important;
@@ -140,26 +168,28 @@ st.markdown("""
         transition: all 0.3s ease !important;
     }
     
-    .stButton>button:hover {
+    .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* Custom Tabs & 2. Master Leads Registry Tab Title (Red Color) */
+    /* Custom Tabs */
     .stTabs [data-baseweb="tab-list"] button {
         color: #164194 !important;
         font-weight: 600 !important;
     }
 
-    .stTabs [data-baseweb="tab-list"] button:nth-child(2) p {
-        color: #DC2626 !important; /* Red Color for Master Leads Registry */
+    /* PERMANENT RED COLOR FOR "Master Leads Registry" TAB LABEL (2nd Tab) */
+    .stTabs [data-baseweb="tab-list"] button:nth-child(2) p,
+    .stTabs [data-baseweb="tab-list"] button:nth-child(2) span {
+        color: #DC2626 !important;
         font-weight: 800 !important;
     }
 
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        border-bottom-color: #00A859 !important;
-        border-bottom-width: 4px !important;
+    /* Active tab underline highlight */
+    .stTabs [data-baseweb="tab-highlight"] {
+        background-color: #164194 !important;
     }
 
     /* Form Container Box */
