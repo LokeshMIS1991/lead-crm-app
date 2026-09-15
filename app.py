@@ -4,35 +4,97 @@ from datetime import datetime
 from streamlit_gsheets import GSheetsConnection
 
 # ---------------------------------------------------------
-# PAGE CONFIGURATION & STYLING
+# PAGE CONFIGURATION
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="Pro CRM - Sales & Order Pipeline",
-    page_icon="💼",
+    page_title="Sidharth Shutter & Automation - Sales CRM",
+    page_icon="🏭",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Modern Odoo/Zoho Style Interface
+# ---------------------------------------------------------
+# CUSTOM BRAND STYLING (MATCHING SIDHARTH BRAND COLORS)
+# Deep Blue: #164194 | Accent Green: #00A859
+# ---------------------------------------------------------
 st.markdown("""
     <style>
-    .stApp { background-color: #f8fafc; }
-    
-    .main-header {
-        font-size: 24px; font-weight: 700; color: #0f172a;
-        margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;
+    /* Global App Background */
+    .stApp {
+        background-color: #f8fafc;
     }
     
+    /* Primary Text & Main Headers */
+    .main-header {
+        font-size: 26px;
+        font-weight: 800;
+        color: #164194;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #00A859;
+        padding-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+    
+    /* KPI Cards Styling */
     .kpi-card {
         background: #ffffff;
-        padding: 16px;
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        padding: 20px 15px;
+        border-radius: 12px;
+        border-left: 5px solid #164194;
+        border-right: 1px solid #e2e8f0;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.05);
         text-align: center;
+        transition: transform 0.2s ease-in-out;
     }
-    .kpi-card h5 { color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-    .kpi-card h2 { color: #0f172a; font-size: 22px; font-weight: 700; margin: 0; }
+    
+    .kpi-card-green {
+        border-left: 5px solid #00A859;
+    }
+
+    .kpi-card h5 {
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+    .kpi-card h2 {
+        color: #164194;
+        font-size: 26px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    /* Buttons Styling */
+    .stButton>button {
+        background-color: #164194 !important;
+        color: white !important;
+        border-radius: 8px !important;
+        border: none !important;
+        font-weight: 600 !important;
+        padding: 8px 20px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton>button:hover {
+        background-color: #00A859 !important;
+        box-shadow: 0 4px 10px rgba(0, 168, 89, 0.3) !important;
+    }
+    
+    /* Subheaders and Form Borders */
+    h3, h4, h5 {
+        color: #164194 !important;
+    }
+    
+    /* Tabs Customization */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        color: #164194 !important;
+        border-bottom-color: #00A859 !important;
+        font-weight: bold;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -42,7 +104,7 @@ st.markdown("""
 def get_connection():
     try:
         return st.connection("gsheets", type=GSheetsConnection)
-    except Exception as e:
+    except Exception:
         return None
 
 def load_sheet(sheet_name):
@@ -65,15 +127,20 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION
+# SIDEBAR NAVIGATION & LOGO DISPLAY
 # ---------------------------------------------------------
 with st.sidebar:
-    st.markdown("<h2 style='color: #2563eb;'>⚡ Enterprise CRM</h2>", unsafe_allow_html=True)
-    st.caption("End-to-End Sales & Order Execution System")
+    # 📌 Display High-Resolution Brand Logo at Top of Sidebar
+    try:
+        st.image("Company Logo.jpeg", use_container_width=True)
+    except Exception:
+        st.markdown("<h2 style='color: #164194;'>SIDHARTH</h2><h5 style='color: #00A859;'>SHUTTER & AUTOMATION</h5>", unsafe_allow_html=True)
+        
+    st.markdown("<p style='text-align: center; font-weight: 600; color: #64748b;'>Enterprise CRM & Operations Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
-        "WORKFLOW STAGES",
+        "WORKFLOW NAVIGATION",
         [
             "📊 Executive Dashboard",
             "📥 Stage 1: Leads Data",
@@ -86,7 +153,7 @@ with st.sidebar:
 # STAGE 0: EXECUTIVE DASHBOARD
 # ---------------------------------------------------------
 if menu == "📊 Executive Dashboard":
-    st.markdown("<div class='main-header'>📊 Sales & Operations Overview</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>📊 Executive Sales & Operations Overview</div>", unsafe_allow_html=True)
     
     df_leads = load_sheet("Leads Data")
     df_quotes = load_sheet("Quotation Sheet")
@@ -96,29 +163,29 @@ if menu == "📊 Executive Dashboard":
     with c1:
         st.markdown(f'<div class="kpi-card"><h5>Total Leads</h5><h2>{len(df_leads)}</h2></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="kpi-card"><h5>Quotations Sent</h5><h2>{len(df_quotes)}</h2></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="kpi-card kpi-card-green"><h5>Quotations Sent</h5><h2>{len(df_quotes)}</h2></div>', unsafe_allow_html=True)
     with c3:
         st.markdown(f'<div class="kpi-card"><h5>Active Process Orders</h5><h2>{len(df_orders)}</h2></div>', unsafe_allow_html=True)
     with c4:
         total_val = df_quotes['Qut. Amount'].sum() if not df_quotes.empty and 'Qut. Amount' in df_quotes.columns else 0
-        st.markdown(f'<div class="kpi-card"><h5>Pipeline Value</h5><h2>₹{total_val:,.0f}</h2></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="kpi-card kpi-card-green"><h5>Pipeline Value</h5><h2>₹{total_val:,.0f}</h2></div>', unsafe_allow_html=True)
         
     st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.subheader("🔥 Recent Activity Feed")
+    st.subheader("🔥 Recent Activity Registry")
     if not df_leads.empty:
         st.dataframe(df_leads.tail(8), use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# STAGE 1: LEADS DATA (ENTRY & AUTO-TRANSFER)
+# STAGE 1: LEADS DATA (ENTRY & AUTO-TRANSFER TRIGGER)
 # ---------------------------------------------------------
 elif menu == "📥 Stage 1: Leads Data":
-    st.markdown("<div class='main-header'>📥 Stage 1: Lead Management</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>📥 Stage 1: Lead Capture & Management</div>", unsafe_allow_html=True)
     
     tab_add, tab_view = st.tabs(["➕ Add New Lead", "📋 Master Leads Registry"])
     
     with tab_add:
         with st.form("add_lead_form", clear_on_submit=True):
-            st.markdown("##### 👤 Customer & Company Information")
+            st.markdown("##### 👤 Client & Corporate Details")
             c1, c2, c3 = st.columns(3)
             with c1:
                 client_name = st.text_input("Client Name *")
@@ -130,9 +197,9 @@ elif menu == "📥 Stage 1: Leads Data":
                 city = st.text_input("City")
                 state = st.text_input("State")
                 
-            address = st.text_area("Address", height=2)
+            address = st.text_area("Address Details", height=2)
             
-            st.markdown("##### 📦 Sales & Requirement Assignment")
+            st.markdown("##### 📦 Requirement & Sales Assignment")
             c4, c5, c6 = st.columns(3)
             with c4:
                 product = st.selectbox("Product Requirement *", PRODUCT_LIST)
@@ -149,7 +216,7 @@ elif menu == "📥 Stage 1: Leads Data":
                 quotation_status = st.selectbox("Quotation Status", ["Not Sent", "Sent", "Under Review"])
                 quotation_sent_by = st.selectbox("Quotation Sent By", TEAM_MEMBERS)
             with c8:
-                remarks = st.text_area("Remarks / Notes")
+                remarks = st.text_area("Initial Remarks / Notes")
                 
             submit_lead = st.form_submit_button("💾 Save Lead")
             
@@ -158,7 +225,7 @@ elif menu == "📥 Stage 1: Leads Data":
                     st.error("Please fill required fields: Client Name and Contact Number.")
                 else:
                     date_stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    client_id = f"BID-{datetime.now().strftime('%b-%y')}-{datetime.now().strftime('%M%S')}"
+                    client_id = f"SSA-{datetime.now().strftime('%b-%y')}-{datetime.now().strftime('%M%S')}"
                     
                     new_lead = {
                         "Sr. No": len(load_sheet("Leads Data")) + 1,
@@ -188,7 +255,7 @@ elif menu == "📥 Stage 1: Leads Data":
                         df_updated = pd.concat([df_existing, pd.DataFrame([new_lead])], ignore_index=True)
                         conn.update(worksheet="Leads Data", data=df_updated)
                         
-                        # AUTOMATED TRIGGER: If Quotation Status == Sent, Auto-populate Stage 2
+                        # AUTOMATED TRIGGER: If Quotation Status == Sent -> Push to Stage 2 (Quotation Sheet)
                         if quotation_status == "Sent":
                             auto_quote = {
                                 "Client  ID": client_id,
@@ -208,11 +275,11 @@ elif menu == "📥 Stage 1: Leads Data":
                             df_q_updated = pd.concat([df_q_existing, pd.DataFrame([auto_quote])], ignore_index=True)
                             conn.update(worksheet="Quotation Sheet", data=df_q_updated)
                             
-                            st.info("🔄 Common details auto-transferred to Quotation Sheet!")
+                            st.info("🔄 Lead saved & common details auto-transferred to Quotation Sheet!")
                         
                         st.success(f"✅ Lead Created Successfully! Generated Client ID: **{client_id}**")
                     else:
-                        st.error("Google Sheets connection not configured.")
+                        st.error("Google Sheets connection error. Please verify secrets.toml settings.")
 
     with tab_view:
         df_leads = load_sheet("Leads Data")
@@ -222,7 +289,7 @@ elif menu == "📥 Stage 1: Leads Data":
 # STAGE 2: QUOTATIONS & FOLLOW-UP TRACKER
 # ---------------------------------------------------------
 elif menu == "📄 Stage 2: Quotations & Follow-ups":
-    st.markdown("<div class='main-header'>📄 Stage 2: Quotation & Follow-up Panel</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>📄 Stage 2: Quotations & Follow-up Panel</div>", unsafe_allow_html=True)
     
     tab_q_list, tab_update, tab_followup = st.tabs(["📋 Quotation Master", "✏️ Update Quotation Details", "📞 Follow-up Tracker"])
     
@@ -231,7 +298,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
         st.dataframe(df_quotes, use_container_width=True, hide_index=True)
         
     with tab_update:
-        st.subheader("Update Quotation Amount & Status")
+        st.subheader("Update Commercial Quotation Details")
         with st.form("update_quote_form"):
             c1, c2, c3 = st.columns(3)
             with c1:
@@ -242,7 +309,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
                 q_status = st.selectbox("Quotation Status", ["Sent", "Approved", "Revised", "Cancelled"])
             with c3:
                 q_shared_by = st.selectbox("Quotation Shared By", TEAM_MEMBERS)
-                q_date = st.date_input("Approved/Update Date")
+                q_date = st.date_input("Update Date")
                 
             q_notes = st.text_area("Quotation / Approval Remarks")
             
@@ -251,7 +318,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
             if submit_quote_update:
                 conn = get_connection()
                 if conn:
-                    # AUTOMATED TRIGGER: If Status == Approved, Auto-populate Process Order Stage
+                    # AUTOMATED TRIGGER: If Status == Approved -> Push to Process Order
                     if q_status == "Approved":
                         auto_order = {
                             "Client ID": q_client_id,
@@ -266,7 +333,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
                         df_o_existing = conn.read(worksheet="Process Order")
                         df_o_updated = pd.concat([df_o_existing, pd.DataFrame([auto_order])], ignore_index=True)
                         conn.update(worksheet="Process Order", data=df_o_updated)
-                        st.info("🚀 Quotation Approved! Automatically pushed to Process Order Execution stage.")
+                        st.info("🚀 Quotation Approved! Automatically moved to Process Order Execution stage.")
                         
                     st.success(f"Quotation updated for Client ID: {q_client_id}")
 
@@ -278,7 +345,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
 # STAGE 3: PROCESS ORDER EXECUTION
 # ---------------------------------------------------------
 elif menu == "⚙️ Stage 3: Process Order Execution":
-    st.markdown("<div class='main-header'>⚙️ Stage 3: Order Execution & Tracking</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>⚙️ Stage 3: Order Execution & Operations</div>", unsafe_allow_html=True)
     
     with st.expander("🔄 Update Operational Status (Production/Payment/Dispatch)", expanded=True):
         with st.form("process_order_form"):
@@ -297,15 +364,15 @@ elif menu == "⚙️ Stage 3: Process Order Execution":
                 doc_sub = st.selectbox("Document Submission", ["Pending", "Done"])
             with c4:
                 mat_rec = st.selectbox("Material Receiving", ["Pending", "Done"])
-                invoice_status = st.selectbox("Invoice", ["Pending", "Generated"])
+                invoice_status = st.selectbox("Invoice Status", ["Pending", "Generated"])
                 install_inv = st.selectbox("Installation Invoice", ["Pending", "Generated"])
                 
-            final_remarks = st.text_area("Final Operational Remarks")
+            final_remarks = st.text_area("Operational Notes")
             
             submit_order = st.form_submit_button("💾 Save Operational Status")
             if submit_order:
                 st.success(f"Operational progress updated for Client ID: {o_client_id}")
 
     df_orders = load_sheet("Process Order")
-    st.subheader("📦 Active Process Orders Master Tracker")
+    st.subheader("📦 Active Operational Orders Master Tracker")
     st.dataframe(df_orders, use_container_width=True, hide_index=True)
