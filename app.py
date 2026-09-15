@@ -14,28 +14,51 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------
-# CUSTOM BRAND STYLING (MATCHING SIDHARTH BRAND COLORS)
-# Deep Blue: #164194 | Accent Green: #00A859
+# BRAND STYLING & OVAL LOGO CONTAINER (SIDHARTH BRAND PALETTE)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global App Background */
+    /* Global Background */
     .stApp {
         background-color: #f8fafc;
     }
     
-    /* Primary Text & Main Headers */
+    /* Left Panel Oval Logo Container Styling */
+    .sidebar-oval-logo {
+        background-color: #ffffff;
+        border: 2px solid #164194;
+        border-radius: 50px / 30px; /* Oval Shape */
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.15);
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .sidebar-oval-logo img {
+        max-width: 90%;
+        border-radius: 30px;
+    }
+
+    /* Page Header Layout */
     .main-header {
         font-size: 26px;
         font-weight: 800;
         color: #164194;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         border-bottom: 3px solid #00A859;
         padding-bottom: 8px;
         letter-spacing: -0.5px;
     }
+
+    /* Top Right Header Logo Container */
+    .top-right-logo {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 10px;
+    }
     
-    /* KPI Cards Styling */
+    /* KPI Cards */
     .kpi-card {
         background: #ffffff;
         padding: 20px 15px;
@@ -46,7 +69,6 @@ st.markdown("""
         border-bottom: 1px solid #e2e8f0;
         box-shadow: 0 4px 12px rgba(22, 65, 148, 0.05);
         text-align: center;
-        transition: transform 0.2s ease-in-out;
     }
     
     .kpi-card-green {
@@ -59,8 +81,8 @@ st.markdown("""
         font-weight: 700;
         text-transform: uppercase;
         margin-bottom: 6px;
-        letter-spacing: 0.5px;
     }
+    
     .kpi-card h2 {
         color: #164194;
         font-size: 26px;
@@ -68,7 +90,7 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Buttons Styling */
+    /* Primary Action Buttons */
     .stButton>button {
         background-color: #164194 !important;
         color: white !important;
@@ -84,12 +106,12 @@ st.markdown("""
         box-shadow: 0 4px 10px rgba(0, 168, 89, 0.3) !important;
     }
     
-    /* Subheaders and Form Borders */
+    /* Subheaders and Form Styling */
     h3, h4, h5 {
         color: #164194 !important;
     }
     
-    /* Tabs Customization */
+    /* Tabs Custom Styling */
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
         color: #164194 !important;
         border-bottom-color: #00A859 !important;
@@ -116,6 +138,19 @@ def load_sheet(sheet_name):
             return pd.DataFrame()
     return pd.DataFrame()
 
+# Helper function to render top right page header with logo
+def render_header(title_text):
+    col_title, col_logo = st.columns([4, 1.2])
+    with col_title:
+        st.markdown(f"<div class='main-header'>{title_text}</div>", unsafe_allow_html=True)
+    with col_logo:
+        st.markdown("<div class='top-right-logo'>", unsafe_allow_html=True)
+        try:
+            st.image("Company Logo.jpeg", use_container_width=True)
+        except Exception:
+            st.image("Company_Logo.png", use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
 # Master Dropdown Data Options
 PRODUCT_LIST = [
     "Motorised Swing Gates", "Motorised Sliding Gates", "Automatic Rolling Shutters",
@@ -127,16 +162,19 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION & LOGO DISPLAY
+# SIDEBAR NAVIGATION & OVAL LOGO DISPLAY
 # ---------------------------------------------------------
 with st.sidebar:
-    # 📌 Display High-Resolution Brand Logo at Top of Sidebar
+    # 📌 Oval Shaped Logo Container on Left Panel
+    st.markdown("<div class='sidebar-oval-logo'>", unsafe_allow_html=True)
     try:
         st.image("Company Logo.jpeg", use_container_width=True)
     except Exception:
-        st.markdown("<h2 style='color: #164194;'>SIDHARTH</h2><h5 style='color: #00A859;'>SHUTTER & AUTOMATION</h5>", unsafe_allow_html=True)
-        
-    st.markdown("<p style='text-align: center; font-weight: 600; color: #64748b;'>Enterprise CRM & Operations Pipeline</p>", unsafe_allow_html=True)
+        st.image("Company_Logo.png", use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.markdown("<p style='text-align: center; font-weight: 700; color: #164194; margin-top: -5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
+    st.caption("<p style='text-align: center; margin-top: -10px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
@@ -153,7 +191,7 @@ with st.sidebar:
 # STAGE 0: EXECUTIVE DASHBOARD
 # ---------------------------------------------------------
 if menu == "📊 Executive Dashboard":
-    st.markdown("<div class='main-header'>📊 Executive Sales & Operations Overview</div>", unsafe_allow_html=True)
+    render_header("📊 Executive Sales & Operations Overview")
     
     df_leads = load_sheet("Leads Data")
     df_quotes = load_sheet("Quotation Sheet")
@@ -176,10 +214,10 @@ if menu == "📊 Executive Dashboard":
         st.dataframe(df_leads.tail(8), use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# STAGE 1: LEADS DATA (ENTRY & AUTO-TRANSFER TRIGGER)
+# STAGE 1: LEADS DATA
 # ---------------------------------------------------------
 elif menu == "📥 Stage 1: Leads Data":
-    st.markdown("<div class='main-header'>📥 Stage 1: Lead Capture & Management</div>", unsafe_allow_html=True)
+    render_header("📥 Stage 1: Lead Capture & Management")
     
     tab_add, tab_view = st.tabs(["➕ Add New Lead", "📋 Master Leads Registry"])
     
@@ -255,7 +293,6 @@ elif menu == "📥 Stage 1: Leads Data":
                         df_updated = pd.concat([df_existing, pd.DataFrame([new_lead])], ignore_index=True)
                         conn.update(worksheet="Leads Data", data=df_updated)
                         
-                        # AUTOMATED TRIGGER: If Quotation Status == Sent -> Push to Stage 2 (Quotation Sheet)
                         if quotation_status == "Sent":
                             auto_quote = {
                                 "Client  ID": client_id,
@@ -289,7 +326,7 @@ elif menu == "📥 Stage 1: Leads Data":
 # STAGE 2: QUOTATIONS & FOLLOW-UP TRACKER
 # ---------------------------------------------------------
 elif menu == "📄 Stage 2: Quotations & Follow-ups":
-    st.markdown("<div class='main-header'>📄 Stage 2: Quotations & Follow-up Panel</div>", unsafe_allow_html=True)
+    render_header("📄 Stage 2: Quotations & Follow-up Panel")
     
     tab_q_list, tab_update, tab_followup = st.tabs(["📋 Quotation Master", "✏️ Update Quotation Details", "📞 Follow-up Tracker"])
     
@@ -318,7 +355,6 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
             if submit_quote_update:
                 conn = get_connection()
                 if conn:
-                    # AUTOMATED TRIGGER: If Status == Approved -> Push to Process Order
                     if q_status == "Approved":
                         auto_order = {
                             "Client ID": q_client_id,
@@ -345,7 +381,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
 # STAGE 3: PROCESS ORDER EXECUTION
 # ---------------------------------------------------------
 elif menu == "⚙️ Stage 3: Process Order Execution":
-    st.markdown("<div class='main-header'>⚙️ Stage 3: Order Execution & Operations</div>", unsafe_allow_html=True)
+    render_header("⚙️ Stage 3: Order Execution & Operations")
     
     with st.expander("🔄 Update Operational Status (Production/Payment/Dispatch)", expanded=True):
         with st.form("process_order_form"):
