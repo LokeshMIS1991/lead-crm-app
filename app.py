@@ -117,7 +117,9 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    /* Standard Inputs Background Fix (Text, Selectbox, Textarea, Date Input) */
+    /* ---------------------------------------------------------
+       1. FORM INPUT BOXES & DROPDOWNS MATCHING LOGO BLUE
+       --------------------------------------------------------- */
     .stTextInput>div>div>input, 
     .stSelectbox>div>div, 
     .stSelectbox [data-baseweb="select"]>div,
@@ -125,26 +127,37 @@ st.markdown("""
     .stDateInput>div>div,
     .stDateInput input {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
-        border: 1.5px solid #CBD5E1 !important;
+        color: #164194 !important;
+        border: 1.5px solid #164194 !important;
         border-radius: 8px !important;
+        font-weight: 600 !important;
+    }
+
+    /* Dropdown selected text & chevron icons */
+    .stSelectbox [data-baseweb="select"] * {
+        color: #164194 !important;
     }
 
     .stDateInput div[role="button"] {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        color: #164194 !important;
     }
 
     .stTextArea textarea {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        color: #164194 !important;
     }
 
-    .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus, .stTextArea>div>div>textarea:focus, .stDateInput input:focus {
-        border-color: #164194 !important;
+    /* Active field outline on click */
+    .stTextInput>div>div>input:focus, 
+    .stSelectbox>div>div:focus, 
+    .stTextArea>div>div>textarea:focus, 
+    .stDateInput input:focus {
+        border-color: #00A859 !important;
+        box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2) !important;
     }
 
-    /* Quantity Box */
+    /* Quantity Box Styling */
     .stNumberInput input {
         background-color: #E0F2FE !important;
         color: #164194 !important;
@@ -157,14 +170,14 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
-    /* Quantity Step Buttons (+/-) */
+    /* Quantity Plus/Minus Buttons */
     .stNumberInput button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border: none !important;
     }
 
-    /* Action Buttons */
+    /* Submit / Save Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -181,10 +194,20 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
+    /* Expander Header Accordion Styling */
+    .stExpander [data-baseweb="accordion"] [role="button"] {
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border-radius: 8px !important;
+    }
+
+    .stExpander [data-baseweb="accordion"] [role="button"] * {
+        color: #FFFFFF !important;
+    }
+
     /* ---------------------------------------------------------
-       PERMANENT RED TAB TITLE OVERRIDE (ALL STATES & ELEMENTS)
+       2. PERMANENT RED TAB LABELS (SELECTED & UNSELECTED)
        --------------------------------------------------------- */
-    /* Comprehensive Selector covering text, icons, buttons, active, inactive, and hover states */
     .stTabs [data-baseweb="tab"],
     .stTabs [data-baseweb="tab"] *,
     .stTabs [data-baseweb="tab-list"] button,
@@ -200,18 +223,18 @@ st.markdown("""
         -webkit-text-fill-color: #FF0000 !important;
     }
 
-    /* Active tab bottom indicator underline */
+    /* Red underline indicator for current tab */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #FF0000 !important;
     }
 
-    /* Form Container Box */
+    /* Outer Container Box */
     [data-testid="stForm"] {
         background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
+        border: 1.5px solid #164194 !important;
         border-radius: 12px !important;
         padding: 20px !important;
-        box-shadow: 0 4px 10px rgba(22, 65, 148, 0.05) !important;
+        box-shadow: 0 4px 10px rgba(22, 65, 148, 0.08) !important;
     }
     </style>
 """, unsafe_allow_html=True)
