@@ -117,15 +117,22 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    /* FORCE ALL INPUT BOXES (TEXTAREA, SELECTBOX, TEXT INPUT) TO BE LIGHT LIKE OTHERS */
+    /* 1. STANDARDIZE ALL INPUT BOXES (TEXT, SELECTBOX, TEXTAREA, DATE INPUT) TO WHITE */
     .stTextInput>div>div>input, 
     .stSelectbox>div>div, 
     .stSelectbox [data-baseweb="select"]>div,
-    .stTextArea>div>div>textarea {
+    .stTextArea>div>div>textarea,
+    .stDateInput>div>div,
+    .stDateInput input {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
         border: 1.5px solid #CBD5E1 !important;
         border-radius: 8px !important;
+    }
+
+    .stDateInput div[role="button"] {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
     }
 
     .stTextArea textarea {
@@ -133,7 +140,7 @@ st.markdown("""
         color: #0F172A !important;
     }
 
-    .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus, .stTextArea>div>div>textarea:focus {
+    .stTextInput>div>div>input:focus, .stSelectbox>div>div:focus, .stTextArea>div>div>textarea:focus, .stDateInput input:focus {
         border-color: #164194 !important;
     }
 
@@ -157,7 +164,7 @@ st.markdown("""
         border: none !important;
     }
 
-    /* Save Lead Button: Logo Blue Color */
+    /* Action Buttons (Save Lead, Save Quotation Update, etc.) */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -174,20 +181,14 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* Custom Tabs */
-    .stTabs [data-baseweb="tab-list"] button {
-        color: #164194 !important;
-        font-weight: 600 !important;
-    }
-
-    /* PERMANENT RED COLOR FOR "Master Leads Registry" TAB LABEL (2nd Tab) */
-    .stTabs [data-baseweb="tab-list"] button:nth-child(2) p,
-    .stTabs [data-baseweb="tab-list"] button:nth-child(2) span {
+    /* 2. PERMANENT RED COLOR FOR ALL SPECIFIED TABS */
+    .stTabs [data-baseweb="tab-list"] button p,
+    .stTabs [data-baseweb="tab-list"] button span {
         color: #DC2626 !important;
         font-weight: 800 !important;
     }
 
-    /* Active tab underline highlight */
+    /* Active tab underline bar */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #164194 !important;
     }
@@ -245,7 +246,7 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION (NAVY BLUE LOGO COLOR BACKDROP)
+# SIDEBAR NAVIGATION
 # ---------------------------------------------------------
 with st.sidebar:
     st.markdown("<div class='sidebar-oval-logo'>", unsafe_allow_html=True)
