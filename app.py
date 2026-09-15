@@ -58,6 +58,19 @@ st.markdown("""
         padding-bottom: 10px;
     }
     
+    /* Form Labels in Brand Blue Color */
+    label, div[data-testid="stMarkdownContainer"] p strong, .stWidgetLabel label p {
+        color: #164194 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Target Streamlit Form Input Field Labels Specifically */
+    .stTextInput > label, .stSelectbox > label, .stNumberInput > label, .stTextArea > label, .stDateInput > label {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+
     /* KPI Cards */
     .kpi-card {
         background: #ffffff;
@@ -173,8 +186,9 @@ with st.sidebar:
         st.image("Company_Logo.png", use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<p style='text-align: center; font-weight: 700; color: #164194; margin-top: -5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
-    st.caption("<p style='text-align: center; margin-top: -10px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
+    # 📌 Bold White & Larger Sidebar Title for Contrast on Dark Background
+    st.markdown("<p style='text-align: center; font-weight: 800; color: #FFFFFF; font-size: 22px; margin-top: -5px; letter-spacing: 0.5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; margin-top: -12px; color: #cbd5e1; font-size: 14px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
