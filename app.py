@@ -117,7 +117,7 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    /* 1. INPUT BOXES (TEXT, SELECTBOX, TEXTAREA, DATE INPUT) TO WHITE */
+    /* Standard Inputs Background Fix (Text, Selectbox, Textarea, Date Input) */
     .stTextInput>div>div>input, 
     .stSelectbox>div>div, 
     .stSelectbox [data-baseweb="select"]>div,
@@ -164,7 +164,7 @@ st.markdown("""
         border: none !important;
     }
 
-    /* Action Buttons (Save Lead, Save Quotation Update, etc.) */
+    /* Action Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -181,21 +181,28 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* 2. PERMANENT RED COLOR FOR ALL TAB TITLES (ACTIVE & INACTIVE) */
-    .stTabs [data-baseweb="tab"] p,
-    .stTabs [data-baseweb="tab"] span,
-    .stTabs [data-baseweb="tab-list"] button p,
-    .stTabs [data-baseweb="tab-list"] button span,
-    .stTabs [data-baseweb="tab"][aria-selected="true"] p,
-    .stTabs [data-baseweb="tab"][aria-selected="false"] p {
-        color: #DC2626 !important;
+    /* ---------------------------------------------------------
+       PERMANENT RED TAB TITLE OVERRIDE (ALL STATES & ELEMENTS)
+       --------------------------------------------------------- */
+    /* Comprehensive Selector covering text, icons, buttons, active, inactive, and hover states */
+    .stTabs [data-baseweb="tab"],
+    .stTabs [data-baseweb="tab"] *,
+    .stTabs [data-baseweb="tab-list"] button,
+    .stTabs [data-baseweb="tab-list"] button *,
+    .stTabs [aria-selected="true"],
+    .stTabs [aria-selected="true"] *,
+    .stTabs [aria-selected="false"],
+    .stTabs [aria-selected="false"] * {
+        color: #FF0000 !important;
+        fill: #FF0000 !important;
         font-weight: 800 !important;
         opacity: 1 !important;
+        -webkit-text-fill-color: #FF0000 !important;
     }
 
-    /* Active tab underline highlight */
+    /* Active tab bottom indicator underline */
     .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #DC2626 !important;
+        background-color: #FF0000 !important;
     }
 
     /* Form Container Box */
