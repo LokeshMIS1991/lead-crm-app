@@ -18,7 +18,7 @@ st.set_page_config(
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Top Navigation Header Bar Override (Matches light background) */
+    /* Top Navigation Header Bar Override */
     header[data-testid="stHeader"] {
         background-color: #F8FAFC !important;
     }
@@ -32,7 +32,7 @@ st.markdown("""
         background-color: #F8FAFC !important;
     }
     
-    /* Left Panel Sidebar: Exact Brand Navy Blue from Logo */
+    /* Left Panel Sidebar: Exact Brand Navy Blue */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -117,7 +117,7 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    /* 1. STANDARDIZE ALL INPUT BOXES (TEXT, SELECTBOX, TEXTAREA, DATE INPUT) TO WHITE */
+    /* 1. INPUT BOXES (TEXT, SELECTBOX, TEXTAREA, DATE INPUT) TO WHITE */
     .stTextInput>div>div>input, 
     .stSelectbox>div>div, 
     .stSelectbox [data-baseweb="select"]>div,
@@ -144,7 +144,7 @@ st.markdown("""
         border-color: #164194 !important;
     }
 
-    /* Quantity Box: Custom background with Brand Blue Font Color */
+    /* Quantity Box */
     .stNumberInput input {
         background-color: #E0F2FE !important;
         color: #164194 !important;
@@ -181,16 +181,21 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* 2. PERMANENT RED COLOR FOR ALL SPECIFIED TABS */
+    /* 2. PERMANENT RED COLOR FOR ALL TAB TITLES (ACTIVE & INACTIVE) */
+    .stTabs [data-baseweb="tab"] p,
+    .stTabs [data-baseweb="tab"] span,
     .stTabs [data-baseweb="tab-list"] button p,
-    .stTabs [data-baseweb="tab-list"] button span {
+    .stTabs [data-baseweb="tab-list"] button span,
+    .stTabs [data-baseweb="tab"][aria-selected="true"] p,
+    .stTabs [data-baseweb="tab"][aria-selected="false"] p {
         color: #DC2626 !important;
         font-weight: 800 !important;
+        opacity: 1 !important;
     }
 
-    /* Active tab underline bar */
+    /* Active tab underline highlight */
     .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #164194 !important;
+        background-color: #DC2626 !important;
     }
 
     /* Form Container Box */
@@ -222,7 +227,6 @@ def load_sheet(sheet_name):
             return pd.DataFrame()
     return pd.DataFrame()
 
-# Helper function to render top right page header with logo
 def render_header(title_text):
     col_title, col_logo = st.columns([4, 1.2])
     with col_title:
