@@ -18,6 +18,10 @@ SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I
 
 # ---------------------------------------------------------
 # BRAND STYLING & CUSTOM COLOR OVERRIDES
+# Theme Palette:
+#   - Navy Blue: #164194 (Primary)
+#   - Green:     #00A859 (Secondary Accent)
+#   - Light Slate Background: #F8FAFC
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -106,6 +110,72 @@ st.markdown("""
         font-size: 28px;
         font-weight: 800;
         margin: 0;
+    }
+
+    /* Banner Card for Schema Setup Page */
+    .banner-card {
+        background: linear-gradient(135deg, #164194 0%, #0e2d6b 100%);
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 10px 25px rgba(22, 65, 148, 0.25);
+        margin-bottom: 24px;
+    }
+
+    .banner-card * {
+        color: #FFFFFF !important;
+    }
+
+    .banner-badge {
+        background-color: #00A859 !important;
+        color: #FFFFFF !important;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .banner-title {
+        font-size: 24px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+    }
+
+    .banner-desc {
+        font-size: 14px;
+        opacity: 0.9;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* Setup Step Card */
+    .step-card {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 18px;
+        border: 1px solid #CBD5E1;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    .step-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #164194;
+        color: #FFFFFF !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .step-badge-green {
+        background-color: #00A859 !important;
     }
 
     /* Form Field Labels and Input Customization */
@@ -204,6 +274,82 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
+# SAMPLE SCHEMA DATASETS (FOR CONFIG GENERATOR PAGE)
+# ---------------------------------------------------------
+SCHEMA_DATA = {
+    "Leads Data": pd.DataFrame({
+        "Sr. No": [1, 2, 3],
+        "Client ID": ["SSA-Sep-26-0102", "SSA-Sep-26-0215", "SSA-Sep-26-0340"],
+        "Date Stamp": ["2026-09-15 10:30:00", "2026-09-15 11:15:00", "2026-09-15 14:00:00"],
+        "Client Name": ["Rajesh Sharma", "Sunil Verma", "Amit Patel"],
+        "Company Name": ["Apex Logistics", "Verma Builders", "Patel Warehousing"],
+        "Number": ["+91 98290 12345", "+91 94140 56789", "+91 98250 99887"],
+        "Email": ["rajesh@apexlogistics.in", "s.verma@vermagroup.com", "amit@patelwh.com"],
+        "Product ": ["Automatic Rolling Shutters", "Motorised Sliding Gates", "Dock Leveller"],
+        "Qty": [3, 1, 2],
+        "Address": ["Plot 12, Vishwakarma Industrial Area", "C-45, Nirman Nagar", "GIDC Phase 3"],
+        "City": ["Jaipur", "Jaipur", "Ahmedabad"],
+        "State": ["Rajasthan", "Rajasthan", "Gujarat"],
+        "Source": ["India Mart", "WhatsApp", "Sales Email"],
+        "Assigned Salesperson": ["Mansingh Rathore", "Sidharth Jain", "Jeevan Sharma"],
+        "Type of client": ["New Buy", "Architect", "Contractor"],
+        "Quotation Status": ["Sent", "Sent", "Not Sent"],
+        "Leads Handle By": ["Pooja", "Dolly", "Rishabh"],
+        "Quotation Sent By": ["Dolly", "Rishabh", "Other"],
+        "Remarks": ["High priority commercial requirement.", "Architect specified SSA gate automation.", "Awaiting structural site dimensions."]
+    }),
+    "Quotation Sheet": pd.DataFrame({
+        "Client  ID": ["SSA-Sep-26-0102", "SSA-Sep-26-0215"],
+        "Date Stamp": ["2026-09-15 10:30:00", "2026-09-15 11:15:00"],
+        "Client Name": ["Rajesh Sharma", "Sunil Verma"],
+        "Company Name": ["Apex Logistics", "Verma Builders"],
+        "Customer Contact Number": ["+91 98290 12345", "+91 94140 56789"],
+        "Product ": ["Automatic Rolling Shutters", "Motorised Sliding Gates"],
+        "Quantity": [3, 1],
+        "City": ["Jaipur", "Jaipur"],
+        "Source": ["India Mart", "WhatsApp"],
+        "Assigned Salesperson": ["Mansingh Rathore", "Sidharth Jain"],
+        "Quotation Status": ["Sent", "Approved"],
+        "Quotation Shared By": ["Dolly", "Rishabh"],
+        "Quotation Number": ["SSA/2026-27/0182", "SSA/2026-27/0183"],
+        "Qut. Amount": [285000, 145000],
+        "Remarks": ["Commercial quote shared with GST & transport.", "Approved by client via email."]
+    }),
+    "Quotation Follow Up Tracker": pd.DataFrame({
+        "Client ID": ["SSA-Sep-26-0102", "SSA-Sep-26-0215"],
+        "Quotation Number": ["SSA/2026-27/0182", "SSA/2026-27/0183"],
+        "Client Name": ["Rajesh Sharma", "Sunil Verma"],
+        "Company Name": ["Apex Logistics", "Verma Builders"],
+        "Contact Number": ["+91 98290 12345", "+91 94140 56789"],
+        "Product": ["Automatic Rolling Shutters", "Motorised Sliding Gates"],
+        "Quotation Amount": [285000, 145000],
+        "Follow Up Date": ["2026-09-16", "2026-09-15"],
+        "Followed By": ["Pooja", "Dolly"],
+        "Client Response / Remarks": ["Client requested 5% discount for bulk payment.", "PO confirmed. Advance expected tomorrow."],
+        "Next Follow Up Date": ["2026-09-18", "2026-09-16"],
+        "Status": ["In Discussion", "Approved"]
+    }),
+    "Process Order": pd.DataFrame({
+        "Client ID": ["SSA-Sep-26-0215"],
+        "Quotation Number": ["SSA/2026-27/0183"],
+        "Purchase Order Number": ["PO-VERMA-992"],
+        "Qut. Amount": [145000],
+        "Advance Amount": [50000],
+        "Start Date": ["2026-09-15"],
+        "Payment Status": ["Advance Received"],
+        "Drawing Status": ["Done"],
+        "Measurement": ["Done"],
+        "Production Status": ["In Progress"],
+        "Dispatch Status": ["Pending"],
+        "Document Submission": ["Done"],
+        "Material Receiving": ["Pending"],
+        "Invoice Status": ["Pending"],
+        "Installation Invoice": ["Pending"],
+        "Operational Notes": ["Production underway at factory."]
+    })
+}
+
+# ---------------------------------------------------------
 # SIDEBAR NAVIGATION
 # ---------------------------------------------------------
 with st.sidebar:
@@ -225,7 +371,8 @@ with st.sidebar:
             "🔍 Client Detail View",
             "📥 Stage 1: Leads Data",
             "📄 Stage 2: Quotations & Follow-ups",
-            "⚙️ Stage 3: Process Order Execution"
+            "⚙️ Stage 3: Process Order Execution",
+            "🛠️ Database Config Generator"
         ]
     )
 
@@ -414,3 +561,138 @@ elif menu == "⚙️ Stage 3: Process Order Execution":
     render_header("⚙️ Stage 3: Order Execution & Operations")
     df_orders = load_sheet("Process Order")
     st.dataframe(df_orders, use_container_width=True, hide_index=True)
+
+# ---------------------------------------------------------
+# STAGE 4: DATABASE CONFIG & SCHEMA GENERATOR (NEW SEPARATE VIEW)
+# ---------------------------------------------------------
+elif menu == "🛠️ Database Config Generator":
+    render_header("🛠️ Google Sheets Architecture & Config Generator")
+    
+    # Banner Intro Box
+    st.markdown("""
+        <div class="banner-card">
+            <span class="banner-badge">A to Z Schema Setup</span>
+            <div class="banner-title">Google Sheets Architecture & Config Generator</div>
+            <div class="banner-desc">
+                Preview and download complete, perfectly formatted CSV datasets for all 4 worksheets required by your Streamlit CRM app. Use these template files to structure your Google Sheets workbook, and copy the pre-built secrets.toml configuration below.
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Schema Preview & Download Tabs
+    tab_leads, tab_quote, tab_follow, tab_proc, tab_sec = st.tabs([
+        "📥 1. Leads Data",
+        "📄 2. Quotation Sheet",
+        "📞 3. Follow Up Tracker",
+        "⚙️ 4. Process Order",
+        "🔑 Streamlit secrets.toml Setup"
+    ])
+    
+    with tab_leads:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Leads Data</code></h4>", unsafe_allow_html=True)
+        st.markdown("Stores incoming inquiries, customer contact details, lead sources, and salesperson assignments.")
+        
+        df_template = SCHEMA_DATA["Leads Data"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📥 Download Leads Data.csv Template",
+            data=csv_data,
+            file_name="Leads Data.csv",
+            mime="text/csv"
+        )
+
+    with tab_quote:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Quotation Sheet</code></h4>", unsafe_allow_html=True)
+        st.markdown("Tracks commercial quotation numbers, valuation amounts, statuses, and team member ownership.")
+        
+        df_template = SCHEMA_DATA["Quotation Sheet"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📄 Download Quotation Sheet.csv Template",
+            data=csv_data,
+            file_name="Quotation Sheet.csv",
+            mime="text/csv"
+        )
+
+    with tab_follow:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Quotation Follow Up Tracker</code></h4>", unsafe_allow_html=True)
+        st.markdown("Logs active communication logs, client responses, and scheduled follow-up dates.")
+        
+        df_template = SCHEMA_DATA["Quotation Follow Up Tracker"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📞 Download Quotation Follow Up Tracker.csv Template",
+            data=csv_data,
+            file_name="Quotation Follow Up Tracker.csv",
+            mime="text/csv"
+        )
+
+    with tab_proc:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Process Order</code></h4>", unsafe_allow_html=True)
+        st.markdown("Tracks operational post-approval execution: drawings, production, payments, dispatch, and invoices.")
+        
+        df_template = SCHEMA_DATA["Process Order"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="⚙️ Download Process Order.csv Template",
+            data=csv_data,
+            file_name="Process Order.csv",
+            mime="text/csv"
+        )
+
+    with tab_sec:
+        # Step Guide Cards
+        col_s1, col_s2, col_s3 = st.columns(3)
+        with col_s1:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge">1</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Create Google Sheet</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Create a new Google Sheet named <strong>"Sidharth Shutter CRM Master"</strong>. Create 4 tab worksheets matching the names exactly.</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with col_s2:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge step-badge-green">2</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Import CSV Files</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Import each downloaded CSV template into its corresponding worksheet tab (File → Import → Replace current sheet).</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with col_s3:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge">3</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Share Access</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Share the Google Sheet with your Google Cloud Service Account Email with <strong>Editor</strong> permissions.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.subheader("🔑 Configuration Snippet: `.streamlit/secrets.toml`")
+        
+        secrets_toml_code = f"""# .streamlit/secrets.toml
+[connections.gsheets]
+spreadsheet = "{SPREADSHEET_URL}"
+type = "service_account"
+project_id = "your-gcp-project-id"
+private_key_id = "your-private-key-id"
+private_key = "-----BEGIN PRIVATE KEY-----\\nYOUR_PRIVATE_KEY_HERE\\n-----END PRIVATE KEY-----\\n"
+client_email = "your-service-account@your-project.iam.gserviceaccount.com"
+client_id = "12345678901234567890"
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+client_x509_cert_url = "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account..."
+"""
+        st.code(secrets_toml_code, language="toml")
