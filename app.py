@@ -136,7 +136,7 @@ st.markdown("""
         height: 0 !important;
     }
 
-    /* BRANDED BLUE INPUT FIELDS */
+    /* BRANDED BLUE INPUT FIELDS & LEGIBLE PLACEHOLDERS */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
         color: #184B9C !important;
@@ -146,12 +146,17 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
+    input::placeholder, textarea::placeholder {
+        color: #64748B !important;
+        opacity: 0.8 !important;
+    }
+
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
         border-color: #2965C1 !important;
         box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* CUSTOM EYE TOGGLE BUTTON STYLING (BRAND BLUE & WHITE ICON) */
+    /* CUSTOM EYE TOGGLE BUTTON STYLING */
     div[data-testid="stForm"] div.stButton > button {
         background-color: #184B9C !important;
         color: #FFFFFF !important;
@@ -169,7 +174,7 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-    /* LOGIN SUBMIT BUTTON (CORPORATE GREEN WITH CRISP WHITE TEXT & OPTIMAL SIZE) */
+    /* LOGIN SUBMIT BUTTON */
     div[data-testid="stFormSubmitButton"] button,
     div[data-testid="stFormSubmitButton"] button p,
     div[data-testid="stFormSubmitButton"] button span {
@@ -453,7 +458,6 @@ def toggle_pwd():
 def login_form():
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # Balanced central column container to fix button stretching
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
         with st.form("login_form"):
@@ -466,17 +470,14 @@ def login_form():
             
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # Input row with clean side-by-side Eye Toggle
             p_col1, p_col2 = st.columns([5, 1])
             pass_type = "text" if st.session_state.show_pwd else "password"
             
             with p_col1:
                 pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
             with p_col2:
-                # Custom white eye button in brand blue
                 eye_btn = st.form_submit_button("👁️", on_click=toggle_pwd)
 
-            # Properly scaled Login Button
             b_col1, b_col2, b_col3 = st.columns([0.2, 0.6, 0.2])
             with b_col2:
                 submit = st.form_submit_button("🔑 Login", use_container_width=True)
