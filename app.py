@@ -21,23 +21,36 @@ SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+    /* Global Text & Heading Color Enforcement */
+    html, body, [class*="st-"], .stMarkdown, p, h1, h2, h3, h4, h5, h6, span, div, label {
+        color: #164194 !important;
+    }
+
+    /* Top Navigation Header Bar Override */
     header[data-testid="stHeader"] {
         background-color: #F8FAFC !important;
     }
     header[data-testid="stHeader"] * {
         color: #164194 !important;
     }
+
+    /* Global App Main Content Area Background */
     .stApp {
         background-color: #F8FAFC !important;
     }
+
+    /* Left Panel Sidebar: Exact Brand Navy Blue with White Text */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border-right: 2px solid #0F3275 !important;
     }
+
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
     }
+
+    /* Sidebar Logo & Branding Styling */
     .sidebar-oval-logo {
         background-color: #FFFFFF;
         border: 2px solid #00A859;
@@ -47,32 +60,39 @@ st.markdown("""
         text-align: center;
         margin-bottom: 12px;
     }
+
+    /* Page Main Header */
     .main-header {
         font-size: 26px;
         font-weight: 800;
-        color: #164194;
+        color: #164194 !important;
         margin-bottom: 10px;
         border-bottom: 3px solid #00A859;
         padding-bottom: 8px;
     }
+
     .top-right-logo {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         padding-bottom: 10px;
     }
+
+    /* KPI Summary Cards */
     .kpi-card {
-        background: #FFFFFF;
+        background: #FFFFFF !important;
         padding: 20px 15px;
         border-radius: 12px;
-        border-left: 6px solid #164194;
+        border-left: 6px solid #164194 !important;
         border: 1px solid #CBD5E1;
         box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08);
         text-align: center;
     }
+
     .kpi-card-green {
         border-left: 6px solid #00A859 !important;
     }
+
     .kpi-card h5 {
         color: #00A859 !important;
         font-size: 13px;
@@ -80,16 +100,20 @@ st.markdown("""
         text-transform: uppercase;
         margin-bottom: 6px;
     }
+
     .kpi-card h2 {
         color: #164194 !important;
         font-size: 28px;
         font-weight: 800;
         margin: 0;
     }
+
+    /* Form Field Labels and Input Customization */
     .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stDateInput label {
         color: #164194 !important;
         font-weight: 700 !important;
     }
+
     .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea, .stDateInput input {
         background-color: #FFFFFF !important;
         color: #164194 !important;
@@ -97,6 +121,8 @@ st.markdown("""
         border-radius: 8px !important;
         font-weight: 600 !important;
     }
+
+    /* Submit / Action Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -105,22 +131,32 @@ st.markdown("""
         font-weight: 700 !important;
         padding: 10px 24px !important;
     }
+
+    .stButton>button * , div[data-testid="stFormSubmitButton"]>button * {
+        color: #FFFFFF !important;
+    }
+
     .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
     }
+
+    /* Tabs Component Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px !important;
         background-color: #E2E8F0 !important;
         padding: 6px !important;
         border-radius: 10px !important;
     }
+
     .stTabs [data-baseweb="tab"] * {
         color: #164194 !important;
         font-weight: 700 !important;
     }
+
     .stTabs [aria-selected="true"] {
         background-color: #164194 !important;
     }
+
     .stTabs [aria-selected="true"] * {
         color: #FFFFFF !important;
     }
@@ -215,7 +251,8 @@ if menu == "📊 Executive Dashboard":
         st.markdown(f'<div class="kpi-card kpi-card-green"><h5>Pipeline Value</h5><h2>₹{total_val:,.0f}</h2></div>', unsafe_allow_html=True)
         
     st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.subheader("🔥 Recent Activity Registry")
+    st.markdown("<h3 style='color: #164194 !important; font-weight: 800;'>🔥 Recent Activity Registry</h3>", unsafe_allow_html=True)
+    
     if not df_leads.empty:
         st.dataframe(df_leads.tail(8), use_container_width=True, hide_index=True)
 
