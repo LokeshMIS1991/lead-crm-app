@@ -17,19 +17,25 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# SCOPED CSS ENGINE
+# COMPREHENSIVE UI FIX: FORCING LIGHT FORM INPUTS & SIDEBAR OVERRIDES
 # ---------------------------------------------------------
 st.markdown("""
     <style>
+    /* 1. Global Page Background */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #F8FAFC !important; 
     }
 
-    /* Sidebar Navigation */
+    /* 2. Hide Unstyled Icon String Leaks (keyboard_double) */
+    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
+        display: none !important;
+    }
+
+    /* 3. Sidebar Navigation Styling */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
-        padding-top: 15px !important;
+        padding-top: 10px !important;
     }
 
     [data-testid="stSidebar"] * {
@@ -58,6 +64,7 @@ st.markdown("""
         border: 3px solid #FFFFFF !important;
     }
 
+    /* Sidebar Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
@@ -72,14 +79,13 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* Main Content Typography */
+    /* 4. Main Area Typography & Title Headers */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
     .stMainBlockContainer h4, 
     .stMainBlockContainer p, 
-    .stMainBlockContainer span, 
-    .stMainBlockContainer div {
+    .stMainBlockContainer span {
         color: #0F172A;
     }
 
@@ -102,7 +108,74 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* Cards */
+    /* 5. Complete Form Input Styling (Fixing Dark Fields) */
+    div[data-testid="stForm"], .saas-card {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 10px !important;
+        padding: 24px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Form Field Labels */
+    .stMainBlockContainer label, .stMainBlockContainer label p {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+    }
+
+    /* Override Dark Background on Text Input, Textarea, Select, Number Inputs */
+    input[type="text"], input[type="password"], textarea, div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 6px !important;
+    }
+
+    /* Focus State for Inputs */
+    input[type="text"]:focus, textarea:focus, div[data-baseweb="select"] > div:focus-within {
+        border-color: #164194 !important;
+        box-shadow: 0 0 0 1px #164194 !important;
+    }
+
+    /* Dropdown Arrow & Internal Values */
+    div[data-baseweb="select"] * {
+        color: #0F172A !important;
+        background-color: #FFFFFF !important;
+    }
+    div[data-baseweb="select"] svg {
+        fill: #164194 !important;
+    }
+
+    /* Number Input Stepper Controls */
+    div[data-testid="stNumberInput"] div[data-baseweb="input"] {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        color: #0F172A !important;
+    }
+    div[data-testid="stNumberInput"] button {
+        background-color: #F1F5F9 !important;
+        color: #164194 !important;
+        border: 1px solid #CBD5E1 !important;
+    }
+
+    /* Form Submit Button */
+    div[data-testid="stFormSubmitButton"] > button {
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border-radius: 6px !important;
+        border: none !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        padding: 10px 24px !important;
+        margin-top: 10px !important;
+    }
+    div[data-testid="stFormSubmitButton"] > button:hover {
+        background-color: #00A859 !important;
+    }
+
+    /* Metric Cards */
     .metric-card {
         background-color: #FFFFFF !important;
         border: 2px solid #164194 !important;
@@ -111,20 +184,15 @@ st.markdown("""
         box-shadow: 0 4px 10px rgba(22, 65, 148, 0.06) !important;
         margin-bottom: 10px !important;
     }
-    .metric-card-green { 
-        border-color: #00A859 !important; 
-    }
+    .metric-card-green { border-color: #00A859 !important; }
     .metric-card h5 {
         color: #164194 !important;
         font-size: 13px !important;
         font-weight: 700 !important;
         margin: 0 0 4px 0 !important;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
-    .metric-card-green h5 { 
-        color: #00A859 !important; 
-    }
+    .metric-card-green h5 { color: #00A859 !important; }
     .metric-card h3 {
         color: #0F172A !important;
         font-size: 28px !important;
@@ -132,83 +200,7 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    .queue-card {
-        background-color: #FFFFFF !important;
-        border-left: 5px solid #164194 !important;
-        border-top: 1px solid #CBD5E1 !important;
-        border-right: 1px solid #CBD5E1 !important;
-        border-bottom: 1px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-        padding: 14px !important;
-        margin-bottom: 10px !important;
-    }
-
-    /* Tabs */
-    button[data-baseweb="tab"] {
-        background-color: transparent !important;
-        border-radius: 6px 6px 0 0 !important;
-        padding: 8px 16px !important;
-    }
-    button[data-baseweb="tab"] div p {
-        color: #164194 !important;
-        font-weight: 700 !important;
-        font-size: 15px !important;
-    }
-    button[aria-selected="true"] {
-        border-bottom: 3px solid #00A859 !important;
-        background-color: #FFFFFF !important;
-    }
-    button[aria-selected="true"] div p {
-        color: #00A859 !important;
-    }
-
-    /* Forms & Inputs */
-    div[data-testid="stForm"], .saas-card {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-        padding: 20px !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-        margin-bottom: 15px !important;
-    }
-
-    .stMainBlockContainer label, .stMainBlockContainer label * {
-        color: #164194 !important;
-        font-weight: 700 !important;
-        font-size: 14px !important;
-    }
-
-    div[data-baseweb="input"], 
-    div[data-baseweb="textarea"], 
-    div[data-baseweb="select"] > div {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #164194 !important;
-        border-radius: 6px !important;
-        color: #0F172A !important;
-    }
-
-    div[data-baseweb="select"] > div > div:last-child {
-        background-color: #164194 !important;
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-    }
-    div[data-baseweb="select"] svg { fill: #FFFFFF !important; }
-
-    .stMainBlockContainer .stButton>button, 
-    div[data-testid="stFormSubmitButton"]>button {
-        background-color: #164194 !important;
-        color: #FFFFFF !important;
-        border-radius: 6px !important;
-        border: none !important;
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        padding: 8px 20px !important;
-    }
-    .stMainBlockContainer .stButton>button:hover, 
-    div[data-testid="stFormSubmitButton"]>button:hover {
-        background-color: #00A859 !important;
-    }
-
+    /* Dataframes */
     div[data-testid="stDataFrame"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -364,7 +356,7 @@ def generate_quotation_pdf(quote_details):
     return buffer.getvalue()
 
 # ---------------------------------------------------------
-# AUTHENTICATION & GOOGLE SHEETS USER MANAGEMENT
+# AUTHENTICATION & USER ROLES
 # ---------------------------------------------------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -372,18 +364,12 @@ if "authenticated" not in st.session_state:
     st.session_state.user_display_name = None
     st.session_state.username = None
 
-# ---------------------------------------------------------
-# AUTHENTICATION & GOOGLE SHEETS USER MANAGEMENT
-# ---------------------------------------------------------
 def fetch_users_from_sheets():
     df_users = load_sheet("Users")
     users_dict = {}
 
     if not df_users.empty:
-        # Normalize column names: strip spaces and convert to title case
         df_users.columns = [str(c).strip().title() for c in df_users.columns]
-        
-        # Ensure required columns exist
         req_cols = ["Username", "Password", "Role", "Display Name"]
         if all(col in df_users.columns for col in req_cols):
             for _, row in df_users.iterrows():
@@ -395,7 +381,6 @@ def fetch_users_from_sheets():
                 if u_val and u_val != "nan" and p_val and p_val != "nan":
                     users_dict[u_val] = (p_val, r_val, d_val)
 
-    # Always provide built-in defaults so you are never locked out
     default_users = {
         "admin": ("admin123", "Admin", "System Administrator"),
         "mansingh": ("sales123", "Salesperson", "Mansingh Rathore"),
@@ -405,12 +390,11 @@ def fetch_users_from_sheets():
         "ops": ("ops123", "Operations", "Operations Team")
     }
 
-    # Merge sheet users with default fallback users
     for u, data in default_users.items():
         if u not in users_dict:
             users_dict[u] = data
 
-    return users_dict, df_users
+    return users_dict
 
 def login_form():
     st.markdown("<br>", unsafe_allow_html=True)
@@ -428,7 +412,7 @@ def login_form():
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
-                users, df_raw = fetch_users_from_sheets()
+                users = fetch_users_from_sheets()
                 if user_input in users and users[user_input][0] == pass_input:
                     st.session_state.authenticated = True
                     st.session_state.username = user_input
@@ -437,12 +421,10 @@ def login_form():
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password.")
-                    
-                    # Debugger panel to immediately reveal why Google Sheets failed to match
-                    with st.expander("🛠️ Connection & Sheet Inspector"):
-                        st.write("Loaded Sheet Rows:", len(df_raw))
-                        st.write("Detected Columns:", list(df_raw.columns) if not df_raw.empty else "No Data Found")
-                        st.write("Available Usernames:", list(users.keys()))
+
+if not st.session_state.authenticated:
+    login_form()
+    st.stop()
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
@@ -481,9 +463,73 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
+# LEAD CAPTURE PORTAL (PAGE 3 IN SCREENSHOT)
+# ---------------------------------------------------------
+if menu == "📥 Add New Lead":
+    st.markdown("<div class='main-header'>📥 Lead Capture Portal</div>", unsafe_allow_html=True)
+    with st.form("add_lead_form", clear_on_submit=True):
+        st.markdown("<div class='section-title'>👤 Client Details</div>", unsafe_allow_html=True)
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            client_name = st.text_input("Client Name *")
+            company_name = st.text_input("Company Name *")
+        with c2:
+            number = st.text_input("Contact Number *")
+            email = st.text_input("Email ID")
+        with c3:
+            city = st.text_input("City")
+            state = st.text_input("State")
+
+        st.markdown("<div class='section-title'>📦 Requirement Details</div>", unsafe_allow_html=True)
+        c4, c5, c6 = st.columns(3)
+        with c4:
+            product = st.selectbox("Product *", PRODUCT_LIST)
+            qty = st.number_input("Quantity", min_value=1, value=1)
+        with c5:
+            source = st.selectbox("Source", SOURCE_LIST)
+            client_type = st.selectbox("Client Type", CLIENT_TYPES)
+        with c6:
+            assigned_sp = st.selectbox("Assigned Rep", SALESPERSONS)
+            handle_by = st.selectbox("Handled By", TEAM_MEMBERS)
+
+        remarks = st.text_area("Initial Remarks", height=80)
+        submit_lead = st.form_submit_button("💾 Save Lead", use_container_width=True)
+
+        if submit_lead:
+            if not client_name or not number:
+                st.error("Please fill in Client Name and Number.")
+            else:
+                client_id = f"SSA-{datetime.now().strftime('%b-%y')}-{datetime.now().strftime('%M%S')}"
+                new_lead = {
+                    "Sr. No": len(load_sheet("Leads Data")) + 1,
+                    "Client ID": client_id,
+                    "Date Stamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "Client Name": client_name,
+                    "Company Name": company_name,
+                    "Number": number,
+                    "Email": email,
+                    "Product ": product,
+                    "Qty": qty,
+                    "City": city,
+                    "State": state,
+                    "Source": source,
+                    "Assigned Salesperson": assigned_sp,
+                    "Type of client": client_type,
+                    "Quotation Status": "Not Sent",
+                    "Leads Handle By": handle_by,
+                    "Remarks": remarks
+                }
+                conn = get_connection()
+                if conn:
+                    df_ex = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
+                    df_up = pd.concat([df_ex, pd.DataFrame([new_lead])], ignore_index=True)
+                    conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_up)
+                    st.success(f"✅ Lead Created! Client ID: {client_id}")
+
+# ---------------------------------------------------------
 # ADMIN PERFORMANCE & PROGRESS CONTROL MODULE
 # ---------------------------------------------------------
-if menu == "📈 Admin Performance & Progress Control":
+elif menu == "📈 Admin Performance & Progress Control":
     st.markdown("<div class='main-header'>📈 Executive Employee Performance & Operational Progress</div>", unsafe_allow_html=True)
 
     df_leads = load_sheet("Leads Data")
@@ -789,70 +835,6 @@ elif menu in ["📄 Quotation Generator", "📄 Quotation Generator & Convert"]:
                         file_name=f"{selected_q_no.replace('/', '_')}.pdf",
                         mime="application/pdf"
                     )
-
-# ---------------------------------------------------------
-# ADD NEW LEAD
-# ---------------------------------------------------------
-elif menu == "📥 Add New Lead":
-    st.markdown("<div class='main-header'>📥 Lead Capture Portal</div>", unsafe_allow_html=True)
-    with st.form("add_lead_form", clear_on_submit=True):
-        st.markdown("<div class='section-title'>👤 Client Details</div>", unsafe_allow_html=True)
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            client_name = st.text_input("Client Name *")
-            company_name = st.text_input("Company Name *")
-        with c2:
-            number = st.text_input("Contact Number *")
-            email = st.text_input("Email ID")
-        with c3:
-            city = st.text_input("City")
-            state = st.text_input("State")
-
-        st.markdown("<div class='section-title'>📦 Requirement Details</div>", unsafe_allow_html=True)
-        c4, c5, c6 = st.columns(3)
-        with c4:
-            product = st.selectbox("Product *", PRODUCT_LIST)
-            qty = st.number_input("Quantity", min_value=1, value=1)
-        with c5:
-            source = st.selectbox("Source", SOURCE_LIST)
-            client_type = st.selectbox("Client Type", CLIENT_TYPES)
-        with c6:
-            assigned_sp = st.selectbox("Assigned Rep", SALESPERSONS)
-            handle_by = st.selectbox("Handled By", TEAM_MEMBERS)
-
-        remarks = st.text_area("Initial Remarks", height=80)
-        submit_lead = st.form_submit_button("💾 Save Lead", use_container_width=True)
-
-        if submit_lead:
-            if not client_name or not number:
-                st.error("Please fill in Client Name and Number.")
-            else:
-                client_id = f"SSA-{datetime.now().strftime('%b-%y')}-{datetime.now().strftime('%M%S')}"
-                new_lead = {
-                    "Sr. No": len(load_sheet("Leads Data")) + 1,
-                    "Client ID": client_id,
-                    "Date Stamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "Client Name": client_name,
-                    "Company Name": company_name,
-                    "Number": number,
-                    "Email": email,
-                    "Product ": product,
-                    "Qty": qty,
-                    "City": city,
-                    "State": state,
-                    "Source": source,
-                    "Assigned Salesperson": assigned_sp,
-                    "Type of client": client_type,
-                    "Quotation Status": "Not Sent",
-                    "Leads Handle By": handle_by,
-                    "Remarks": remarks
-                }
-                conn = get_connection()
-                if conn:
-                    df_ex = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
-                    df_up = pd.concat([df_ex, pd.DataFrame([new_lead])], ignore_index=True)
-                    conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_up)
-                    st.success(f"✅ Lead Created! Client ID: {client_id}")
 
 # ---------------------------------------------------------
 # PROCESS ORDER EXECUTION
