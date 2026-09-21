@@ -136,25 +136,29 @@ st.markdown("""
         border-color: #164194 !important;
         box-shadow: 0 0 0 1px #164194 !important;
     }
-
-    /* Password Visibility Toggle Button (Navy Blue Eye Icon) */
-    div[data-testid="stInputIconButton"] button,
-    div[data-testid="stInputIconButton"] button:hover {
+    
+    /* Password Field Visibility Toggle Container (BaseWeb Override) */
+    div[data-baseweb="input"] > div:last-child,
+    div[data-testid="stInputIconButton"],
+    div[data-testid="stInputIconButton"] button {
         background-color: #164194 !important;
-        border-radius: 0 6px 6px 0 !important;
         border: none !important;
+        border-top-right-radius: 6px !important;
+        border-bottom-right-radius: 6px !important;
     }
-    div[data-testid="stInputIconButton"] button svg {
+
+    /* Force Eye Icon to Render Clean White */
+    div[data-baseweb="input"] > div:last-child svg,
+    div[data-testid="stInputIconButton"] svg,
+    div[data-testid="stInputIconButton"] button * {
         fill: #FFFFFF !important;
         color: #FFFFFF !important;
+        stroke: #FFFFFF !important;
     }
 
-    div[data-baseweb="select"] * {
-        color: #0F172A !important;
-        background-color: #FFFFFF !important;
-    }
-    div[data-baseweb="select"] svg {
-        fill: #164194 !important;
+    /* Hover effect for Eye Icon container */
+    div[data-testid="stInputIconButton"] button:hover {
+        background-color: #0e2d6b !important;
     }
 
     /* Form Submit Button (Forced Corporate Green - Matching Brand Logo) */
