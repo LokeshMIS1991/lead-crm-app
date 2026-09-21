@@ -116,8 +116,8 @@ st.markdown("""
     .stMainBlockContainer label,
     .stMainBlockContainer label p {
         color: #184B9C !important;
-        font-size: 13.5px !important;
-        font-weight: 600 !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
     }
 
     .main-header {
@@ -143,44 +143,44 @@ st.markdown("""
         letter-spacing: -0.01em;
     }
 
-    /* 5. Subtly Raised Container Cards & Forms */
+    /* 5. Blue Outer Container Cards & Login Box */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #184B9C !important;
-        border-top: 3px solid #184B9C !important;
+        border: 2px solid #184B9C !important;
         border-radius: 12px !important;
-        padding: 24px 28px !important;
-        box-shadow: 0 4px 20px rgba(14, 44, 104, 0.04) !important;
+        padding: 28px 32px !important;
+        box-shadow: 0 6px 24px rgba(24, 75, 156, 0.12) !important;
         margin-bottom: 20px !important;
     }
 
-    /* Input Field Styling */
-    input[type="text"], input[type="password"], textarea, div[data-baseweb="select"] > div {
-        background-color: #F8FAFC !important;
+    /* Input Field Styling & High-Contrast Blue Text/Borders */
+    div[data-testid="stTextInput"] input {
+        background-color: #FFFFFF !important;
         color: #0E2C68 !important;
-        border: 1px solid #184B9C !important;
+        border: 2px solid #184B9C !important;
         border-radius: 8px !important;
-        padding: 8px 12px !important;
+        padding: 10px 14px !important;
         font-size: 14px !important;
+        font-weight: 500 !important;
         transition: all 0.2s ease !important;
     }
 
-    input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-        background-color: #FFFFFF !important;
-        border-color: #184B9C !important;
-        box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.12) !important;
+    div[data-testid="stTextInput"] input::placeholder {
+        color: #64748B !important;
+        opacity: 0.8 !important;
+    }
+
+    div[data-testid="stTextInput"] input:focus {
+        border-color: #0E2C68 !important;
+        box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.2) !important;
         outline: none !important;
     }
 
-    /* Custom Show Password Checkbox */
-    div[data-testid="stCheckbox"] label > span:first-child {
-        background-color: transparent !important;
-        border: 2px solid #184B9C !important;
-        border-radius: 4px !important;
-    }
-    div[data-testid="stCheckbox"] input[type="checkbox"]:checked + span:first-child {
-        background-color: #184B9C !important;
-        border-color: #184B9C !important;
+    /* Custom Checkbox Styling for Show Password */
+    div[data-testid="stCheckbox"] label span p {
+        color: #184B9C !important;
+        font-weight: 600 !important;
+        font-size: 13.5px !important;
     }
 
     /* Form Submit Buttons */
@@ -192,17 +192,17 @@ st.markdown("""
         border: none !important;
         font-size: 15px !important;
         font-weight: 700 !important;
-        padding: 10px 20px !important;
-        margin-top: 10px !important;
+        padding: 12px 20px !important;
+        margin-top: 15px !important;
         width: 100% !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.2) !important;
+        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25) !important;
         transition: all 0.2s ease-in-out !important;
     }
     
     div[data-testid="stFormSubmitButton"] button:hover,
     button[kind="primaryFormSubmit"]:hover {
         background: linear-gradient(135deg, #008F4C 0%, #00753E 100%) !important;
-        box-shadow: 0 6px 16px rgba(0, 168, 89, 0.3) !important;
+        box-shadow: 0 6px 16px rgba(0, 168, 89, 0.35) !important;
         transform: translateY(-1px);
     }
 
@@ -495,10 +495,18 @@ if not st.session_state.authenticated:
             
             st.markdown("<p style='text-align: center; color: #64748B; font-weight: 600; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>Enterprise CRM & Operations Portal</p>", unsafe_allow_html=True)
             
+            # 1. Username Field
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
-            show_pwd = st.checkbox("👁️ Show Password")
-            pass_type = "text" if show_pwd else "password"
+            
+            # 2. Password Field (Moved above Show Password)
+            if "show_pwd" not in st.session_state:
+                st.session_state.show_pwd = False
+
+            pass_type = "text" if st.session_state.get("show_pwd_checkbox", False) else "password"
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
+
+            # 3. Show Password Checkbox (Placed under Password field)
+            st.checkbox("👁️ Show Password", key="show_pwd_checkbox")
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
