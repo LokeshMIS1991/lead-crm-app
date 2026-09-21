@@ -17,18 +17,15 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# SCOPED CSS ENGINE (FIXED INVISIBLE TEXT & DISTORTED LAYOUT)
+# SCOPED CSS ENGINE
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Page Background */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #F8FAFC !important; 
     }
 
-    /* ---------------------------------------------------------
-       1. SIDEBAR NAVIGATION STYLING
-       --------------------------------------------------------- */
+    /* Sidebar Navigation */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
@@ -40,7 +37,6 @@ st.markdown("""
         font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    /* Radio Button Navigation Labels */
     div[data-testid="stRadio"] label {
         font-size: 14px !important;
         font-weight: 600 !important;
@@ -52,7 +48,6 @@ st.markdown("""
         background-color: rgba(255, 255, 255, 0.15) !important;
     }
 
-    /* Radio Selection Indicator */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         background-color: #FFFFFF !important;
         border: 2px solid #FFFFFF !important;
@@ -63,7 +58,6 @@ st.markdown("""
         border: 3px solid #FFFFFF !important;
     }
 
-    /* Sidebar Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
@@ -78,9 +72,7 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* ---------------------------------------------------------
-       2. MAIN CONTENT AREA TYPOGRAPHY & HEADERS (FIX FOR BLANK TEXT)
-       --------------------------------------------------------- */
+    /* Main Content Typography */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
@@ -110,9 +102,7 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* ---------------------------------------------------------
-       3. METRIC CARDS & QUEUE CARDS
-       --------------------------------------------------------- */
+    /* Cards */
     .metric-card {
         background-color: #FFFFFF !important;
         border: 2px solid #164194 !important;
@@ -153,9 +143,7 @@ st.markdown("""
         margin-bottom: 10px !important;
     }
 
-    /* ---------------------------------------------------------
-       4. TABS STYLING FIX
-       --------------------------------------------------------- */
+    /* Tabs */
     button[data-baseweb="tab"] {
         background-color: transparent !important;
         border-radius: 6px 6px 0 0 !important;
@@ -174,9 +162,7 @@ st.markdown("""
         color: #00A859 !important;
     }
 
-    /* ---------------------------------------------------------
-       5. FORM & INPUT CONTROLS STYLING
-       --------------------------------------------------------- */
+    /* Forms & Inputs */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -208,7 +194,6 @@ st.markdown("""
     }
     div[data-baseweb="select"] svg { fill: #FFFFFF !important; }
 
-    /* Main Area Buttons */
     .stMainBlockContainer .stButton>button, 
     div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
@@ -224,7 +209,6 @@ st.markdown("""
         background-color: #00A859 !important;
     }
 
-    /* Dataframe Container */
     div[data-testid="stDataFrame"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -380,22 +364,29 @@ def generate_quotation_pdf(quote_details):
     return buffer.getvalue()
 
 # ---------------------------------------------------------
-# AUTHENTICATION & USER ROLES
+# AUTHENTICATION & GOOGLE SHEETS USER MANAGEMENT
 # ---------------------------------------------------------
-USERS = {
-    "admin": ("admin123", "Admin", "System Administrator"),
-    "mansingh": ("sales123", "Salesperson", "Mansingh Rathore"),
-    "sidharth": ("sales123", "Salesperson", "Sidharth Jain"),
-    "pooja": ("backoffice123", "Back-Office", "Pooja"),
-    "dolly": ("backoffice123", "Back-Office", "Dolly"),
-    "ops": ("ops123", "Operations", "Operations Team")
-}
-
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
     st.session_state.user_role = None
     st.session_state.user_display_name = None
     st.session_state.username = None
+
+def fetch_users_from_sheets():
+    df_users = load_sheet("Users")
+    if not df_users.empty and {"Username", "Password", "Role", "Display Name"}.issubset(df_users.columns):
+        users_dict = {}
+        for _, row in df_users.iterrows():
+            uname = str(row["Username"]).strip().lower()
+            users_dict[uname] = (
+                str(row["Password"]).strip(),
+                str(row["Role"]).strip(),
+                str(row["Display Name"]).strip()
+            )
+        return users_dict
+    return {
+        "admin": ("admin123", "Admin", "System Administrator")
+    }
 
 def login_form():
     st.markdown("<br>", unsafe_allow_html=True)
@@ -413,11 +404,12 @@ def login_form():
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
-                if user_input in USERS and USERS[user_input][0] == pass_input:
+                users = fetch_users_from_sheets()
+                if user_input in users and users[user_input][0] == pass_input:
                     st.session_state.authenticated = True
                     st.session_state.username = user_input
-                    st.session_state.user_role = USERS[user_input][1]
-                    st.session_state.user_display_name = USERS[user_input][2]
+                    st.session_state.user_role = users[user_input][1]
+                    st.session_state.user_display_name = users[user_input][2]
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password.")
@@ -453,7 +445,8 @@ with st.sidebar:
             "📄 Quotation Generator & Convert",
             "📞 Follow-up Master",
             "⚙️ Process Order Execution",
-            "🔍 Client Inspector"
+            "🔍 Client Inspector",
+            "👥 User Management (Admin)"
         ])
 
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -558,6 +551,48 @@ if menu == "📈 Admin Performance & Progress Control":
                 st.bar_chart(data=q_status_counts, x="Quote Status", y="Count", color="#164194")
             else:
                 st.info("No quotation pipeline data available.")
+
+# ---------------------------------------------------------
+# USER MANAGEMENT (ADMIN ONLY)
+# ---------------------------------------------------------
+elif menu == "👥 User Management (Admin)":
+    st.markdown("<div class='main-header'>👥 User Credentials & Role Management</div>", unsafe_allow_html=True)
+    
+    df_users = load_sheet("Users")
+    
+    st.markdown("<div class='section-title'>📋 Registered CRM Users</div>", unsafe_allow_html=True)
+    if not df_users.empty:
+        st.dataframe(df_users, use_container_width=True, hide_index=True)
+    else:
+        st.warning("No users found in the 'Users' worksheet tab.")
+
+    st.markdown("<div class='section-title'>➕ Add New User Credentials</div>", unsafe_allow_html=True)
+    with st.form("add_user_form", clear_on_submit=True):
+        u1, u2 = st.columns(2)
+        with u1:
+            new_username = st.text_input("Username *").strip().lower()
+            new_password = st.text_input("Password *", type="password")
+        with u2:
+            new_role = st.selectbox("Role *", ["Admin", "Salesperson", "Back-Office", "Operations"])
+            new_disp_name = st.text_input("Display Name *")
+            
+        submit_u = st.form_submit_button("💾 Create User Account", use_container_width=True)
+        if submit_u:
+            if not new_username or not new_password or not new_disp_name:
+                st.error("Please complete all required fields.")
+            else:
+                new_row = {
+                    "Username": new_username,
+                    "Password": new_password,
+                    "Role": new_role,
+                    "Display Name": new_disp_name
+                }
+                conn = get_connection()
+                if conn:
+                    df_u_ex = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Users")
+                    df_u_up = pd.concat([df_u_ex, pd.DataFrame([new_row])], ignore_index=True)
+                    conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Users", data=df_u_up)
+                    st.success(f"✅ User '{new_username}' added to Google Sheets!")
 
 # ---------------------------------------------------------
 # FOLLOW-UP QUEUE & WORKDAY
