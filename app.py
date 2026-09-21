@@ -17,17 +17,17 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# 100% LOGO THEME OVERRIDE & CLEAN UI STYLING ENGINE
+# CORPORATE BRAND UI ENGINE
 # Primary Blue: #184B9C | Dark Blue: #0E2C68 | Highlight Blue: #2965C1 | Bright Green: #00A859
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* 1. Global Page Background (Pure White) */
+    /* 1. Global Background */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #FFFFFF !important; 
     }
 
-    /* 2. Hide Unstyled Sidebar Icon Strings */
+    /* 2. Hide Unstyled Sidebar Strings */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
@@ -80,7 +80,7 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* 4. Main Typography (Primary Blue Color Alignment) */
+    /* 4. Main Typography (Brand Blue Headers & Labels) */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
@@ -113,7 +113,7 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* 5. LOGIN FORM CARD STYLING */
+    /* 5. ELEGANT LOGIN CARD CONTAINER */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
@@ -123,7 +123,7 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Input Field Boxes (Clean White Background & Dark Blue Text) */
+    /* Input Field Styling */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
@@ -132,27 +132,34 @@ st.markdown("""
         padding: 10px 12px !important;
     }
 
-    /* Focus States for Inputs (Highlight Blue) */
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
         border-color: #2965C1 !important;
         box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* Hide broken native password toggle element */
+    /* 6. PASSWORD EYE TOGGLE BUTTON STYLING (PURE BLUE & WHITE) */
+    div[data-testid="stForm"] div.stButton > button {
+        background-color: #184B9C !important;
+        color: #FFFFFF !important;
+        border: 1.5px solid #184B9C !important;
+        border-radius: 6px !important;
+        height: 42px !important;
+        margin-top: 28px !important;
+        padding: 0 !important;
+        font-size: 18px !important;
+    }
+    div[data-testid="stForm"] div.stButton > button:hover {
+        background-color: #0E2C68 !important;
+        border-color: #0E2C68 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Hide standard broken native Streamlit password toggle container */
     div[data-testid="stInputIconButton"] {
         display: none !important;
     }
 
-    /* Select Dropdowns */
-    div[data-baseweb="select"] * {
-        color: #0E2C68 !important;
-        background-color: #FFFFFF !important;
-    }
-    div[data-baseweb="select"] svg {
-        fill: #184B9C !important;
-    }
-
-    /* 6. LOGIN SUBMIT BUTTON (BRIGHT GREEN WITH CRISP WHITE TEXT) */
+    /* 7. LOGIN SUBMIT BUTTON (CORPORATE GREEN WITH CRISP WHITE TEXT) */
     div[data-testid="stFormSubmitButton"] button,
     div[data-testid="stFormSubmitButton"] button p,
     div[data-testid="stFormSubmitButton"] button span,
@@ -168,7 +175,7 @@ st.markdown("""
         font-size: 16px !important;
         font-weight: 700 !important;
         padding: 12px 24px !important;
-        margin-top: 14px !important;
+        margin-top: 10px !important;
         width: 100% !important;
         box-shadow: 0 4px 10px rgba(0, 168, 89, 0.2) !important;
     }
@@ -398,6 +405,8 @@ if "authenticated" not in st.session_state:
     st.session_state.user_role = None
     st.session_state.user_display_name = None
     st.session_state.username = None
+if "show_pwd" not in st.session_state:
+    st.session_state.show_pwd = False
 
 def fetch_users_from_sheets():
     df_users = load_sheet("Users")
@@ -450,12 +459,18 @@ def login_form():
             
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # Visibility checkbox toggle state
-            show_password = st.checkbox("👁️ Show Password")
-            pass_type = "text" if show_password else "password"
-            
-            pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
-            
+            # Clean password layout with embedded blue eye icon button
+            pwd_col, eye_col = st.columns([5.5, 1])
+            with pwd_col:
+                pass_type = "text" if st.session_state.show_pwd else "password"
+                pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
+            with eye_col:
+                # Custom eye icon button toggle
+                toggle_pwd = st.form_submit_button("👁️" if not st.session_state.show_pwd else "🙈")
+                if toggle_pwd:
+                    st.session_state.show_pwd = not st.session_state.show_pwd
+                    st.rerun()
+
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
