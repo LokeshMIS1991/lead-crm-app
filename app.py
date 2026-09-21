@@ -7,58 +7,28 @@ import io
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
 # ---------------------------------------------------------
-st.set_page_config(
-    page_title="Sidharth Shutter & Automation - Enterprise CRM",
-    page_icon="🏭",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
-
 st.markdown("""
     <style>
-    /* 1. Global Page Background */
+    /* 1. Global Background */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #FFFFFF !important; 
     }
 
-    /* 2. Hide Unstyled Sidebar Icon Strings */
-    [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
-        display: none !important;
-    }
-
-    /* 3. Sidebar Navigation Styling */
+    /* 2. Sidebar Navigation */
     [data-testid="stSidebar"] {
         background-color: #184B9C !important;
         border-right: 2px solid #0E2C68 !important;
         padding-top: 10px !important;
     }
-
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
         font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    /* Logout Button */
-    div[data-testid="stSidebar"] div.stButton > button {
-        background-color: #00A859 !important;
-        color: #FFFFFF !important;
-        border: none !important;
-        border-radius: 6px !important;
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        padding: 8px 16px !important;
-        width: 100% !important;
-    }
-
-    /* 4. Form Typography (Primary Blue Labels) */
+    /* 3. Main Container Styling */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
-    .stMainBlockContainer h4, 
-    .stMainBlockContainer p, 
-    .stMainBlockContainer span,
     .stMainBlockContainer label,
     .stMainBlockContainer label p {
         color: #184B9C !important;
@@ -66,64 +36,32 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* 5. Form Card Container */
-    div[data-testid="stForm"], .saas-card {
+    /* 4. Form Box Container */
+    div[data-testid="stForm"] {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 12px !important;
         padding: 32px !important;
         box-shadow: 0 8px 24px rgba(24, 75, 156, 0.12) !important;
-        margin-bottom: 20px !important;
     }
 
-    /* Input Field Boxes (White Background with Blue Border) */
-    input[type="text"], input[type="password"], textarea {
+    /* 5. Clean Input Fields */
+    input[type="text"], input[type="password"] {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
         border: 1.5px solid #184B9C !important;
         border-radius: 6px !important;
         padding: 10px 12px !important;
     }
-
-    input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+    input[type="text"]:focus, input[type="password"]:focus {
         border-color: #2965C1 !important;
         box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* 6. FIX 1 & 3: BLUE BOX WITH WHITE EYE ICON FOR PASSWORD TOGGLE */
-    div[data-baseweb="input"] > div:last-child,
-    div[data-testid="stInputIconButton"],
-    div[data-testid="stInputIconButton"] button,
-    div[data-testid="stInputIconButton"] button:hover {
-        background-color: #184B9C !important;
-        border: none !important;
-        border-top-right-radius: 6px !important;
-        border-bottom-right-radius: 6px !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Force text/icons inside toggle button to render pure white */
-    div[data-testid="stInputIconButton"] * {
-        color: #FFFFFF !important;
-        fill: #FFFFFF !important;
-        stroke: #FFFFFF !important;
-        font-size: 0px !important; /* Hides leaked 'visibility' text */
-    }
-
-    /* Inject White Eye Symbol Unicode when SVG is missing */
-    div[data-testid="stInputIconButton"] button::before {
-        content: "👁️";
-        font-size: 16px !important;
-        color: #FFFFFF !important;
-    }
-
-    /* 7. FIX 2: FORCE "LOGIN TO DASHBOARD" TEXT TO PURE WHITE */
+    /* 6. Green Login Submit Button with Crisp White Text */
     div[data-testid="stFormSubmitButton"] button,
-    div[data-testid="stFormSubmitButton"] button *,
-    button[kind="primaryFormSubmit"],
-    button[kind="primaryFormSubmit"] *,
-    button[data-testid="baseButton-primaryFormSubmit"],
-    button[data-testid="baseButton-primaryFormSubmit"] * {
+    div[data-testid="stFormSubmitButton"] button p,
+    div[data-testid="stFormSubmitButton"] button span {
         background-color: #00A859 !important;
         background-image: none !important;
         color: #FFFFFF !important;
@@ -132,17 +70,18 @@ st.markdown("""
         font-size: 16px !important;
         font-weight: 700 !important;
         width: 100% !important;
+        padding: 10px 0px !important;
     }
-    
-    div[data-testid="stFormSubmitButton"] button:hover,
-    button[kind="primaryFormSubmit"]:hover,
-    button[data-testid="baseButton-primaryFormSubmit"]:hover {
+    div[data-testid="stFormSubmitButton"] button:hover {
         background-color: #008f4c !important;
-        color: #FFFFFF !important;
+    }
+
+    /* Hide native buggy Streamlit password toggle icon */
+    div[data-testid="stInputIconButton"] {
+        display: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
 # ---------------------------------------------------------
 # DATABASE CONNECTIVITY HELPERS
 # ---------------------------------------------------------
