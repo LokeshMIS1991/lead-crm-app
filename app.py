@@ -203,18 +203,18 @@ st.markdown("""
 
     /* CUSTOM STYLING FOR SHOW PASSWORD CHECKBOX SQUARE BLOCK */
     div[data-testid="stCheckbox"] div[role="checkbox"] {
-        background-color: #FFFFFF !important;
-        border: 2px solid #184B9C !important;
+        background-color: #FAF9F6 !important;
+        border: 2px solid #0C3AB3 !important;
         border-radius: 4px !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] {
-        background-color: #184B9C !important;
-        border-color: #184B9C !important;
+        background-color: #FAF9F6 !important;
+        border-color: #0C3AB3 !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"] svg {
-        fill: #184B9C !important;
+        fill: #FAF9F6 !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] svg {
@@ -540,7 +540,7 @@ if not st.session_state.authenticated:
             st.markdown("<p style='text-align: center; color: #64748B; font-weight: 600; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>Enterprise CRM & Operations Portal</p>", unsafe_allow_html=True)
             
             # 1. Username Field
-            user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
+            user_input = st.text_input("Username", placeholder="enter the user name").strip().lower()
             
             # 2. Password Field
             if "show_pwd" not in st.session_state:
