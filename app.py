@@ -17,24 +17,25 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# COMPREHENSIVE UI FIX: LIGHT THEME & BRAND COLOR OVERRIDES
+# COMPREHENSIVE UI STYLING ENGINE WITH LOGO COLOR PALETTE
+# Primary Blue: #184B9C | Dark Blue: #0E2C68 | Highlight Blue: #2965C1 | Bright Green: #00A859
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Page Background */
+    /* 1. Global Page Background (Pure White / Off-White Tone) */
     .stApp, header[data-testid="stHeader"] { 
-        background-color: #F8FAFC !important; 
+        background-color: #FFFFFF !important; 
     }
 
-    /* Hide Unstyled Icon String Leaks */
+    /* 2. Hide Unstyled Icon String Leaks */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
 
-    /* Sidebar Navigation Styling */
+    /* 3. Sidebar Navigation Styling */
     [data-testid="stSidebar"] {
-        background-color: #164194 !important;
-        border-right: 2px solid #0e2d6b !important;
+        background-color: #184B9C !important;
+        border-right: 2px solid #0E2C68 !important;
         padding-top: 10px !important;
     }
 
@@ -79,27 +80,27 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* Main Content Typography */
+    /* 4. Main Content Typography */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
     .stMainBlockContainer h4, 
     .stMainBlockContainer p, 
     .stMainBlockContainer span {
-        color: #0F172A;
+        color: #0E2C68;
     }
 
     .main-header {
         font-size: 26px !important;
         font-weight: 800 !important;
-        color: #164194 !important;
+        color: #184B9C !important;
         margin-bottom: 15px !important;
         border-bottom: 3px solid #00A859 !important;
         padding-bottom: 8px !important;
     }
 
     .section-title {
-        color: #164194 !important;
+        color: #184B9C !important;
         font-size: 18px !important;
         font-weight: 800 !important;
         margin-top: 15px !important;
@@ -108,46 +109,48 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* Form Card & Input Container Styles */
+    /* 5. LOGIN FORM CARD STYLING */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
-        border-radius: 10px !important;
-        padding: 24px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        border-radius: 12px !important;
+        padding: 28px !important;
+        box-shadow: 0 6px 18px rgba(14, 44, 104, 0.08) !important;
         margin-bottom: 20px !important;
     }
 
+    /* Form Labels (Primary Blue) */
     .stMainBlockContainer label, .stMainBlockContainer label p {
-        color: #164194 !important;
+        color: #184B9C !important;
         font-weight: 700 !important;
         font-size: 14px !important;
     }
 
-    /* Force White Input Field Backgrounds */
+    /* Input Field Boxes (White Background & Dark Text) */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        color: #0E2C68 !important;
         border: 1.5px solid #CBD5E1 !important;
         border-radius: 6px !important;
     }
 
+    /* Focus States for Inputs (Highlight Blue Ring) */
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-        border-color: #164194 !important;
-        box-shadow: 0 0 0 1px #164194 !important;
+        border-color: #2965C1 !important;
+        box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.2) !important;
     }
 
-    /* Password Field Visibility Toggle Container (Navy Blue Eye Icon) */
+    /* 6. PASSWORD VISIBILITY TOGGLE EYE CONTAINER (Dark Blue #0E2C68) */
     div[data-baseweb="input"] > div:last-child,
     div[data-testid="stInputIconButton"],
     div[data-testid="stInputIconButton"] button {
-        background-color: #164194 !important;
+        background-color: #0E2C68 !important;
         border: none !important;
         border-top-right-radius: 6px !important;
         border-bottom-right-radius: 6px !important;
     }
 
-    /* Force Eye Icon SVG to White */
+    /* Force Eye SVG Icon to Pure White */
     div[data-baseweb="input"] > div:last-child svg,
     div[data-testid="stInputIconButton"] svg,
     div[data-testid="stInputIconButton"] button * {
@@ -156,15 +159,20 @@ st.markdown("""
         stroke: #FFFFFF !important;
     }
 
+    div[data-testid="stInputIconButton"] button:hover {
+        background-color: #184B9C !important;
+    }
+
+    /* Select Dropdowns */
     div[data-baseweb="select"] * {
-        color: #0F172A !important;
+        color: #0E2C68 !important;
         background-color: #FFFFFF !important;
     }
     div[data-baseweb="select"] svg {
-        fill: #164194 !important;
+        fill: #184B9C !important;
     }
 
-    /* Login Form Submit Button (Corporate Green) */
+    /* 7. LOGIN SUBMIT BUTTON (Bright Green #00A859) */
     div[data-testid="stFormSubmitButton"] button,
     button[kind="primaryFormSubmit"],
     button[data-testid="baseButton-primaryFormSubmit"] {
@@ -185,6 +193,58 @@ st.markdown("""
     button[data-testid="baseButton-primaryFormSubmit"]:hover {
         background-color: #008f4c !important;
         color: #FFFFFF !important;
+    }
+
+    /* Tabs Styling */
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        padding: 8px 16px !important;
+    }
+    button[data-baseweb="tab"] div p {
+        color: #184B9C !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+    button[aria-selected="true"] {
+        border-bottom: 3px solid #00A859 !important;
+        background-color: #FFFFFF !important;
+    }
+    button[aria-selected="true"] div p {
+        color: #00A859 !important;
+    }
+
+    /* Metric Cards */
+    .metric-card {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 4px 10px rgba(24, 75, 156, 0.06) !important;
+        margin-bottom: 10px !important;
+    }
+    .metric-card-green { border-color: #00A859 !important; }
+    .metric-card h5 {
+        color: #184B9C !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        margin: 0 0 4px 0 !important;
+        text-transform: uppercase;
+    }
+    .metric-card-green h5 { color: #00A859 !important; }
+    .metric-card h3 {
+        color: #0E2C68 !important;
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+    }
+
+    /* Dataframe Container */
+    div[data-testid="stDataFrame"] {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 6px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -246,9 +306,9 @@ def generate_quotation_pdf(quote_details):
     story = []
     styles = getSampleStyleSheet()
 
-    navy = colors.HexColor("#164194")
+    navy = colors.HexColor("#184B9C")
     green = colors.HexColor("#00A859")
-    dark_text = colors.HexColor("#0F172A")
+    dark_text = colors.HexColor("#0E2C68")
 
     title_style = ParagraphStyle('TitleStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=20, leading=24, textColor=navy)
     subtitle_style = ParagraphStyle('SubTitleStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=12, textColor=green)
@@ -388,9 +448,9 @@ def login_form():
             try:
                 st.image("Company Logo.jpeg", use_container_width=True)
             except Exception:
-                st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
+                st.markdown("<h2 style='text-align: center; color: #184B9C; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
             
-            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #184B9C; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             pass_input = st.text_input("Password", type="password", placeholder="Enter password").strip()
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -423,7 +483,7 @@ with st.sidebar:
         st.write("🏭 **SSA CRM**")
         
     st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important; font-weight:700;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:13px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #2965C1 !important; font-weight:700; font-size:13px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
     if st.session_state.user_role == "Salesperson":
@@ -558,7 +618,7 @@ elif menu == "📈 Admin Performance & Progress Control":
             c1, c2 = st.columns(2)
             with c1:
                 st.markdown("<div class='section-title'>📈 Total Inquiries Handled Per Rep</div>", unsafe_allow_html=True)
-                st.bar_chart(data=perf_matrix, x="Salesperson", y="Total Leads Assigned", color="#164194")
+                st.bar_chart(data=perf_matrix, x="Salesperson", y="Total Leads Assigned", color="#184B9C")
             with c2:
                 st.markdown("<div class='section-title'>💰 Total Pipeline Quoted Value (₹)</div>", unsafe_allow_html=True)
                 st.bar_chart(data=perf_matrix, x="Salesperson", y="Quoted_Value", color="#00A859")
@@ -573,10 +633,10 @@ elif menu == "📈 Admin Performance & Progress Control":
 
                 e1, e2 = st.columns(2)
                 with e1:
-                    st.markdown(f"<p style='color:#164194; font-weight:700;'>Active Leads for {selected_emp}: {len(emp_leads)}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#184B9C; font-weight:700;'>Active Leads for {selected_emp}: {len(emp_leads)}</p>", unsafe_allow_html=True)
                     st.dataframe(emp_leads, use_container_width=True, hide_index=True)
                 with e2:
-                    st.markdown(f"<p style='color:#164194; font-weight:700;'>Issued Quotes for {selected_emp}: {len(emp_quotes)}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#184B9C; font-weight:700;'>Issued Quotes for {selected_emp}: {len(emp_quotes)}</p>", unsafe_allow_html=True)
                     st.dataframe(emp_quotes, use_container_width=True, hide_index=True)
 
     with tab_prog:
@@ -607,7 +667,7 @@ elif menu == "📈 Admin Performance & Progress Control":
             if not df_quotes.empty and "Quotation Status" in df_quotes.columns:
                 q_status_counts = df_quotes["Quotation Status"].value_counts().reset_index()
                 q_status_counts.columns = ["Quote Status", "Count"]
-                st.bar_chart(data=q_status_counts, x="Quote Status", y="Count", color="#164194")
+                st.bar_chart(data=q_status_counts, x="Quote Status", y="Count", color="#184B9C")
             else:
                 st.info("No quotation pipeline data available.")
 
@@ -691,7 +751,7 @@ elif menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
 
                 st.markdown(f"""
                 <div class='queue-card'>
-                    <b style='color:#164194; font-size:16px;'>{client_name}</b> | <span style='color:#64748B;'>Quote: {quote_no}</span><br>
+                    <b style='color:#184B9C; font-size:16px;'>{client_name}</b> | <span style='color:#64748B;'>Quote: {quote_no}</span><br>
                     📞 <b>Contact:</b> {phone} | 💰 <b>Amount:</b> ₹{amt} | 👤 <b>Rep:</b> {row.get('Assigned Salesperson', 'Unassigned')}
                 </div>
                 """, unsafe_allow_html=True)
