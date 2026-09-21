@@ -178,7 +178,7 @@ st.markdown("""
 
     /* Custom Checkbox Styling for Show Password */
     div[data-testid="stCheckbox"] label span p {
-        color: #184B9C !important;
+        color: #64748B !important;
         font-weight: 600 !important;
         font-size: 13.5px !important;
     }
