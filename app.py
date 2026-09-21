@@ -13,41 +13,31 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# TARGET GOOGLE SHEET URL
+SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
+
 # ---------------------------------------------------------
 # BRAND STYLING & CUSTOM COLOR OVERRIDES
-# Theme Palette:
-#   - Navy Blue: #164194 (Primary)
-#   - Green:     #00A859 (Secondary Accent)
-#   - Light Slate Background: #F8FAFC
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Top Navigation Header Bar Override */
     header[data-testid="stHeader"] {
         background-color: #F8FAFC !important;
     }
-    
     header[data-testid="stHeader"] * {
         color: #164194 !important;
     }
-
-    /* Global App Background */
     .stApp {
         background-color: #F8FAFC !important;
     }
-    
-    /* Left Panel Sidebar: Exact Brand Navy Blue */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border-right: 2px solid #0F3275 !important;
     }
-
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
     }
-    
-    /* Sidebar Oval Logo Badge */
     .sidebar-oval-logo {
         background-color: #FFFFFF;
         border: 2px solid #00A859;
@@ -57,13 +47,6 @@ st.markdown("""
         text-align: center;
         margin-bottom: 12px;
     }
-    
-    .sidebar-oval-logo img {
-        max-width: 90%;
-        border-radius: 20px;
-    }
-
-    /* Page Main Header */
     .main-header {
         font-size: 26px;
         font-weight: 800;
@@ -71,34 +54,25 @@ st.markdown("""
         margin-bottom: 10px;
         border-bottom: 3px solid #00A859;
         padding-bottom: 8px;
-        letter-spacing: -0.5px;
     }
-
-    /* Top Right Header Logo Position */
     .top-right-logo {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         padding-bottom: 10px;
     }
-
-    /* KPI Summary Cards */
     .kpi-card {
         background: #FFFFFF;
         padding: 20px 15px;
         border-radius: 12px;
         border-left: 6px solid #164194;
-        border-right: 1px solid #CBD5E1;
-        border-top: 1px solid #CBD5E1;
-        border-bottom: 1px solid #CBD5E1;
+        border: 1px solid #CBD5E1;
         box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08);
         text-align: center;
     }
-    
     .kpi-card-green {
-        border-left: 6px solid #00A859;
+        border-left: 6px solid #00A859 !important;
     }
-
     .kpi-card h5 {
         color: #00A859 !important;
         font-size: 13px;
@@ -106,80 +80,23 @@ st.markdown("""
         text-transform: uppercase;
         margin-bottom: 6px;
     }
-    
     .kpi-card h2 {
         color: #164194 !important;
         font-size: 28px;
         font-weight: 800;
         margin: 0;
     }
-
-    /* Form Field Label Color Customization */
     .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stDateInput label {
         color: #164194 !important;
         font-weight: 700 !important;
-        font-size: 14px !important;
     }
-
-    /* Form Inputs & Selectboxes */
-    .stTextInput>div>div>input, 
-    .stSelectbox>div>div, 
-    .stSelectbox [data-baseweb="select"]>div,
-    .stTextArea>div>div>textarea,
-    .stDateInput>div>div,
-    .stDateInput input {
+    .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea, .stDateInput input {
         background-color: #FFFFFF !important;
         color: #164194 !important;
         border: 1.5px solid #164194 !important;
         border-radius: 8px !important;
         font-weight: 600 !important;
     }
-
-    /* Dropdown selected text & icons */
-    .stSelectbox [data-baseweb="select"] * {
-        color: #164194 !important;
-    }
-
-    .stDateInput div[role="button"] {
-        background-color: #FFFFFF !important;
-        color: #164194 !important;
-    }
-
-    .stTextArea textarea {
-        background-color: #FFFFFF !important;
-        color: #164194 !important;
-    }
-
-    /* Active field outline on click */
-    .stTextInput>div>div>input:focus, 
-    .stSelectbox>div>div:focus, 
-    .stTextArea>div>div>textarea:focus, 
-    .stDateInput input:focus {
-        border-color: #00A859 !important;
-        box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2) !important;
-    }
-
-    /* Quantity Box Styling */
-    .stNumberInput input {
-        background-color: #E0F2FE !important;
-        color: #164194 !important;
-        font-weight: 800 !important;
-    }
-    
-    .stNumberInput>div>div {
-        background-color: #E0F2FE !important;
-        border: 1.5px solid #164194 !important;
-        border-radius: 8px !important;
-    }
-
-    /* Quantity Plus/Minus Buttons */
-    .stNumberInput button {
-        background-color: #164194 !important;
-        color: #FFFFFF !important;
-        border: none !important;
-    }
-
-    /* Submit / Save Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -187,93 +104,25 @@ st.markdown("""
         border: none !important;
         font-weight: 700 !important;
         padding: 10px 24px !important;
-        transition: all 0.3s ease !important;
     }
-    
     .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
-    
-    /* Expander Header Accordion Styling */
-    .stExpander [data-baseweb="accordion"] [role="button"] {
-        background-color: #164194 !important;
-        color: #FFFFFF !important;
-        border-radius: 8px !important;
-    }
-
-    .stExpander [data-baseweb="accordion"] [role="button"] * {
-        color: #FFFFFF !important;
-    }
-
-    /* ---------------------------------------------------------
-       CLEAR AND VISIBLE TAB STYLING (BRAND THEME)
-       --------------------------------------------------------- */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px !important;
         background-color: #E2E8F0 !important;
         padding: 6px !important;
         border-radius: 10px !important;
     }
-
-    .stTabs [data-baseweb="tab"] {
-        height: 42px !important;
-        border-radius: 6px !important;
-        background-color: transparent !important;
-        border: none !important;
-        padding: 0px 16px !important;
-    }
-
     .stTabs [data-baseweb="tab"] * {
         color: #164194 !important;
         font-weight: 700 !important;
-        font-size: 14px !important;
     }
-
     .stTabs [aria-selected="true"] {
         background-color: #164194 !important;
     }
-
     .stTabs [aria-selected="true"] * {
         color: #FFFFFF !important;
-    }
-
-    .stTabs [data-baseweb="tab-highlight"] {
-        background-color: #00A859 !important;
-    }
-
-    /* Detail Card Container */
-    .detail-card {
-        background-color: #FFFFFF;
-        border-radius: 12px;
-        padding: 20px;
-        border: 1px solid #CBD5E1;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-    }
-
-    .detail-title {
-        color: #164194;
-        font-size: 20px;
-        font-weight: 800;
-        margin-bottom: 4px;
-    }
-
-    .detail-subtitle {
-        color: #00A859;
-        font-size: 14px;
-        font-weight: 700;
-        margin-bottom: 16px;
-    }
-
-    /* Outer Container Box */
-    [data-testid="stForm"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #164194 !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        box-shadow: 0 4px 10px rgba(22, 65, 148, 0.08) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -287,11 +136,11 @@ def get_connection():
     except Exception:
         return None
 
-def load_sheet(sheet_name):
+def load_sheet(worksheet_name):
     conn = get_connection()
     if conn:
         try:
-            return conn.read(worksheet=sheet_name, ttl=0)
+            return conn.read(spreadsheet=SPREADSHEET_URL, worksheet=worksheet_name, ttl=0)
         except Exception:
             return pd.DataFrame()
     return pd.DataFrame()
@@ -305,10 +154,7 @@ def render_header(title_text):
         try:
             st.image("Company Logo.jpeg", use_container_width=True)
         except Exception:
-            try:
-                st.image("Company_Logo.png", use_container_width=True)
-            except Exception:
-                pass
+            pass
         st.markdown("</div>", unsafe_allow_html=True)
 
 # Master Dropdown Options
@@ -329,14 +175,11 @@ with st.sidebar:
     try:
         st.image("Company Logo.jpeg", use_container_width=True)
     except Exception:
-        try:
-            st.image("Company_Logo.png", use_container_width=True)
-        except Exception:
-            st.write("🏭 **SSA Logo**")
+        st.write("🏭 **SSA CRM**")
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<p style='text-align: center; font-size: 20px; font-weight: 800; color: #FFFFFF !important; margin-top: -5px;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859 !important; margin-top: -12px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 20px; font-weight: 800; color: #FFFFFF !important;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859 !important;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
@@ -377,7 +220,7 @@ if menu == "📊 Executive Dashboard":
         st.dataframe(df_leads.tail(8), use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# NEW PAGE: CLIENT DETAIL VIEW
+# CLIENT DETAIL VIEW PAGE
 # ---------------------------------------------------------
 elif menu == "🔍 Client Detail View":
     render_header("🔍 Client Detailed Inspection View")
@@ -389,16 +232,15 @@ elif menu == "🔍 Client Detail View":
 
     client_id_list = []
     if not df_leads.empty:
-        col_name = "Client ID" if "Client ID" in df_leads.columns else ("Client  ID" if "Client  ID" in df_leads.columns else None)
+        col_name = [c for c in df_leads.columns if "client id" in c.lower() or "client_id" in c.lower()]
         if col_name:
-            client_id_list = df_leads[col_name].dropna().unique().tolist()
+            client_id_list = df_leads[col_name[0]].dropna().unique().tolist()
 
     if not client_id_list:
-        st.warning("⚠️ No Client records found or Google Sheets connection is empty.")
+        st.warning("⚠️ No Client records found in Google Sheet.")
     else:
         selected_client_id = st.selectbox("🔎 Select Client ID to View Full History:", client_id_list)
 
-        # Helper to search dynamic column names safely
         def filter_by_client_id(df, cid):
             if df.empty:
                 return pd.DataFrame()
@@ -412,19 +254,6 @@ elif menu == "🔍 Client Detail View":
         followup_match = filter_by_client_id(df_followup, selected_client_id)
         order_match = filter_by_client_id(df_orders, selected_client_id)
 
-        # Overview Header Card for Selected Client
-        client_name = lead_match['Client Name'].values[0] if not lead_match.empty and 'Client Name' in lead_match.columns else "N/A"
-        company_name = lead_match['Company Name'].values[0] if not lead_match.empty and 'Company Name' in lead_match.columns else "N/A"
-        assigned_sp = lead_match['Assigned Salesperson'].values[0] if not lead_match.empty and 'Assigned Salesperson' in lead_match.columns else "N/A"
-
-        st.markdown(f"""
-            <div class="detail-card">
-                <div class="detail-title">🆔 {selected_client_id} - {client_name}</div>
-                <div class="detail-subtitle">🏢 Company: {company_name} | 👤 Salesperson: {assigned_sp}</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Detailed Breakdown Tabs
         tab_l, tab_q, tab_f, tab_o = st.tabs([
             "📥 Lead Record",
             "📄 Quotations",
@@ -433,32 +262,13 @@ elif menu == "🔍 Client Detail View":
         ])
 
         with tab_l:
-            st.subheader("📥 Lead Details")
-            if not lead_match.empty:
-                st.dataframe(lead_match, use_container_width=True, hide_index=True)
-            else:
-                st.info("No lead entry found for this ID.")
-
+            st.dataframe(lead_match, use_container_width=True, hide_index=True)
         with tab_q:
-            st.subheader("📄 Quotation History")
-            if not quote_match.empty:
-                st.dataframe(quote_match, use_container_width=True, hide_index=True)
-            else:
-                st.info("No quotation details generated yet.")
-
+            st.dataframe(quote_match, use_container_width=True, hide_index=True)
         with tab_f:
-            st.subheader("📞 Follow-up Communications")
-            if not followup_match.empty:
-                st.dataframe(followup_match, use_container_width=True, hide_index=True)
-            else:
-                st.info("No follow-up entries logged.")
-
+            st.dataframe(followup_match, use_container_width=True, hide_index=True)
         with tab_o:
-            st.subheader("⚙️ Order Execution & Production Details")
-            if not order_match.empty:
-                st.dataframe(order_match, use_container_width=True, hide_index=True)
-            else:
-                st.info("No active operational order found.")
+            st.dataframe(order_match, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
 # STAGE 1: LEADS DATA
@@ -503,7 +313,7 @@ elif menu == "📥 Stage 1: Leads Data":
             with c8:
                 remarks = st.text_area("Initial Remarks / Notes")
                 
-            submit_lead = st.form_submit_button("💾 Save Lead")
+            submit_lead = st.form_submit_button("💾 Save Lead to Google Sheet")
             
             if submit_lead:
                 if not client_name or not number:
@@ -536,34 +346,10 @@ elif menu == "📥 Stage 1: Leads Data":
                     
                     conn = get_connection()
                     if conn:
-                        df_existing = conn.read(worksheet="Leads Data")
+                        df_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
                         df_updated = pd.concat([df_existing, pd.DataFrame([new_lead])], ignore_index=True)
-                        conn.update(worksheet="Leads Data", data=df_updated)
-                        
-                        if quotation_status == "Sent":
-                            auto_quote = {
-                                "Client  ID": client_id,
-                                "Date Stamp": date_stamp,
-                                "Client Name": client_name,
-                                "Company Name": company_name,
-                                "Customer Contact Number": number,
-                                "Product ": product,
-                                "Quantity": qty,
-                                "City": city,
-                                "Source": source,
-                                "Assigned Salesperson": assigned_sp,
-                                "Quotation Status": "Sent",
-                                "Quotation Shared By": quotation_sent_by
-                            }
-                            df_q_existing = conn.read(worksheet="Quotation Sheet")
-                            df_q_updated = pd.concat([df_q_existing, pd.DataFrame([auto_quote])], ignore_index=True)
-                            conn.update(worksheet="Quotation Sheet", data=df_q_updated)
-                            
-                            st.info("🔄 Lead saved & common details auto-transferred to Quotation Sheet!")
-                        
-                        st.success(f"✅ Lead Created Successfully! Generated Client ID: **{client_id}**")
-                    else:
-                        st.error("Google Sheets connection error. Please verify secrets.toml settings.")
+                        conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_updated)
+                        st.success(f"✅ Lead Created Successfully in Google Sheet! Generated Client ID: **{client_id}**")
 
     with tab_view:
         df_leads = load_sheet("Leads Data")
@@ -574,51 +360,11 @@ elif menu == "📥 Stage 1: Leads Data":
 # ---------------------------------------------------------
 elif menu == "📄 Stage 2: Quotations & Follow-ups":
     render_header("📄 Stage 2: Quotations & Follow-up Panel")
-    
-    tab_q_list, tab_update, tab_followup = st.tabs(["📋 Quotation Master", "✏️ Update Quotation Details", "📞 Follow-up Tracker"])
+    tab_q_list, tab_followup = st.tabs(["📋 Quotation Master", "📞 Follow-up Tracker"])
     
     with tab_q_list:
         df_quotes = load_sheet("Quotation Sheet")
         st.dataframe(df_quotes, use_container_width=True, hide_index=True)
-        
-    with tab_update:
-        st.subheader("Update Commercial Quotation Details")
-        with st.form("update_quote_form"):
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                q_client_id = st.text_input("Client ID *")
-                q_number = st.text_input("Quotation Number (e.g. SSA/2026-27/1827)")
-            with c2:
-                q_amount = st.number_input("Quotation Amount (₹)", min_value=0, step=1000)
-                q_status = st.selectbox("Quotation Status", ["Sent", "Approved", "Revised", "Cancelled"])
-            with c3:
-                q_shared_by = st.selectbox("Quotation Shared By", TEAM_MEMBERS)
-                q_date = st.date_input("Update Date")
-                
-            q_notes = st.text_area("Quotation / Approval Remarks")
-            
-            submit_quote_update = st.form_submit_button("💾 Save Quotation Update")
-            
-            if submit_quote_update:
-                conn = get_connection()
-                if conn:
-                    if q_status == "Approved":
-                        auto_order = {
-                            "Client ID": q_client_id,
-                            "Quotation Number": q_number,
-                            "Qut. Amount": q_amount,
-                            "Start Date": datetime.now().strftime("%Y-%m-%d"),
-                            "Production Status": "Pending",
-                            "Payment Status": "Pending",
-                            "Drawing Status": "Pending",
-                            "Dispatch Status": "Pending"
-                        }
-                        df_o_existing = conn.read(worksheet="Process Order")
-                        df_o_updated = pd.concat([df_o_existing, pd.DataFrame([auto_order])], ignore_index=True)
-                        conn.update(worksheet="Process Order", data=df_o_updated)
-                        st.info("🚀 Quotation Approved! Automatically moved to Process Order Execution stage.")
-                        
-                    st.success(f"Quotation updated for Client ID: {q_client_id}")
 
     with tab_followup:
         df_followup = load_sheet("Quotation Follow Up Tracker")
@@ -629,33 +375,5 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
 # ---------------------------------------------------------
 elif menu == "⚙️ Stage 3: Process Order Execution":
     render_header("⚙️ Stage 3: Order Execution & Operations")
-    
-    with st.expander("🔄 Update Operational Status (Production/Payment/Dispatch)", expanded=True):
-        with st.form("process_order_form"):
-            c1, c2, c3, c4 = st.columns(4)
-            with c1:
-                o_client_id = st.text_input("Client ID *")
-                po_number = st.text_input("Purchase Order Number")
-                advance_amt = st.number_input("Advance Amount (₹)", min_value=0, step=1000)
-            with c2:
-                payment_status = st.selectbox("Payment Status", ["Pending", "Advance Received", "Full Done"])
-                drawing_status = st.selectbox("Drawing Status", ["Pending", "In Review", "Done"])
-                measurement_status = st.selectbox("Measurement", ["Pending", "Done"])
-            with c3:
-                production_status = st.selectbox("Production Status", ["Pending", "In Progress", "Done"])
-                dispatch_status = st.selectbox("Dispatch Status", ["Pending", "Dispatched", "Delivered"])
-                doc_sub = st.selectbox("Document Submission", ["Pending", "Done"])
-            with c4:
-                mat_rec = st.selectbox("Material Receiving", ["Pending", "Done"])
-                invoice_status = st.selectbox("Invoice Status", ["Pending", "Generated"])
-                install_inv = st.selectbox("Installation Invoice", ["Pending", "Generated"])
-                
-            final_remarks = st.text_area("Operational Notes")
-            
-            submit_order = st.form_submit_button("💾 Save Operational Status")
-            if submit_order:
-                st.success(f"Operational progress updated for Client ID: {o_client_id}")
-
     df_orders = load_sheet("Process Order")
-    st.subheader("📦 Active Operational Orders Master Tracker")
     st.dataframe(df_orders, use_container_width=True, hide_index=True)
