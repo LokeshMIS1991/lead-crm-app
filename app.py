@@ -16,6 +16,10 @@ st.set_page_config(
 
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
+# Initialize Session State for Password Visibility
+if "show_pwd" not in st.session_state:
+    st.session_state.show_pwd = False
+
 # ---------------------------------------------------------
 # CORPORATE BRAND UI ENGINE
 # Primary Blue: #184B9C | Dark Blue: #0E2C68 | Highlight Blue: #2965C1 | Bright Green: #00A859
@@ -123,13 +127,23 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Input Field Styling */
+    /* HIDE BROKEN STREAMLIT INTERNAL INPUT ICON CONTAINER & LEAKED TEXT */
+    div[data-testid="stInputIconButton"],
+    div[data-testid="stInputIconButton"] * {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    /* BRANDED BLUE INPUT FIELDS */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
-        color: #0E2C68 !important;
-        border: 1.5px solid #184B9C !important;
+        color: #184B9C !important;
+        border: 2px solid #184B9C !important;
         border-radius: 6px !important;
         padding: 10px 12px !important;
+        font-weight: 600 !important;
     }
 
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
@@ -137,7 +151,7 @@ st.markdown("""
         box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* 6. PASSWORD EYE TOGGLE BUTTON STYLING (PURE BLUE & WHITE) */
+    /* CUSTOM EYE TOGGLE BUTTON STYLING (BRAND BLUE & WHITE ICON) */
     div[data-testid="stForm"] div.stButton > button {
         background-color: #184B9C !important;
         color: #FFFFFF !important;
@@ -147,6 +161,7 @@ st.markdown("""
         margin-top: 28px !important;
         padding: 0 !important;
         font-size: 18px !important;
+        width: 100% !important;
     }
     div[data-testid="stForm"] div.stButton > button:hover {
         background-color: #0E2C68 !important;
@@ -154,61 +169,10 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-    /* Hide Streamlit's native broken input icon container and leaked text */
-    div[data-testid="stInputIconButton"],
-    div[data-testid="stInputIconButton"] * {
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-
-    /* Input Field Styling */
-    input[type="text"], input[type="password"] {
-        background-color: #FFFFFF !important;
-        color: #0E2C68 !important;
-        border: 1.5px solid #184B9C !important;
-        border-radius: 6px !important;
-        padding: 10px 12px !important;
-    }
-
-    /* Seamless Checkbox Toggle Styling */
-    div[data-testid="stCheckbox"] {
-        margin-top: -6px !important;
-        margin-bottom: 12px !important;
-    }
-    div[data-testid="stCheckbox"] label p {
-        color: #184B9C !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-    }
-
-    /* LOGIN SUBMIT BUTTON (GREEN WITH WHITE TEXT) */
+    /* LOGIN SUBMIT BUTTON (CORPORATE GREEN WITH CRISP WHITE TEXT & OPTIMAL SIZE) */
     div[data-testid="stFormSubmitButton"] button,
     div[data-testid="stFormSubmitButton"] button p,
     div[data-testid="stFormSubmitButton"] button span {
-        background-color: #00A859 !important;
-        color: #FFFFFF !important;
-        border-radius: 6px !important;
-        border: none !important;
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        padding: 12px 24px !important;
-        margin-top: 10px !important;
-        width: 100% !important;
-    }
-    div[data-testid="stFormSubmitButton"] button:hover {
-        background-color: #008f4c !important;
-    }
-
-    /* 7. LOGIN SUBMIT BUTTON (CORPORATE GREEN WITH CRISP WHITE TEXT) */
-    div[data-testid="stFormSubmitButton"] button,
-    div[data-testid="stFormSubmitButton"] button p,
-    div[data-testid="stFormSubmitButton"] button span,
-    button[kind="primaryFormSubmit"],
-    button[kind="primaryFormSubmit"] *,
-    button[data-testid="baseButton-primaryFormSubmit"],
-    button[data-testid="baseButton-primaryFormSubmit"] * {
         background-color: #00A859 !important;
         background-image: none !important;
         color: #FFFFFF !important;
@@ -216,15 +180,13 @@ st.markdown("""
         border: none !important;
         font-size: 16px !important;
         font-weight: 700 !important;
-        padding: 12px 24px !important;
-        margin-top: 10px !important;
+        padding: 10px 20px !important;
+        margin-top: 15px !important;
         width: 100% !important;
         box-shadow: 0 4px 10px rgba(0, 168, 89, 0.2) !important;
     }
     
-    div[data-testid="stFormSubmitButton"] button:hover,
-    button[kind="primaryFormSubmit"]:hover,
-    button[data-testid="baseButton-primaryFormSubmit"]:hover {
+    div[data-testid="stFormSubmitButton"] button:hover {
         background-color: #008f4c !important;
         color: #FFFFFF !important;
     }
@@ -447,8 +409,6 @@ if "authenticated" not in st.session_state:
     st.session_state.user_role = None
     st.session_state.user_display_name = None
     st.session_state.username = None
-if "show_pwd" not in st.session_state:
-    st.session_state.show_pwd = False
 
 def fetch_users_from_sheets():
     df_users = load_sheet("Users")
@@ -487,8 +447,13 @@ def fetch_users_from_sheets():
 
     return users_dict
 
+def toggle_pwd():
+    st.session_state.show_pwd = not st.session_state.show_pwd
+
 def login_form():
     st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # Balanced central column container to fix button stretching
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
         with st.form("login_form"):
@@ -501,12 +466,20 @@ def login_form():
             
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # Controlled Password Toggle
-            show_pwd = st.checkbox("👁️ Show Password")
-            pass_type = "text" if show_pwd else "password"
-            pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
+            # Input row with clean side-by-side Eye Toggle
+            p_col1, p_col2 = st.columns([5, 1])
+            pass_type = "text" if st.session_state.show_pwd else "password"
+            
+            with p_col1:
+                pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
+            with p_col2:
+                # Custom white eye button in brand blue
+                eye_btn = st.form_submit_button("👁️", on_click=toggle_pwd)
 
-            submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
+            # Properly scaled Login Button
+            b_col1, b_col2, b_col3 = st.columns([0.2, 0.6, 0.2])
+            with b_col2:
+                submit = st.form_submit_button("🔑 Login", use_container_width=True)
 
             if submit:
                 if not user_input or not pass_input:
@@ -521,6 +494,11 @@ def login_form():
                         st.rerun()
                     else:
                         st.error("Invalid Username or Password.")
+
+# Check Authentication Status
+if not st.session_state.authenticated:
+    login_form()
+    st.stop()
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
