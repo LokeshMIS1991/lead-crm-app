@@ -16,7 +16,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: SIDEBAR NAVIGATION & UI ENHANCEMENTS
+# CUSTOM CSS: SIDEBAR & NAVIGATION STYLING
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -59,37 +59,37 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* RADIO BUTTON CIRCLES FIX (REPLACING BLACK DOTS WITH WHITE/GREEN) */
+    /* UNSELECTED RADIO BUTTON DOTS - WHITE COLOR */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         background-color: #FFFFFF !important;
         border: 2px solid #FFFFFF !important;
         border-radius: 50% !important;
     }
 
-    /* Active Selected Radio Button State */
+    /* ACTIVE SELECTED RADIO BUTTON DOT */
     div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
         background-color: #00A859 !important;
         border: 3px solid #FFFFFF !important;
         box-shadow: 0 0 8px rgba(0, 168, 89, 0.6) !important;
     }
 
-    /* SIDEBAR LOGOUT BUTTON STYLING */
+    /* LOGOUT BUTTON - LOGO BRAND GREEN */
     div[data-testid="stSidebar"] div.stButton > button {
-        background-color: #DC2626 !important;
+        background-color: #00A859 !important;
         color: #FFFFFF !important;
         border: none !important;
         border-radius: 8px !important;
         font-size: 16px !important;
         font-weight: 700 !important;
         padding: 10px 20px !important;
-        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3) !important;
+        box-shadow: 0 4px 10px rgba(0, 168, 89, 0.3) !important;
         transition: all 0.2s ease-in-out !important;
         width: 100% !important;
     }
 
     div[data-testid="stSidebar"] div.stButton > button:hover {
-        background-color: #EF4444 !important;
-        box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4) !important;
+        background-color: #008f4c !important;
+        box-shadow: 0 6px 14px rgba(0, 168, 89, 0.4) !important;
         transform: translateY(-1px) !important;
     }
 
@@ -165,11 +165,16 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.15) !important;
     }
 
-    /* SELECTBOX DROPDOWN END-CAP & ARROW FIX */
+    /* SELECTBOX / DROPDOWN END-CAP & ARROW FIX */
     div[data-baseweb="select"] > div > div:last-child {
         background-color: #164194 !important;
-        border-top-right-radius: 6px !important;
-        border-bottom-right-radius: 6px !important;
+        border-top-right-radius: 5px !important;
+        border-bottom-right-radius: 5px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
     }
 
     div[data-baseweb="select"] svg {
