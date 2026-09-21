@@ -28,7 +28,7 @@ st.markdown("""
     /* 1. Global Page Reset & Styling */
     html, body, [class*="css"], .stApp {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        background-color: #F1F5F9 !important;
+        background-color: #F8FAFC !important;
         color: #0E2C68 !important;
     }
 
@@ -115,8 +115,8 @@ st.markdown("""
 
     .stMainBlockContainer label,
     .stMainBlockContainer label p {
-        color: #0E2C68 !important;
-        font-size: 13.5px !important;
+        color: #184B9C !important;
+        font-size: 14px !important;
         font-weight: 700 !important;
         margin-bottom: 4px !important;
     }
@@ -147,47 +147,78 @@ st.markdown("""
     /* 5. Enhanced Form Container Cards & Login Box */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-top: 5px solid #184B9C !important;
+        border: 2px solid #184B9C !important;
         border-radius: 16px !important;
-        padding: 36px 32px !important;
+        padding: 32px 36px !important;
         box-shadow: 0 12px 32px rgba(14, 44, 104, 0.08) !important;
         margin-bottom: 20px !important;
+        width: 100% !important;
     }
 
-    /* Input Field Container - Refined Soft Fill & Border */
-    div[data-baseweb="input"] {
-        background-color: #F8FAFC !important;
-        border: 1.5px solid #CBD5E1 !important;
+    /* INPUT FIELD CONTAINER - FORCED WHITE FILL & BLUE BORDER */
+    div[data-baseweb="input"],
+    div[data-baseweb="base-input"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
         border-radius: 8px !important;
         overflow: hidden !important;
         transition: all 0.2s ease-in-out !important;
     }
 
     div[data-baseweb="input"]:focus-within {
-        background-color: #FFFFFF !important;
-        border-color: #184B9C !important;
-        box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.15) !important;
+        border-color: #0E2C68 !important;
+        box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.2) !important;
     }
 
     /* Input Text Field Inside */
     div[data-testid="stTextInput"] input {
+        background-color: #FFFFFF !important;
         color: #0E2C68 !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         font-size: 14px !important;
         padding: 10px 12px !important;
     }
 
     div[data-testid="stTextInput"] input::placeholder {
-        color: #94A3B8 !important;
-        opacity: 1 !important;
+        color: #64748B !important;
+        opacity: 0.8 !important;
     }
 
-    /* Native Eye Icon Styling Clean-up */
+    /* Password Eye Icon Button Container */
     div[data-testid="stTextInput"] button {
         background-color: transparent !important;
         border: none !important;
-        color: #64748B !important;
+    }
+
+    div[data-testid="stTextInput"] button svg {
+        fill: #184B9C !important;
+        stroke: #184B9C !important;
+    }
+
+    /* CHECKBOX SQUARE CUSTOMIZATION (White Fill + Blue Border) */
+    div[data-testid="stCheckbox"] [role="checkbox"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 4px !important;
+    }
+
+    div[data-testid="stCheckbox"] [role="checkbox"][aria-checked="true"] {
+        background-color: #184B9C !important;
+        border-color: #184B9C !important;
+    }
+
+    div[data-testid="stCheckbox"] [role="checkbox"] svg {
+        fill: #184B9C !important;
+    }
+
+    div[data-testid="stCheckbox"] [role="checkbox"][aria-checked="true"] svg {
+        fill: #FFFFFF !important;
+    }
+
+    div[data-testid="stCheckbox"] label span p {
+        color: #184B9C !important;
+        font-weight: 600 !important;
+        font-size: 13.5px !important;
     }
 
     /* Notification Popups (st.warning, st.error, st.success, st.info) */
@@ -236,7 +267,7 @@ st.markdown("""
         font-size: 15px !important;
         font-weight: 700 !important;
         padding: 12px 20px !important;
-        margin-top: 10px !important;
+        margin-top: 15px !important;
         width: 100% !important;
         box-shadow: 0 4px 14px rgba(0, 168, 89, 0.3) !important;
         transition: all 0.2s ease-in-out !important;
@@ -528,7 +559,7 @@ def fetch_users_from_sheets():
 # EXPLICIT AUTH GATEKEEPER - RUNS BEFORE SIDEBAR OR APP CONTENT
 if not st.session_state.authenticated:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    c1, col, c2 = st.columns([1, 1.2, 1])
+    c1, col, c2 = st.columns([1, 1.8, 1])
     with col:
         with st.form("login_form"):
             try:
