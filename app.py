@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime
 from streamlit_gsheets import GSheetsConnection
 
 # ---------------------------------------------------------
@@ -16,7 +16,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# OPTION A: MODERN WHITE CARD & SOFT SHADOW STYLING (CSS)
+# CUSTOM CSS: BLUE OUTLINE + WHITE INPUTS + INCREASED FONTS
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -29,30 +29,31 @@ st.markdown("""
         background-color: #F8FAFC !important;
     }
 
-    /* Sidebar Base Styling */
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
-        border-right: 1px solid #CBD5E1 !important;
+        border-right: 2px solid #0e2d6b !important;
     }
 
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
+        font-size: 15px !important;
     }
 
-    /* Option A: Form Containers & Cards */
+    /* Container & Form Cards */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
+        border: 2px solid #164194 !important;
         border-radius: 12px !important;
         padding: 24px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08) !important;
         margin-bottom: 20px !important;
     }
 
     /* Page Titles & Headers */
     .main-header {
-        font-size: 24px;
-        font-weight: 800;
+        font-size: 28px !important;
+        font-weight: 800 !important;
         color: #164194 !important;
         margin-bottom: 15px;
         border-bottom: 3px solid #00A859;
@@ -61,85 +62,100 @@ st.markdown("""
 
     .section-title {
         color: #164194 !important;
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        margin-bottom: 12px !important;
-        border-bottom: 1px solid #E2E8F0;
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        margin-top: 10px !important;
+        margin-bottom: 14px !important;
+        border-bottom: 2px solid #E2E8F0;
         padding-bottom: 6px;
     }
 
-    /* COMPONENT OVERRIDES - FIXING DARK TEXTAREAS & INPUTS */
+    /* FORM FIELD LABELS - INCREASED FONT SIZE */
+    .stMainBlockContainer label, label * {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+
+    /* COMPLETE FIX FOR ALL INPUT BOXES (WHITE INSIDE + BLUE OUTLINE) */
+    div[data-baseweb="input"], 
+    div[data-baseweb="base-input"],
+    div[data-baseweb="textarea"],
+    div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        border: 2px solid #164194 !important;
+        border-radius: 8px !important;
+    }
+
+    /* INPUT TEXT INSIDE BOXES */
     div[data-baseweb="input"] input, 
     div[data-baseweb="base-input"] input,
     div[data-baseweb="textarea"] textarea,
     div[data-baseweb="select"] div {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
+        font-size: 15px !important;
         font-weight: 600 !important;
     }
 
-    div[data-baseweb="textarea"], 
-    div[data-baseweb="input"], 
-    div[data-baseweb="select"] > div {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-    }
-
+    /* Active Focus State for Inputs */
     div[data-baseweb="textarea"]:focus-within, 
-    div[data-baseweb="input"]:focus-within {
-        border-color: #164194 !important;
-        box-shadow: 0 0 0 1px #164194 !important;
+    div[data-baseweb="input"]:focus-within,
+    div[data-baseweb="select"] > div:focus-within {
+        border-color: #00A859 !important;
+        box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2) !important;
     }
 
     /* Metric Cards */
     .metric-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-left: 5px solid #164194 !important;
+        border: 2px solid #164194 !important;
+        border-left: 6px solid #164194 !important;
         border-radius: 10px !important;
-        padding: 16px !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
+        padding: 18px !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
         text-align: center;
     }
 
     .metric-card-green {
-        border-left: 5px solid #00A859 !important;
+        border-left: 6px solid #00A859 !important;
     }
 
     .metric-card h5 {
         color: #64748B !important;
-        font-size: 12px !important;
-        font-weight: 700 !important;
+        font-size: 13px !important;
+        font-weight: 800 !important;
         text-transform: uppercase;
-        margin-bottom: 4px !important;
+        margin-bottom: 6px !important;
     }
 
     .metric-card h3 {
         color: #164194 !important;
-        font-size: 24px !important;
+        font-size: 28px !important;
         font-weight: 800 !important;
         margin: 0 !important;
     }
 
-    /* Buttons */
+    /* Buttons Styling */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border-radius: 8px !important;
         border: none !important;
+        font-size: 16px !important;
         font-weight: 700 !important;
-        padding: 8px 20px !important;
+        padding: 10px 24px !important;
     }
 
     .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
+        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.3) !important;
     }
 
-    /* Styled Data Tables Container Fix */
+    /* Dataframe Container Styling */
     div[data-testid="stDataFrame"] {
         background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
+        border: 2px solid #164194 !important;
         border-radius: 10px !important;
         padding: 8px !important;
     }
@@ -177,7 +193,6 @@ TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 # ---------------------------------------------------------
 # AUTHENTICATION & USER SESSION MANAGEMENT
 # ---------------------------------------------------------
-# Simple authentication dictionary mapping username -> (Password, Role, Display Name)
 USERS = {
     "admin": ("admin123", "Admin", "System Administrator"),
     "mansingh": ("sales123", "Salesperson", "Mansingh Rathore"),
@@ -194,12 +209,18 @@ if "authenticated" not in st.session_state:
     st.session_state.username = None
 
 def login_form():
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
         with st.form("login_form"):
-            st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SSA CRM Login</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: #64748B;'>Enter your credentials to access your portal</p>", unsafe_allow_html=True)
+            # Company Logo Integration on Login Page
+            try:
+                st.image("Company Logo.jpeg", use_container_width=True)
+            except Exception:
+                st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
+            
+            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 16px; margin-top: 10px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
+            
             user_input = st.text_input("Username").strip().lower()
             pass_input = st.text_input("Password", type="password")
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -219,21 +240,25 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION (DYNAMIC BASED ON ROLE)
+# SIDEBAR NAVIGATION
 # ---------------------------------------------------------
 with st.sidebar:
-    st.markdown(f"<h3 style='margin-bottom:2px;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color: #00A859 !important; font-weight:700; font-size:13px;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
+    try:
+        st.image("Company Logo.jpeg", use_container_width=True)
+    except Exception:
+        st.write("🏭 **SSA CRM**")
+        
+    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #00A859 !important; font-weight:700; font-size:14px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Role-Based Menu Options
     if st.session_state.user_role == "Salesperson":
         menu = st.radio("NAVIGATION", ["🎯 My Workday & Tasks", "📥 Add New Lead", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Back-Office":
         menu = st.radio("NAVIGATION", ["📄 Convert Leads to Quotes", "📞 Follow-up Tracker", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Operations":
         menu = st.radio("NAVIGATION", ["⚙️ Process Order Execution", "🔍 Client Inspector"])
-    else: # Admin / Executive
+    else: # Admin
         menu = st.radio("NAVIGATION", [
             "📊 Executive Dashboard",
             "🎯 My Workday & Tasks",
@@ -250,7 +275,7 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
-# WORKFLOW PAGE 1: MY WORKDAY & TASKS (FOR SALES REPS)
+# WORKFLOW PAGE 1: MY WORKDAY & TASKS
 # ---------------------------------------------------------
 if menu == "🎯 My Workday & Tasks":
     st.markdown(f"<div class='main-header'>🎯 Workday Portal: {st.session_state.user_display_name}</div>", unsafe_allow_html=True)
@@ -258,7 +283,6 @@ if menu == "🎯 My Workday & Tasks":
     df_leads = load_sheet("Leads Data")
     df_follow = load_sheet("Quotation Follow Up Tracker")
 
-    # Filter assigned leads
     if not df_leads.empty and "Assigned Salesperson" in df_leads.columns:
         my_leads = df_leads[df_leads["Assigned Salesperson"] == st.session_state.user_display_name] if st.session_state.user_role == "Salesperson" else df_leads
     else:
@@ -298,7 +322,7 @@ elif menu == "📥 Add New Lead":
             city = st.text_input("City")
             state = st.text_input("State")
 
-        address = st.text_area("Address Details", height=80)
+        address = st.text_area("Address Details", height=100)
 
         st.markdown("<div class='section-title'>📦 Requirement & Sales Assignment</div>", unsafe_allow_html=True)
         c4, c5, c6 = st.columns(3)
@@ -318,7 +342,7 @@ elif menu == "📥 Add New Lead":
             quotation_status = st.selectbox("Quotation Status", ["Not Sent", "Sent", "Under Review"])
             quotation_sent_by = st.selectbox("Quotation Sent By", TEAM_MEMBERS)
         with c8:
-            remarks = st.text_area("Initial Remarks / Notes", height=80)
+            remarks = st.text_area("Initial Remarks / Notes", height=100)
 
         submit_lead = st.form_submit_button("💾 Save Lead to Master Sheet", use_container_width=True)
 
@@ -359,7 +383,7 @@ elif menu == "📥 Add New Lead":
                     st.success(f"✅ Lead Created Successfully! Client ID: {client_id}")
 
 # ---------------------------------------------------------
-# WORKFLOW PAGE 3: CONVERT LEADS TO QUOTES (1-CLICK WORKFLOW)
+# WORKFLOW PAGE 3: CONVERT LEADS TO QUOTES
 # ---------------------------------------------------------
 elif menu == "📄 Convert Leads to Quotes":
     st.markdown("<div class='main-header'>📄 Quotation Creation & Master</div>", unsafe_allow_html=True)
@@ -386,8 +410,8 @@ elif menu == "📄 Convert Leads to Quotes":
                     shared_by = st.selectbox("Quotation Shared By", TEAM_MEMBERS)
                     q_status = st.selectbox("Status", ["Sent", "Approved", "Revised Required"])
 
-                quote_remarks = st.text_area("Quotation Remarks", value=f"Quoted for {lead_row.get('Product ', '')} - Qty: {lead_row.get('Qty', 1)}")
-                submit_quote = st.form_submit_button("📄 Save & Issue Quotation")
+                quote_remarks = st.text_area("Quotation Remarks", value=f"Quoted for {lead_row.get('Product ', '')} - Qty: {lead_row.get('Qty', 1)}", height=100)
+                submit_quote = st.form_submit_button("📄 Save & Issue Quotation", use_container_width=True)
 
                 if submit_quote:
                     new_quote = {
