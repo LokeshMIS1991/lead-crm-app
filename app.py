@@ -372,39 +372,45 @@ if "authenticated" not in st.session_state:
     st.session_state.user_display_name = None
     st.session_state.username = None
 
+# ---------------------------------------------------------
+# AUTHENTICATION & GOOGLE SHEETS USER MANAGEMENT
+# ---------------------------------------------------------
 def fetch_users_from_sheets():
-    # Force TTL=0 to avoid stale caching when users are added/updated in Sheets
     df_users = load_sheet("Users")
     users_dict = {}
 
     if not df_users.empty:
-        # Clean column headers
-        df_users.columns = df_users.columns.astype(str).str.strip()
+        # Normalize column names: strip spaces and convert to title case
+        df_users.columns = [str(c).strip().title() for c in df_users.columns]
         
-        required_cols = {"Username", "Password", "Role", "Display Name"}
-        if required_cols.issubset(set(df_users.columns)):
+        # Ensure required columns exist
+        req_cols = ["Username", "Password", "Role", "Display Name"]
+        if all(col in df_users.columns for col in req_cols):
             for _, row in df_users.iterrows():
-                # Read username cleanly
-                uname = str(row["Username"]).strip().lower()
-                
-                # Format password: convert float numbers like '1234.0' back to string '1234'
-                pwd_raw = row["Password"]
-                if pd.api.types.is_float_dtype(type(pwd_raw)) and pwd_raw.is_integer():
-                    pwd = str(int(pwd_raw)).strip()
-                else:
-                    pwd = str(pwd_raw).split('.')[0] if str(pwd_raw).endswith('.0') else str(pwd_raw).strip()
-                
-                role = str(row["Role"]).strip()
-                disp = str(row["Display Name"]).strip()
-                
-                if uname and uname != "nan" and pwd and pwd != "nan":
-                    users_dict[uname] = (pwd, role, disp)
+                u_val = str(row["Username"]).strip().lower()
+                p_val = str(row["Password"]).strip()
+                r_val = str(row["Role"]).strip()
+                d_val = str(row["Display Name"]).strip()
 
-    # Built-in default fallback administrator
-    if "admin" not in users_dict:
-        users_dict["admin"] = ("admin123", "Admin", "System Administrator")
+                if u_val and u_val != "nan" and p_val and p_val != "nan":
+                    users_dict[u_val] = (p_val, r_val, d_val)
 
-    return users_dict
+    # Always provide built-in defaults so you are never locked out
+    default_users = {
+        "admin": ("admin123", "Admin", "System Administrator"),
+        "mansingh": ("sales123", "Salesperson", "Mansingh Rathore"),
+        "sidharth": ("sales123", "Salesperson", "Sidharth Jain"),
+        "pooja": ("backoffice123", "Back-Office", "Pooja"),
+        "dolly": ("backoffice123", "Back-Office", "Dolly"),
+        "ops": ("ops123", "Operations", "Operations Team")
+    }
+
+    # Merge sheet users with default fallback users
+    for u, data in default_users.items():
+        if u not in users_dict:
+            users_dict[u] = data
+
+    return users_dict, df_users
 
 def login_form():
     st.markdown("<br>", unsafe_allow_html=True)
@@ -418,11 +424,11 @@ def login_form():
             
             st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
             user_input = st.text_input("Username").strip().lower()
-            pass_input = st.text_input("Password", type="password")
+            pass_input = st.text_input("Password", type="password").strip()
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
-                users = fetch_users_from_sheets()
+                users, df_raw = fetch_users_from_sheets()
                 if user_input in users and users[user_input][0] == pass_input:
                     st.session_state.authenticated = True
                     st.session_state.username = user_input
@@ -431,10 +437,12 @@ def login_form():
                     st.rerun()
                 else:
                     st.error("Invalid Username or Password.")
-
-if not st.session_state.authenticated:
-    login_form()
-    st.stop()
+                    
+                    # Debugger panel to immediately reveal why Google Sheets failed to match
+                    with st.expander("🛠️ Connection & Sheet Inspector"):
+                        st.write("Loaded Sheet Rows:", len(df_raw))
+                        st.write("Detected Columns:", list(df_raw.columns) if not df_raw.empty else "No Data Found")
+                        st.write("Available Usernames:", list(users.keys()))
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
