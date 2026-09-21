@@ -201,7 +201,26 @@ st.markdown("""
         stroke: #FFFFFF !important;
     }
 
-    /* Custom Checkbox Styling for Show Password */
+    /* CUSTOM STYLING FOR SHOW PASSWORD CHECKBOX SQUARE BLOCK */
+    div[data-testid="stCheckbox"] div[role="checkbox"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 4px !important;
+    }
+
+    div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] {
+        background-color: #184B9C !important;
+        border-color: #184B9C !important;
+    }
+
+    div[data-testid="stCheckbox"] div[role="checkbox"] svg {
+        fill: #184B9C !important;
+    }
+
+    div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] svg {
+        fill: #FFFFFF !important;
+    }
+
     div[data-testid="stCheckbox"] label span p {
         color: #184B9C !important;
         font-weight: 600 !important;
@@ -531,7 +550,7 @@ if not st.session_state.authenticated:
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
 
             # 3. Show Password Checkbox
-            st.checkbox("👁️ Show Password", key="show_pwd_checkbox")
+            st.checkbox("Show Password", key="show_pwd_checkbox")
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
