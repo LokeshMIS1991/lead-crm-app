@@ -17,17 +17,16 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# COMPREHENSIVE UI STYLING ENGINE WITH LOGO COLOR PALETTE
-# Primary Blue: #184B9C | Dark Blue: #0E2C68 | Highlight Blue: #2965C1 | Bright Green: #00A859
+# 100% LOGO THEME OVERRIDE (PRIMARY: #184B9C | DARK: #0E2C68 | HIGHLIGHT: #2965C1 | GREEN: #00A859)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* 1. Global Page Background (Pure White / Off-White Tone) */
+    /* 1. Global Page Background (Pure White) */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #FFFFFF !important; 
     }
 
-    /* 2. Hide Unstyled Icon String Leaks */
+    /* 2. Hide Unstyled Sidebar Icon Strings */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
@@ -80,14 +79,17 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* 4. Main Content Typography */
+    /* 4. Main Typography (Replaced Black Text with Primary Blue #184B9C) */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
     .stMainBlockContainer h4, 
     .stMainBlockContainer p, 
-    .stMainBlockContainer span {
-        color: #0E2C68;
+    .stMainBlockContainer span,
+    .stMainBlockContainer label,
+    .stMainBlockContainer label p {
+        color: #184B9C !important;
+        font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
     .main-header {
@@ -109,48 +111,50 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* 5. LOGIN FORM CARD STYLING */
+    /* 5. ATTRACTIVE LOGIN FORM CARD */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
+        border: 2px solid #184B9C !important;
         border-radius: 12px !important;
-        padding: 28px !important;
-        box-shadow: 0 6px 18px rgba(14, 44, 104, 0.08) !important;
+        padding: 32px !important;
+        box-shadow: 0 8px 24px rgba(24, 75, 156, 0.12) !important;
         margin-bottom: 20px !important;
     }
 
-    /* Form Labels (Primary Blue) */
-    .stMainBlockContainer label, .stMainBlockContainer label p {
+    /* Input Field Labels (Primary Blue Color) */
+    div[data-testid="stForm"] label, 
+    div[data-testid="stForm"] label p {
         color: #184B9C !important;
         font-weight: 700 !important;
-        font-size: 14px !important;
+        font-size: 15px !important;
     }
 
-    /* Input Field Boxes (White Background & Dark Text) */
+    /* Input Field Boxes (Clean White Background & Dark Blue Text) */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
-        border: 1.5px solid #CBD5E1 !important;
+        border: 1.5px solid #184B9C !important;
         border-radius: 6px !important;
+        padding: 10px 12px !important;
     }
 
-    /* Focus States for Inputs (Highlight Blue Ring) */
+    /* Focus Ring on Input Fields (Highlight Blue #2965C1) */
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
         border-color: #2965C1 !important;
-        box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.2) !important;
+        box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* 6. PASSWORD VISIBILITY TOGGLE EYE CONTAINER (Dark Blue #0E2C68) */
+    /* 6. REPLACE BLACK BOX WITH BLUE BOX (Eye Icon Toggle) */
     div[data-baseweb="input"] > div:last-child,
     div[data-testid="stInputIconButton"],
     div[data-testid="stInputIconButton"] button {
-        background-color: #0E2C68 !important;
+        background-color: #184B9C !important;
         border: none !important;
         border-top-right-radius: 6px !important;
         border-bottom-right-radius: 6px !important;
     }
 
-    /* Force Eye SVG Icon to Pure White */
+    /* Force Eye Icon SVG to Pure White inside Blue Box */
     div[data-baseweb="input"] > div:last-child svg,
     div[data-testid="stInputIconButton"] svg,
     div[data-testid="stInputIconButton"] button * {
@@ -160,7 +164,7 @@ st.markdown("""
     }
 
     div[data-testid="stInputIconButton"] button:hover {
-        background-color: #184B9C !important;
+        background-color: #0E2C68 !important;
     }
 
     /* Select Dropdowns */
@@ -172,7 +176,7 @@ st.markdown("""
         fill: #184B9C !important;
     }
 
-    /* 7. LOGIN SUBMIT BUTTON (Bright Green #00A859) */
+    /* 7. ACTION BUTTON (BRIGHT LOGO GREEN #00A859) */
     div[data-testid="stFormSubmitButton"] button,
     button[kind="primaryFormSubmit"],
     button[data-testid="baseButton-primaryFormSubmit"] {
@@ -183,9 +187,10 @@ st.markdown("""
         border: none !important;
         font-size: 16px !important;
         font-weight: 700 !important;
-        padding: 10px 24px !important;
-        margin-top: 10px !important;
+        padding: 12px 24px !important;
+        margin-top: 14px !important;
         width: 100% !important;
+        box-shadow: 0 4px 10px rgba(0, 168, 89, 0.2) !important;
     }
     
     div[data-testid="stFormSubmitButton"] button:hover,
@@ -239,7 +244,6 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Dataframe Container */
     div[data-testid="stDataFrame"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -750,7 +754,7 @@ elif menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
                 quote_no = row.get("Quotation Number", "N/A")
 
                 st.markdown(f"""
-                <div class='queue-card'>
+                <div class='queue-card' style='border-left: 5px solid #184B9C;'>
                     <b style='color:#184B9C; font-size:16px;'>{client_name}</b> | <span style='color:#64748B;'>Quote: {quote_no}</span><br>
                     📞 <b>Contact:</b> {phone} | 💰 <b>Amount:</b> ₹{amt} | 👤 <b>Rep:</b> {row.get('Assigned Salesperson', 'Unassigned')}
                 </div>
