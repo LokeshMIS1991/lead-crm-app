@@ -172,7 +172,7 @@ st.markdown("""
         outline: none !important;
     }
 
-    /* Custom Show Password Checkbox (Blue Outline Only, Unfilled) */
+    /* Custom Show Password Checkbox */
     div[data-testid="stCheckbox"] label > span:first-child {
         background-color: transparent !important;
         border: 2px solid #184B9C !important;
@@ -181,23 +181,6 @@ st.markdown("""
     div[data-testid="stCheckbox"] input[type="checkbox"]:checked + span:first-child {
         background-color: #184B9C !important;
         border-color: #184B9C !important;
-    }
-
-    /* Native Eye Button (Integrated inside password field) Blue Color */
-    button[aria-label="Show password text"],
-    button[aria-label="Hide password text"],
-    div[data-testid="stInputIconButton"] button {
-        background-color: #184B9C !important;
-        border: 1px solid #184B9C !important;
-        color: #FFFFFF !important;
-        border-top-right-radius: 7px !important;
-        border-bottom-right-radius: 7px !important;
-    }
-    button[aria-label="Show password text"] svg,
-    button[aria-label="Hide password text"] svg,
-    div[data-testid="stInputIconButton"] button svg {
-        fill: #FFFFFF !important;
-        color: #FFFFFF !important;
     }
 
     /* Form Submit Buttons */
@@ -448,12 +431,18 @@ def generate_quotation_pdf(quote_details):
     return buffer.getvalue()
 
 # ---------------------------------------------------------
-# AUTHENTICATION & USER MANAGEMENT
+# AUTHENTICATION & SESSION MANAGEMENT
 # ---------------------------------------------------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+
+if "user_role" not in st.session_state:
     st.session_state.user_role = None
+
+if "user_display_name" not in st.session_state:
     st.session_state.user_display_name = None
+
+if "username" not in st.session_state:
     st.session_state.username = None
 
 def fetch_users_from_sheets():
@@ -493,7 +482,8 @@ def fetch_users_from_sheets():
 
     return users_dict
 
-def login_form():
+# EXPLICIT AUTH GATEKEEPER - RUNS BEFORE SIDEBAR OR APP CONTENT
+if not st.session_state.authenticated:
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
@@ -505,14 +495,9 @@ def login_form():
             
             st.markdown("<p style='text-align: center; color: #64748B; font-weight: 600; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>Enterprise CRM & Operations Portal</p>", unsafe_allow_html=True)
             
-            # 1. Username
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
-            
-            # 2. Show Password Toggle (evaluated first so pass_type is defined before password input)
             show_pwd = st.checkbox("👁️ Show Password")
             pass_type = "text" if show_pwd else "password"
-            
-            # 3. Password (placed right after Username and Show Password)
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -530,6 +515,7 @@ def login_form():
                         st.rerun()
                     else:
                         st.error("Invalid Username or Password.")
+    st.stop()
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
@@ -565,6 +551,9 @@ with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
     if st.button("🚪 Logout", use_container_width=True):
         st.session_state.authenticated = False
+        st.session_state.username = None
+        st.session_state.user_role = None
+        st.session_state.user_display_name = None
         st.rerun()
 
 # ---------------------------------------------------------
