@@ -374,19 +374,27 @@ if "authenticated" not in st.session_state:
 
 def fetch_users_from_sheets():
     df_users = load_sheet("Users")
-    if not df_users.empty and {"Username", "Password", "Role", "Display Name"}.issubset(df_users.columns):
-        users_dict = {}
-        for _, row in df_users.iterrows():
-            uname = str(row["Username"]).strip().lower()
-            users_dict[uname] = (
-                str(row["Password"]).strip(),
-                str(row["Role"]).strip(),
-                str(row["Display Name"]).strip()
-            )
-        return users_dict
-    return {
-        "admin": ("admin123", "Admin", "System Administrator")
-    }
+    users_dict = {}
+
+    if not df_users.empty:
+        # Strip trailing/leading spaces from column names
+        df_users.columns = df_users.columns.str.strip()
+        
+        required_cols = {"Username", "Password", "Role", "Display Name"}
+        if required_cols.issubset(set(df_users.columns)):
+            for _, row in df_users.iterrows():
+                uname = str(row["Username"]).strip().lower()
+                pwd = str(row["Password"]).strip()
+                role = str(row["Role"]).strip()
+                disp = str(row["Display Name"]).strip()
+                if uname and pwd:
+                    users_dict[uname] = (pwd, role, disp)
+
+    # Built-in fallback administrator if sheet is empty or unreadable
+    if "admin" not in users_dict:
+        users_dict["admin"] = ("admin123", "Admin", "System Administrator")
+
+    return users_dict
 
 def login_form():
     st.markdown("<br>", unsafe_allow_html=True)
