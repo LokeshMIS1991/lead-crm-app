@@ -455,8 +455,6 @@ if "authenticated" not in st.session_state:
     st.session_state.user_role = None
     st.session_state.user_display_name = None
     st.session_state.username = None
-if "show_pwd" not in st.session_state:
-    st.session_state.show_pwd = False
 
 def fetch_users_from_sheets():
     df_users = load_sheet("Users")
@@ -507,8 +505,10 @@ def login_form():
             
             st.markdown("<p style='text-align: center; color: #64748B; font-weight: 600; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>Enterprise CRM & Operations Portal</p>", unsafe_allow_html=True)
             
+            # 1. Username
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
+            # 2. Password (shifted right below Username)
             show_pwd = st.checkbox("👁️ Show Password")
             pass_type = "text" if show_pwd else "password"
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
