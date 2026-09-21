@@ -127,32 +127,28 @@ st.markdown("""
         letter-spacing: -0.01em;
     }
 
-    /* 5. Blue Outer Container Cards & Login Box */
+    /* 5. Outer Login Card Frame */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 12px !important;
         padding: 28px 32px !important;
         box-shadow: 0 6px 24px rgba(24, 75, 156, 0.12) !important;
-        margin-bottom: 20px !important;
+        width: 100% !important;
     }
 
-    /* INPUT FIELD CONTAINERS - ALL LEVELS FORCED WHITE */
-    div[data-baseweb="input"],
-    div[data-baseweb="base-input"],
-    div[data-testid="stTextInput"] > div {
+    /* INPUT FIELD CONTAINERS - WHITE FILL & BLUE BORDER */
+    div[data-baseweb="input"] {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 8px !important;
-        overflow: hidden !important;
     }
 
-    /* TEXT INPUT FIELD INNER TEXT & BACKGROUND */
+    /* Inner input text & base background forced white */
+    div[data-baseweb="base-input"],
     div[data-testid="stTextInput"] input {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
-        border: none !important;
-        padding: 10px 14px !important;
         font-size: 14px !important;
         font-weight: 500 !important;
     }
@@ -162,16 +158,15 @@ st.markdown("""
         opacity: 0.8 !important;
     }
 
+    /* Focus highlight state */
     div[data-baseweb="input"]:focus-within {
         border-color: #0E2C68 !important;
         box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.2) !important;
     }
 
     /* PASSWORD EYE ICON BUTTON CONTAINER */
-    div[data-testid="stTextInput"] button[aria-label*="password"],
-    div[data-testid="stTextInput"] div[data-baseweb="input"] button,
-    div[data-baseweb="input"] div {
-        background-color: #FFFFFF !important;
+    div[data-testid="stTextInput"] button {
+        background-color: transparent !important;
         border: none !important;
     }
 
@@ -185,10 +180,6 @@ st.markdown("""
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 4px !important;
-    }
-
-    div[data-testid="stCheckbox"] [role="checkbox"] > div {
-        background-color: #FFFFFF !important;
     }
 
     div[data-testid="stCheckbox"] [role="checkbox"][aria-checked="true"] {
