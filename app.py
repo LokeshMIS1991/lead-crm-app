@@ -16,19 +16,22 @@ st.set_page_config(
 
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
+# ---------------------------------------------------------
+# COMPREHENSIVE UI FIX: LIGHT THEME & BRAND COLOR OVERRIDES
+# ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* 1. Global Page Background */
+    /* Global Page Background */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #F8FAFC !important; 
     }
 
-    /* 2. Hide Unstyled Icon String Leaks (keyboard_double) */
+    /* Hide Unstyled Icon String Leaks (keyboard_double) */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
 
-    /* 3. Sidebar Navigation Styling */
+    /* Sidebar Navigation Styling */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
@@ -76,7 +79,7 @@ st.markdown("""
         background-color: #008f4c !important;
     }
 
-    /* 4. Main Area Typography & Title Headers */
+    /* Main Content Typography */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
@@ -105,7 +108,7 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* 5. Complete Form Input Styling (Fixing Dark Fields) */
+    /* Form Card & Light Input Box Styles */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -115,14 +118,13 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Form Field Labels */
     .stMainBlockContainer label, .stMainBlockContainer label p {
         color: #164194 !important;
         font-weight: 700 !important;
         font-size: 14px !important;
     }
 
-    /* Override Dark Background on Text Input, Textarea, Select, Number Inputs */
+    /* Force White Input Field Backgrounds */
     input[type="text"], input[type="password"], textarea, div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -130,13 +132,23 @@ st.markdown("""
         border-radius: 6px !important;
     }
 
-    /* Focus State for Inputs */
     input[type="text"]:focus, textarea:focus, div[data-baseweb="select"] > div:focus-within {
         border-color: #164194 !important;
         box-shadow: 0 0 0 1px #164194 !important;
     }
 
-    /* Dropdown Arrow & Internal Values */
+    /* Password Visibility Toggle Button (Navy Blue Eye Icon) */
+    div[data-testid="stInputIconButton"] button,
+    div[data-testid="stInputIconButton"] button:hover {
+        background-color: #164194 !important;
+        border-radius: 0 6px 6px 0 !important;
+        border: none !important;
+    }
+    div[data-testid="stInputIconButton"] button svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
     div[data-baseweb="select"] * {
         color: #0F172A !important;
         background-color: #FFFFFF !important;
@@ -145,21 +157,12 @@ st.markdown("""
         fill: #164194 !important;
     }
 
-    /* Number Input Stepper Controls */
-    div[data-testid="stNumberInput"] div[data-baseweb="input"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        color: #0F172A !important;
-    }
-    div[data-testid="stNumberInput"] button {
-        background-color: #F1F5F9 !important;
-        color: #164194 !important;
-        border: 1px solid #CBD5E1 !important;
-    }
-
-    /* Form Submit Button */
-    div[data-testid="stFormSubmitButton"] > button {
-        background-color: #164194 !important;
+    /* Form Submit Button (Forced Corporate Green - Matching Brand Logo) */
+    div[data-testid="stFormSubmitButton"] button,
+    button[kind="primaryFormSubmit"],
+    button[data-testid="baseButton-primaryFormSubmit"] {
+        background-color: #00A859 !important;
+        background-image: none !important;
         color: #FFFFFF !important;
         border-radius: 6px !important;
         border: none !important;
@@ -167,9 +170,33 @@ st.markdown("""
         font-weight: 700 !important;
         padding: 10px 24px !important;
         margin-top: 10px !important;
+        width: 100% !important;
     }
-    div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #00A859 !important;
+    
+    div[data-testid="stFormSubmitButton"] button:hover,
+    button[kind="primaryFormSubmit"]:hover,
+    button[data-testid="baseButton-primaryFormSubmit"]:hover {
+        background-color: #008f4c !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Tabs Styling */
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        padding: 8px 16px !important;
+    }
+    button[data-baseweb="tab"] div p {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+    button[aria-selected="true"] {
+        border-bottom: 3px solid #00A859 !important;
+        background-color: #FFFFFF !important;
+    }
+    button[aria-selected="true"] div p {
+        color: #00A859 !important;
     }
 
     /* Metric Cards */
@@ -197,7 +224,18 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Dataframes */
+    /* Queue Cards */
+    .queue-card {
+        background-color: #FFFFFF !important;
+        border-left: 5px solid #164194 !important;
+        border-top: 1px solid #CBD5E1 !important;
+        border-right: 1px solid #CBD5E1 !important;
+        border-bottom: 1px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
     div[data-testid="stDataFrame"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -353,7 +391,7 @@ def generate_quotation_pdf(quote_details):
     return buffer.getvalue()
 
 # ---------------------------------------------------------
-# AUTHENTICATION & USER ROLES
+# AUTHENTICATION & USER MANAGEMENT
 # ---------------------------------------------------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
@@ -371,7 +409,12 @@ def fetch_users_from_sheets():
         if all(col in df_users.columns for col in req_cols):
             for _, row in df_users.iterrows():
                 u_val = str(row["Username"]).strip().lower()
-                p_val = str(row["Password"]).strip()
+                p_raw = row["Password"]
+                if pd.api.types.is_float_dtype(type(p_raw)) and p_raw.is_integer():
+                    p_val = str(int(p_raw)).strip()
+                else:
+                    p_val = str(p_raw).split('.')[0] if str(p_raw).endswith('.0') else str(p_raw).strip()
+
                 r_val = str(row["Role"]).strip()
                 d_val = str(row["Display Name"]).strip()
 
@@ -394,7 +437,7 @@ def fetch_users_from_sheets():
     return users_dict
 
 def login_form():
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
         with st.form("login_form"):
@@ -404,22 +447,25 @@ def login_form():
                 st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
             
             st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
-            user_input = st.text_input("Username").strip().lower()
-            pass_input = st.text_input("Password", type="password").strip()
+            user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
+            pass_input = st.text_input("Password", type="password", placeholder="Enter password").strip()
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
-                users = fetch_users_from_sheets()
-                if user_input in users and users[user_input][0] == pass_input:
-                    st.session_state.authenticated = True
-                    st.session_state.username = user_input
-                    st.session_state.user_role = users[user_input][1]
-                    st.session_state.user_display_name = users[user_input][2]
-                    st.rerun()
+                if not user_input or not pass_input:
+                    st.warning("Please enter both Username and Password.")
                 else:
-                    st.error("Invalid Username or Password.")
+                    users = fetch_users_from_sheets()
+                    if user_input in users and users[user_input][0] == pass_input:
+                        st.session_state.authenticated = True
+                        st.session_state.username = user_input
+                        st.session_state.user_role = users[user_input][1]
+                        st.session_state.user_display_name = users[user_input][2]
+                        st.rerun()
+                    else:
+                        st.error("Invalid Username or Password.")
 
-if not st.session_state.authenticated:
+if not st.session_state.get("authenticated", False):
     login_form()
     st.stop()
 
@@ -460,7 +506,7 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
-# LEAD CAPTURE PORTAL (PAGE 3 IN SCREENSHOT)
+# LEAD CAPTURE PORTAL
 # ---------------------------------------------------------
 if menu == "📥 Add New Lead":
     st.markdown("<div class='main-header'>📥 Lead Capture Portal</div>", unsafe_allow_html=True)
