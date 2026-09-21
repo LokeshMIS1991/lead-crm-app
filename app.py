@@ -17,31 +17,44 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# RESTORED PREMIUM NAVY & GREEN BRAND THEME + BUG FIXES
+# BRAND STYLING & CUSTOM COLOR OVERRIDES
+# Theme Palette:
+#   - Navy Blue: #164194 (Primary)
+#   - Green:     #00A859 (Secondary Accent)
+#   - Light Slate Background: #F8FAFC
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Background */
-    .stApp {
-        background-color: #F8FAFC !important;
+    /* Global Text & Heading Color Enforcement */
+    html, body, [class*="st-"], .stMarkdown, p, h1, h2, h3, h4, h5, h6, span, div, label {
+        color: #164194 !important;
     }
 
-    /* Top Navigation Header Override */
+    /* Top Navigation Header Bar Override */
     header[data-testid="stHeader"] {
+        background-color: #F8FAFC !important;
+    }
+    header[data-testid="stHeader"] * {
+        color: #164194 !important;
+    }
+
+    /* Global App Main Content Area Background */
+    .stApp {
         background-color: #F8FAFC !important;
     }
 
     /* Left Panel Sidebar: Exact Brand Navy Blue with White Text */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
-        border-right: 2px solid #0e2d6b !important;
+        color: #FFFFFF !important;
+        border-right: 2px solid #0F3275 !important;
     }
 
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
     }
 
-    /* Sidebar Oval Logo Box */
+    /* Sidebar Logo & Branding Styling */
     .sidebar-oval-logo {
         background-color: #FFFFFF;
         border: 2px solid #00A859;
@@ -52,7 +65,7 @@ st.markdown("""
         margin-bottom: 12px;
     }
 
-    /* Page Main Header Bar */
+    /* Page Main Header */
     .main-header {
         font-size: 26px;
         font-weight: 800;
@@ -62,15 +75,20 @@ st.markdown("""
         padding-bottom: 8px;
     }
 
+    .top-right-logo {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 10px;
+    }
+
     /* KPI Summary Cards */
     .kpi-card {
         background: #FFFFFF !important;
         padding: 20px 15px;
         border-radius: 12px;
         border-left: 6px solid #164194 !important;
-        border-top: 1px solid #CBD5E1;
-        border-right: 1px solid #CBD5E1;
-        border-bottom: 1px solid #CBD5E1;
+        border: 1px solid #CBD5E1;
         box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08);
         text-align: center;
     }
@@ -94,7 +112,7 @@ st.markdown("""
         margin: 0;
     }
 
-    /* Banner Card for Config Page */
+    /* Banner Card for Schema Setup Page */
     .banner-card {
         background: linear-gradient(135deg, #164194 0%, #0e2d6b 100%);
         border-radius: 16px;
@@ -133,58 +151,48 @@ st.markdown("""
         line-height: 1.5;
     }
 
-    /* FORM STYLING & BUG FIXES FOR DARK TEXTAREAS / NUMBER INPUTS */
-    div[data-testid="stForm"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 12px !important;
-        padding: 24px !important;
-        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.05) !important;
+    /* Setup Step Card */
+    .step-card {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 18px;
+        border: 1px solid #CBD5E1;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     }
 
-    /* Form Section Headers */
-    .form-header-title {
-        color: #164194 !important;
-        font-size: 16px !important;
-        font-weight: 800 !important;
-        margin-top: 10px !important;
-        margin-bottom: 14px !important;
-        border-bottom: 2px solid #F1F5F9;
-        padding-bottom: 6px;
+    .step-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #164194;
+        color: #FFFFFF !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+        margin-bottom: 10px;
     }
 
-    /* Target ALL Input fields, TextAreas, Selectboxes, and NumberInputs cleanly */
-    div[data-baseweb="input"] input, 
-    div[data-baseweb="base-input"] input,
-    div[data-baseweb="textarea"] textarea,
-    div[data-baseweb="select"] div {
+    .step-badge-green {
+        background-color: #00A859 !important;
+    }
+
+    /* Form Field Labels and Input Customization */
+    .stTextInput label, .stSelectbox label, .stNumberInput label, .stTextArea label, .stDateInput label {
+        color: #164194 !important;
+        font-weight: 700 !important;
+    }
+
+    .stTextInput>div>div>input, .stSelectbox>div>div, .stTextArea>div>div>textarea, .stDateInput input {
         background-color: #FFFFFF !important;
         color: #164194 !important;
+        border: 1.5px solid #164194 !important;
+        border-radius: 8px !important;
         font-weight: 600 !important;
     }
 
-    /* Textarea container fix */
-    div[data-baseweb="textarea"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #164194 !important;
-        border-radius: 8px !important;
-    }
-
-    /* Input borders */
-    div[data-baseweb="input"], div[data-baseweb="select"] > div {
-        border: 1.5px solid #164194 !important;
-        border-radius: 8px !important;
-        background-color: #FFFFFF !important;
-    }
-
-    /* Form Labels */
-    .stMainBlockContainer label {
-        color: #164194 !important;
-        font-weight: 700 !important;
-        font-size: 13px !important;
-    }
-
-    /* Primary Buttons Styling */
+    /* Submit / Action Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -192,19 +200,17 @@ st.markdown("""
         border: none !important;
         font-weight: 700 !important;
         padding: 10px 24px !important;
-        transition: all 0.2s ease-in-out;
     }
 
-    .stButton>button *, div[data-testid="stFormSubmitButton"]>button * {
+    .stButton>button * , div[data-testid="stFormSubmitButton"]>button * {
         color: #FFFFFF !important;
     }
 
     .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.3) !important;
     }
 
-    /* Tabs Component Customization */
+    /* Tabs Component Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px !important;
         background-color: #E2E8F0 !important;
@@ -219,7 +225,6 @@ st.markdown("""
 
     .stTabs [aria-selected="true"] {
         background-color: #164194 !important;
-        border-radius: 6px !important;
     }
 
     .stTabs [aria-selected="true"] * {
@@ -251,12 +256,14 @@ def render_header(title_text):
     with col_title:
         st.markdown(f"<div class='main-header'>{title_text}</div>", unsafe_allow_html=True)
     with col_logo:
+        st.markdown("<div class='top-right-logo'>", unsafe_allow_html=True)
         try:
             st.image("Company Logo.jpeg", use_container_width=True)
         except Exception:
             pass
+        st.markdown("</div>", unsafe_allow_html=True)
 
-# Master Options
+# Master Dropdown Options
 PRODUCT_LIST = [
     "Motorised Swing Gates", "Motorised Sliding Gates", "Automatic Rolling Shutters",
     "Dock Leveller", "Boom Barriers", "Rolling Shutter motor Part", "Spare Part"
@@ -266,7 +273,9 @@ SALESPERSONS = ["Mansingh Rathore", "Sidharth Jain", "Jeevan Sharma", "Deepak Se
 CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"]
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
-# CONFIG / SCHEMA DATASETS
+# ---------------------------------------------------------
+# SAMPLE SCHEMA DATASETS (FOR CONFIG GENERATOR PAGE)
+# ---------------------------------------------------------
 SCHEMA_DATA = {
     "Leads Data": pd.DataFrame({
         "Sr. No": [1, 2, 3],
@@ -351,8 +360,8 @@ with st.sidebar:
         st.write("🏭 **SSA CRM**")
     st.markdown("</div>", unsafe_allow_html=True)
     
-    st.markdown("<p style='text-align: center; font-size: 18px; font-weight: 800; color: #FFFFFF !important;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859 !important; font-size: 12px; margin-top:-10px;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 20px; font-weight: 800; color: #FFFFFF !important;'>SIDHARTH SHUTTER</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-weight: 700; color: #00A859 !important;'>CRM & Operational Pipeline</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     menu = st.radio(
@@ -388,8 +397,8 @@ if menu == "📊 Executive Dashboard":
         total_val = df_quotes['Qut. Amount'].sum() if not df_quotes.empty and 'Qut. Amount' in df_quotes.columns else 0
         st.markdown(f'<div class="kpi-card kpi-card-green"><h5>Pipeline Value</h5><h2>₹{total_val:,.0f}</h2></div>', unsafe_allow_html=True)
         
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #164194 !important; font-weight: 800;'>🔥 Recent Inquiries & Activity</h3>", unsafe_allow_html=True)
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #164194 !important; font-weight: 800;'>🔥 Recent Activity Registry</h3>", unsafe_allow_html=True)
     
     if not df_leads.empty:
         st.dataframe(df_leads.tail(8), use_container_width=True, hide_index=True)
@@ -412,9 +421,9 @@ elif menu == "🔍 Client Detail View":
             client_id_list = df_leads[col_name[0]].dropna().unique().tolist()
 
     if not client_id_list:
-        st.info("ℹ️ No records found in connected database.")
+        st.warning("⚠️ No Client records found in Google Sheet.")
     else:
-        selected_client_id = st.selectbox("🔎 Select Client ID to View Details:", client_id_list)
+        selected_client_id = st.selectbox("🔎 Select Client ID to View Full History:", client_id_list)
 
         def filter_by_client_id(df, cid):
             if df.empty:
@@ -424,6 +433,11 @@ elif menu == "🔍 Client Detail View":
                 return df[df[matching_cols[0]].astype(str) == str(cid)]
             return pd.DataFrame()
 
+        lead_match = filter_by_client_id(df_leads, selected_client_id)
+        quote_match = filter_by_client_id(df_quotes, selected_client_id)
+        followup_match = filter_by_client_id(df_followup, selected_client_id)
+        order_match = filter_by_client_id(df_orders, selected_client_id)
+
         tab_l, tab_q, tab_f, tab_o = st.tabs([
             "📥 Lead Record",
             "📄 Quotations",
@@ -432,13 +446,13 @@ elif menu == "🔍 Client Detail View":
         ])
 
         with tab_l:
-            st.dataframe(filter_by_client_id(df_leads, selected_client_id), use_container_width=True, hide_index=True)
+            st.dataframe(lead_match, use_container_width=True, hide_index=True)
         with tab_q:
-            st.dataframe(filter_by_client_id(df_quotes, selected_client_id), use_container_width=True, hide_index=True)
+            st.dataframe(quote_match, use_container_width=True, hide_index=True)
         with tab_f:
-            st.dataframe(filter_by_client_id(df_followup, selected_client_id), use_container_width=True, hide_index=True)
+            st.dataframe(followup_match, use_container_width=True, hide_index=True)
         with tab_o:
-            st.dataframe(filter_by_client_id(df_orders, selected_client_id), use_container_width=True, hide_index=True)
+            st.dataframe(order_match, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
 # STAGE 1: LEADS DATA
@@ -450,7 +464,7 @@ elif menu == "📥 Stage 1: Leads Data":
     
     with tab_add:
         with st.form("add_lead_form", clear_on_submit=True):
-            st.markdown("<div class='form-header-title'>👤 Client & Corporate Details</div>", unsafe_allow_html=True)
+            st.markdown("<h5 style='color: #00A859 !important;'>👤 Client & Corporate Details</h5>", unsafe_allow_html=True)
             c1, c2, c3 = st.columns(3)
             with c1:
                 client_name = st.text_input("Client Name *")
@@ -462,9 +476,9 @@ elif menu == "📥 Stage 1: Leads Data":
                 city = st.text_input("City")
                 state = st.text_input("State")
                 
-            address = st.text_area("Address Details", height=100)
+            address = st.text_area("Address Details", height=2)
             
-            st.markdown("<div class='form-header-title'>📦 Requirement & Sales Assignment</div>", unsafe_allow_html=True)
+            st.markdown("<h5 style='color: #00A859 !important;'>📦 Requirement & Sales Assignment</h5>", unsafe_allow_html=True)
             c4, c5, c6 = st.columns(3)
             with c4:
                 product = st.selectbox("Product Requirement *", PRODUCT_LIST)
@@ -481,9 +495,9 @@ elif menu == "📥 Stage 1: Leads Data":
                 quotation_status = st.selectbox("Quotation Status", ["Not Sent", "Sent", "Under Review"])
                 quotation_sent_by = st.selectbox("Quotation Sent By", TEAM_MEMBERS)
             with c8:
-                remarks = st.text_area("Initial Remarks / Notes", height=100)
+                remarks = st.text_area("Initial Remarks / Notes")
                 
-            submit_lead = st.form_submit_button("💾 Save Lead to Database")
+            submit_lead = st.form_submit_button("💾 Save Lead to Google Sheet")
             
             if submit_lead:
                 if not client_name or not number:
@@ -519,62 +533,166 @@ elif menu == "📥 Stage 1: Leads Data":
                         df_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
                         df_updated = pd.concat([df_existing, pd.DataFrame([new_lead])], ignore_index=True)
                         conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_updated)
-                        st.success(f"✅ Lead Created Successfully! Client ID: **{client_id}**")
+                        st.success(f"✅ Lead Created Successfully in Google Sheet! Generated Client ID: **{client_id}**")
 
     with tab_view:
         df_leads = load_sheet("Leads Data")
         st.dataframe(df_leads, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# STAGE 2: QUOTATIONS & FOLLOW-UPS
+# STAGE 2: QUOTATIONS & FOLLOW-UP TRACKER
 # ---------------------------------------------------------
 elif menu == "📄 Stage 2: Quotations & Follow-ups":
     render_header("📄 Stage 2: Quotations & Follow-up Panel")
     tab_q_list, tab_followup = st.tabs(["📋 Quotation Master", "📞 Follow-up Tracker"])
     
     with tab_q_list:
-        st.dataframe(load_sheet("Quotation Sheet"), use_container_width=True, hide_index=True)
+        df_quotes = load_sheet("Quotation Sheet")
+        st.dataframe(df_quotes, use_container_width=True, hide_index=True)
 
     with tab_followup:
-        st.dataframe(load_sheet("Quotation Follow Up Tracker"), use_container_width=True, hide_index=True)
+        df_followup = load_sheet("Quotation Follow Up Tracker")
+        st.dataframe(df_followup, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
 # STAGE 3: PROCESS ORDER EXECUTION
 # ---------------------------------------------------------
 elif menu == "⚙️ Stage 3: Process Order Execution":
     render_header("⚙️ Stage 3: Order Execution & Operations")
-    st.dataframe(load_sheet("Process Order"), use_container_width=True, hide_index=True)
+    df_orders = load_sheet("Process Order")
+    st.dataframe(df_orders, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# STAGE 4: DATABASE CONFIG & SCHEMA GENERATOR
+# STAGE 4: DATABASE CONFIG & SCHEMA GENERATOR (NEW SEPARATE VIEW)
 # ---------------------------------------------------------
 elif menu == "🛠️ Database Config Generator":
     render_header("🛠️ Google Sheets Architecture & Config Generator")
     
+    # Banner Intro Box
     st.markdown("""
         <div class="banner-card">
             <span class="banner-badge">A to Z Schema Setup</span>
             <div class="banner-title">Google Sheets Architecture & Config Generator</div>
             <div class="banner-desc">
-                Download complete, perfectly formatted CSV datasets for all 4 worksheets required by your Streamlit CRM app.
+                Preview and download complete, perfectly formatted CSV datasets for all 4 worksheets required by your Streamlit CRM app. Use these template files to structure your Google Sheets workbook, and copy the pre-built secrets.toml configuration below.
             </div>
         </div>
     """, unsafe_allow_html=True)
     
-    tab_leads, tab_quote, tab_follow, tab_proc = st.tabs([
+    # Schema Preview & Download Tabs
+    tab_leads, tab_quote, tab_follow, tab_proc, tab_sec = st.tabs([
         "📥 1. Leads Data",
         "📄 2. Quotation Sheet",
         "📞 3. Follow Up Tracker",
-        "⚙️ 4. Process Order"
+        "⚙️ 4. Process Order",
+        "🔑 Streamlit secrets.toml Setup"
     ])
     
-    for tab, key in zip([tab_leads, tab_quote, tab_follow, tab_proc], SCHEMA_DATA.keys()):
-        with tab:
-            df_template = SCHEMA_DATA[key]
-            st.dataframe(df_template, use_container_width=True, hide_index=True)
-            st.download_button(
-                label=f"📥 Download `{key}.csv`",
-                data=df_template.to_csv(index=False).encode('utf-8'),
-                file_name=f"{key}.csv",
-                mime="text/csv"
-            )
+    with tab_leads:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Leads Data</code></h4>", unsafe_allow_html=True)
+        st.markdown("Stores incoming inquiries, customer contact details, lead sources, and salesperson assignments.")
+        
+        df_template = SCHEMA_DATA["Leads Data"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📥 Download Leads Data.csv Template",
+            data=csv_data,
+            file_name="Leads Data.csv",
+            mime="text/csv"
+        )
+
+    with tab_quote:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Quotation Sheet</code></h4>", unsafe_allow_html=True)
+        st.markdown("Tracks commercial quotation numbers, valuation amounts, statuses, and team member ownership.")
+        
+        df_template = SCHEMA_DATA["Quotation Sheet"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📄 Download Quotation Sheet.csv Template",
+            data=csv_data,
+            file_name="Quotation Sheet.csv",
+            mime="text/csv"
+        )
+
+    with tab_follow:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Quotation Follow Up Tracker</code></h4>", unsafe_allow_html=True)
+        st.markdown("Logs active communication logs, client responses, and scheduled follow-up dates.")
+        
+        df_template = SCHEMA_DATA["Quotation Follow Up Tracker"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="📞 Download Quotation Follow Up Tracker.csv Template",
+            data=csv_data,
+            file_name="Quotation Follow Up Tracker.csv",
+            mime="text/csv"
+        )
+
+    with tab_proc:
+        st.markdown("<h4 style='color: #164194 !important;'>Worksheet: <code>Process Order</code></h4>", unsafe_allow_html=True)
+        st.markdown("Tracks operational post-approval execution: drawings, production, payments, dispatch, and invoices.")
+        
+        df_template = SCHEMA_DATA["Process Order"]
+        st.dataframe(df_template, use_container_width=True, hide_index=True)
+        
+        csv_data = df_template.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="⚙️ Download Process Order.csv Template",
+            data=csv_data,
+            file_name="Process Order.csv",
+            mime="text/csv"
+        )
+
+    with tab_sec:
+        # Step Guide Cards
+        col_s1, col_s2, col_s3 = st.columns(3)
+        with col_s1:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge">1</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Create Google Sheet</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Create a new Google Sheet named <strong>"Sidharth Shutter CRM Master"</strong>. Create 4 tab worksheets matching the names exactly.</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with col_s2:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge step-badge-green">2</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Import CSV Files</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Import each downloaded CSV template into its corresponding worksheet tab (File → Import → Replace current sheet).</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+        with col_s3:
+            st.markdown("""
+                <div class="step-card">
+                    <div class="step-badge">3</div>
+                    <h4 style="color: #164194; font-weight: 800; font-size: 15px; margin-bottom: 6px;">Share Access</h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0;">Share the Google Sheet with your Google Cloud Service Account Email with <strong>Editor</strong> permissions.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.subheader("🔑 Configuration Snippet: `.streamlit/secrets.toml`")
+        
+        secrets_toml_code = f"""# .streamlit/secrets.toml
+[connections.gsheets]
+spreadsheet = "{SPREADSHEET_URL}"
+type = "service_account"
+project_id = "your-gcp-project-id"
+private_key_id = "your-private-key-id"
+private_key = "-----BEGIN PRIVATE KEY-----\\nYOUR_PRIVATE_KEY_HERE\\n-----END PRIVATE KEY-----\\n"
+client_email = "your-service-account@your-project.iam.gserviceaccount.com"
+client_id = "12345678901234567890"
+auth_uri = "https://accounts.google.com/o/oauth2/auth"
+token_uri = "https://oauth2.googleapis.com/token"
+auth_provider_x509_cert_url = "https://www.googleapis.com/oauth2/v1/certs"
+client_x509_cert_url = "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account..."
+"""
+        st.code(secrets_toml_code, language="toml")
