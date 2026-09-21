@@ -16,7 +16,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: BLUE OUTLINE + WHITE INPUTS + INCREASED FONTS
+# CUSTOM CSS: MINIMAL & PROFESSIONAL INPUTS (WHITE + BLUE)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -43,10 +43,10 @@ st.markdown("""
     /* Container & Form Cards */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 2px solid #164194 !important;
-        border-radius: 12px !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 10px !important;
         padding: 24px !important;
-        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
         margin-bottom: 20px !important;
     }
 
@@ -66,36 +66,42 @@ st.markdown("""
         font-weight: 800 !important;
         margin-top: 10px !important;
         margin-bottom: 14px !important;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 1.5px solid #E2E8F0;
         padding-bottom: 6px;
     }
 
-    /* FORM FIELD LABELS - INCREASED FONT SIZE */
+    /* FORM FIELD LABELS */
     .stMainBlockContainer label, label * {
         color: #164194 !important;
         font-weight: 700 !important;
         font-size: 15px !important;
     }
 
-    /* COMPLETE FIX FOR ALL INPUT BOXES (WHITE INSIDE + BLUE OUTLINE) */
+    /* COMPLETE OVERRIDE FOR ALL STREAMLIT INPUT FIELDS */
+    /* Target Text Inputs, Textareas, Selectboxes, Number Inputs */
     div[data-baseweb="input"], 
     div[data-baseweb="base-input"],
     div[data-baseweb="textarea"],
-    div[data-baseweb="select"] > div {
+    div[data-baseweb="select"] > div,
+    input,
+    textarea {
         background-color: #FFFFFF !important;
-        border: 2px solid #164194 !important;
-        border-radius: 8px !important;
+        border: 1.5px solid #164194 !important;
+        border-radius: 6px !important;
+        color: #0F172A !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
     }
 
-    /* INPUT TEXT INSIDE BOXES */
+    /* Target Text Input Inner Wrappers & Dropdown Options */
     div[data-baseweb="input"] input, 
     div[data-baseweb="base-input"] input,
     div[data-baseweb="textarea"] textarea,
+    div[data-baseweb="select"] input,
     div[data-baseweb="select"] div {
-        background-color: #FFFFFF !important;
+        background-color: transparent !important;
         color: #0F172A !important;
         font-size: 15px !important;
-        font-weight: 600 !important;
     }
 
     /* Active Focus State for Inputs */
@@ -103,44 +109,14 @@ st.markdown("""
     div[data-baseweb="input"]:focus-within,
     div[data-baseweb="select"] > div:focus-within {
         border-color: #00A859 !important;
-        box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2) !important;
-    }
-
-    /* Metric Cards */
-    .metric-card {
-        background-color: #FFFFFF !important;
-        border: 2px solid #164194 !important;
-        border-left: 6px solid #164194 !important;
-        border-radius: 10px !important;
-        padding: 18px !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
-        text-align: center;
-    }
-
-    .metric-card-green {
-        border-left: 6px solid #00A859 !important;
-    }
-
-    .metric-card h5 {
-        color: #64748B !important;
-        font-size: 13px !important;
-        font-weight: 800 !important;
-        text-transform: uppercase;
-        margin-bottom: 6px !important;
-    }
-
-    .metric-card h3 {
-        color: #164194 !important;
-        font-size: 28px !important;
-        font-weight: 800 !important;
-        margin: 0 !important;
+        box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.15) !important;
     }
 
     /* Buttons Styling */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         border: none !important;
         font-size: 16px !important;
         font-weight: 700 !important;
@@ -149,19 +125,10 @@ st.markdown("""
 
     .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.3) !important;
-    }
-
-    /* Dataframe Container Styling */
-    div[data-testid="stDataFrame"] {
-        background-color: #FFFFFF !important;
-        border: 2px solid #164194 !important;
-        border-radius: 10px !important;
-        padding: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25) !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
 # ---------------------------------------------------------
 # DATABASE CONNECTIVITY HELPERS
 # ---------------------------------------------------------
