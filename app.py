@@ -7,9 +7,22 @@ import io
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
 # ---------------------------------------------------------
+st.set_page_config(
+    page_title="Sidharth Shutter & Automation - Enterprise CRM",
+    page_icon="🏭",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
+
+# ---------------------------------------------------------
+# 100% LOGO THEME OVERRIDE & CLEAN UI STYLING ENGINE
+# Primary Blue: #184B9C | Dark Blue: #0E2C68 | Highlight Blue: #2965C1 | Bright Green: #00A859
+# ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* 1. Global Page Background */
+    /* 1. Global Page Background (Pure White) */
     .stApp, header[data-testid="stHeader"] { 
         background-color: #FFFFFF !important; 
     }
@@ -31,7 +44,28 @@ st.markdown("""
         font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    /* Logout Button */
+    div[data-testid="stRadio"] label {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        padding: 6px 10px !important;
+        margin-bottom: 2px !important;
+        border-radius: 6px !important;
+    }
+    div[data-testid="stRadio"] label:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+        background-color: #FFFFFF !important;
+        border: 2px solid #FFFFFF !important;
+        border-radius: 50% !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
+        background-color: #00A859 !important;
+        border: 3px solid #FFFFFF !important;
+    }
+
+    /* Sidebar Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
@@ -42,8 +76,11 @@ st.markdown("""
         padding: 8px 16px !important;
         width: 100% !important;
     }
+    div[data-testid="stSidebar"] div.stButton > button:hover {
+        background-color: #008f4c !important;
+    }
 
-    /* 4. Form Typography (Primary Blue Labels) */
+    /* 4. Main Typography (Primary Blue Color Alignment) */
     .stMainBlockContainer h1, 
     .stMainBlockContainer h2, 
     .stMainBlockContainer h3, 
@@ -57,7 +94,26 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* 5. Form Card Container */
+    .main-header {
+        font-size: 26px !important;
+        font-weight: 800 !important;
+        color: #184B9C !important;
+        margin-bottom: 15px !important;
+        border-bottom: 3px solid #00A859 !important;
+        padding-bottom: 8px !important;
+    }
+
+    .section-title {
+        color: #184B9C !important;
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1.5px solid #CBD5E1 !important;
+        padding-bottom: 4px !important;
+    }
+
+    /* 5. LOGIN FORM CARD STYLING */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
@@ -67,7 +123,7 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Input Field Boxes (White Background with Blue Border) */
+    /* Input Field Boxes (Clean White Background & Dark Blue Text) */
     input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
@@ -76,41 +132,30 @@ st.markdown("""
         padding: 10px 12px !important;
     }
 
+    /* Focus States for Inputs (Highlight Blue) */
     input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
         border-color: #2965C1 !important;
         box-shadow: 0 0 0 2px rgba(41, 101, 193, 0.25) !important;
     }
 
-    /* 6. FIX 1 & 3: BLUE BOX WITH WHITE EYE ICON FOR PASSWORD TOGGLE */
-    div[data-baseweb="input"] > div:last-child,
-    div[data-testid="stInputIconButton"],
-    div[data-testid="stInputIconButton"] button,
-    div[data-testid="stInputIconButton"] button:hover {
-        background-color: #184B9C !important;
-        border: none !important;
-        border-top-right-radius: 6px !important;
-        border-bottom-right-radius: 6px !important;
-        color: #FFFFFF !important;
+    /* Hide broken native password toggle element */
+    div[data-testid="stInputIconButton"] {
+        display: none !important;
     }
 
-    /* Force text/icons inside toggle button to render pure white */
-    div[data-testid="stInputIconButton"] * {
-        color: #FFFFFF !important;
-        fill: #FFFFFF !important;
-        stroke: #FFFFFF !important;
-        font-size: 0px !important; /* Hides leaked 'visibility' text */
+    /* Select Dropdowns */
+    div[data-baseweb="select"] * {
+        color: #0E2C68 !important;
+        background-color: #FFFFFF !important;
+    }
+    div[data-baseweb="select"] svg {
+        fill: #184B9C !important;
     }
 
-    /* Inject White Eye Symbol Unicode when SVG is missing */
-    div[data-testid="stInputIconButton"] button::before {
-        content: "👁️";
-        font-size: 16px !important;
-        color: #FFFFFF !important;
-    }
-
-    /* 7. FIX 2: FORCE "LOGIN TO DASHBOARD" TEXT TO PURE WHITE */
+    /* 6. LOGIN SUBMIT BUTTON (BRIGHT GREEN WITH CRISP WHITE TEXT) */
     div[data-testid="stFormSubmitButton"] button,
-    div[data-testid="stFormSubmitButton"] button *,
+    div[data-testid="stFormSubmitButton"] button p,
+    div[data-testid="stFormSubmitButton"] button span,
     button[kind="primaryFormSubmit"],
     button[kind="primaryFormSubmit"] *,
     button[data-testid="baseButton-primaryFormSubmit"],
@@ -122,7 +167,10 @@ st.markdown("""
         border: none !important;
         font-size: 16px !important;
         font-weight: 700 !important;
+        padding: 12px 24px !important;
+        margin-top: 14px !important;
         width: 100% !important;
+        box-shadow: 0 4px 10px rgba(0, 168, 89, 0.2) !important;
     }
     
     div[data-testid="stFormSubmitButton"] button:hover,
@@ -131,8 +179,72 @@ st.markdown("""
         background-color: #008f4c !important;
         color: #FFFFFF !important;
     }
+
+    /* Tabs Styling */
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        padding: 8px 16px !important;
+    }
+    button[data-baseweb="tab"] div p {
+        color: #184B9C !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+    button[aria-selected="true"] {
+        border-bottom: 3px solid #00A859 !important;
+        background-color: #FFFFFF !important;
+    }
+    button[aria-selected="true"] div p {
+        color: #00A859 !important;
+    }
+
+    /* Metric Cards */
+    .metric-card {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 4px 10px rgba(24, 75, 156, 0.06) !important;
+        margin-bottom: 10px !important;
+    }
+    .metric-card-green { border-color: #00A859 !important; }
+    .metric-card h5 {
+        color: #184B9C !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        margin: 0 0 4px 0 !important;
+        text-transform: uppercase;
+    }
+    .metric-card-green h5 { color: #00A859 !important; }
+    .metric-card h3 {
+        color: #0E2C68 !important;
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+    }
+
+    /* Queue Cards */
+    .queue-card {
+        background-color: #FFFFFF !important;
+        border-left: 5px solid #184B9C !important;
+        border-top: 1px solid #CBD5E1 !important;
+        border-right: 1px solid #CBD5E1 !important;
+        border-bottom: 1px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    div[data-testid="stDataFrame"] {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 6px !important;
+    }
     </style>
 """, unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # DATABASE CONNECTIVITY HELPERS
 # ---------------------------------------------------------
@@ -335,8 +447,15 @@ def login_form():
                 st.markdown("<h2 style='text-align: center; color: #184B9C; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
             
             st.markdown("<p style='text-align: center; color: #184B9C; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
+            
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
-            pass_input = st.text_input("Password", type="password", placeholder="Enter password").strip()
+            
+            # Visibility checkbox toggle state
+            show_password = st.checkbox("👁️ Show Password")
+            pass_type = "text" if show_password else "password"
+            
+            pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
+            
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
             if submit:
