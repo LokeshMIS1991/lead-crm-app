@@ -154,9 +154,51 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-    /* Hide standard broken native Streamlit password toggle container */
-    div[data-testid="stInputIconButton"] {
+    /* Hide Streamlit's native broken input icon container and leaked text */
+    div[data-testid="stInputIconButton"],
+    div[data-testid="stInputIconButton"] * {
         display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    /* Input Field Styling */
+    input[type="text"], input[type="password"] {
+        background-color: #FFFFFF !important;
+        color: #0E2C68 !important;
+        border: 1.5px solid #184B9C !important;
+        border-radius: 6px !important;
+        padding: 10px 12px !important;
+    }
+
+    /* Seamless Checkbox Toggle Styling */
+    div[data-testid="stCheckbox"] {
+        margin-top: -6px !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stCheckbox"] label p {
+        color: #184B9C !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+    }
+
+    /* LOGIN SUBMIT BUTTON (GREEN WITH WHITE TEXT) */
+    div[data-testid="stFormSubmitButton"] button,
+    div[data-testid="stFormSubmitButton"] button p,
+    div[data-testid="stFormSubmitButton"] button span {
+        background-color: #00A859 !important;
+        color: #FFFFFF !important;
+        border-radius: 6px !important;
+        border: none !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        padding: 12px 24px !important;
+        margin-top: 10px !important;
+        width: 100% !important;
+    }
+    div[data-testid="stFormSubmitButton"] button:hover {
+        background-color: #008f4c !important;
     }
 
     /* 7. LOGIN SUBMIT BUTTON (CORPORATE GREEN WITH CRISP WHITE TEXT) */
@@ -459,17 +501,10 @@ def login_form():
             
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # Clean password layout with embedded blue eye icon button
-            pwd_col, eye_col = st.columns([5.5, 1])
-            with pwd_col:
-                pass_type = "text" if st.session_state.show_pwd else "password"
-                pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
-            with eye_col:
-                # Custom eye icon button toggle
-                toggle_pwd = st.form_submit_button("👁️" if not st.session_state.show_pwd else "🙈")
-                if toggle_pwd:
-                    st.session_state.show_pwd = not st.session_state.show_pwd
-                    st.rerun()
+            # Controlled Password Toggle
+            show_pwd = st.checkbox("👁️ Show Password")
+            pass_type = "text" if show_pwd else "password"
+            pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
 
@@ -486,10 +521,6 @@ def login_form():
                         st.rerun()
                     else:
                         st.error("Invalid Username or Password.")
-
-if not st.session_state.get("authenticated", False):
-    login_form()
-    st.stop()
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
