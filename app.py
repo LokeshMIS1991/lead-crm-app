@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 from streamlit_gsheets import GSheetsConnection
 import io
+
 st.markdown("""
     <style>
     /* Google Fonts Import */
@@ -136,9 +137,10 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* INPUT FIELD CONTAINER - FORCED WHITE BACKGROUND & BLUE BORDER */
+    /* INPUT FIELD CONTAINERS - ALL LEVELS FORCED WHITE */
     div[data-baseweb="input"],
-    div[data-baseweb="base-input"] {
+    div[data-baseweb="base-input"],
+    div[data-testid="stTextInput"] > div {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 8px !important;
@@ -165,13 +167,12 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.2) !important;
     }
 
-    /* PASSWORD EYE ICON BUTTON */
+    /* PASSWORD EYE ICON BUTTON CONTAINER */
     div[data-testid="stTextInput"] button[aria-label*="password"],
-    div[data-testid="stTextInput"] div[data-baseweb="input"] button {
+    div[data-testid="stTextInput"] div[data-baseweb="input"] button,
+    div[data-baseweb="input"] div {
         background-color: #FFFFFF !important;
         border: none !important;
-        color: #184B9C !important;
-        padding: 8px 12px !important;
     }
 
     div[data-testid="stTextInput"] button svg {
@@ -179,23 +180,27 @@ st.markdown("""
         stroke: #184B9C !important;
     }
 
-    /* CHECKBOX BOX OVERRIDE (White Box + Blue Border) */
-    div[data-testid="stCheckbox"] div[role="checkbox"] {
+    /* CHECKBOX SQUARE CUSTOMIZATION (White Fill + Blue Border) */
+    div[data-testid="stCheckbox"] [role="checkbox"] {
         background-color: #FFFFFF !important;
         border: 2px solid #184B9C !important;
         border-radius: 4px !important;
     }
 
-    div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] {
+    div[data-testid="stCheckbox"] [role="checkbox"] > div {
+        background-color: #FFFFFF !important;
+    }
+
+    div[data-testid="stCheckbox"] [role="checkbox"][aria-checked="true"] {
         background-color: #184B9C !important;
         border-color: #184B9C !important;
     }
 
-    div[data-testid="stCheckbox"] div[role="checkbox"] svg {
+    div[data-testid="stCheckbox"] [role="checkbox"] svg {
         fill: #184B9C !important;
     }
 
-    div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] svg {
+    div[data-testid="stCheckbox"] [role="checkbox"][aria-checked="true"] svg {
         fill: #FFFFFF !important;
     }
 
@@ -205,7 +210,7 @@ st.markdown("""
         font-size: 13.5px !important;
     }
 
-    /* FIX FOR STREAMLIT NOTIFICATION POPUPS (st.warning, st.error, st.success, st.info) */
+    /* NOTIFICATION POPUPS (st.warning, st.error, st.success, st.info) */
     div[data-testid="stAlert"] {
         border-radius: 8px !important;
         padding: 12px 16px !important;
