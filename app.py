@@ -153,16 +153,22 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Input Field Styling & High-Contrast Blue Text/Borders */
+    /* Input Field Container - White Background & Blue Border */
+    div[data-baseweb="input"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+
+    /* Input Text Field Inside */
     div[data-testid="stTextInput"] input {
         background-color: #FFFFFF !important;
         color: #0E2C68 !important;
-        border: 2px solid #184B9C !important;
-        border-radius: 8px !important;
+        border: none !important;
         padding: 10px 14px !important;
         font-size: 14px !important;
         font-weight: 500 !important;
-        transition: all 0.2s ease !important;
     }
 
     div[data-testid="stTextInput"] input::placeholder {
@@ -170,15 +176,34 @@ st.markdown("""
         opacity: 0.8 !important;
     }
 
-    div[data-testid="stTextInput"] input:focus {
+    div[data-baseweb="input"]:focus-within {
         border-color: #0E2C68 !important;
         box-shadow: 0 0 0 3px rgba(24, 75, 156, 0.2) !important;
-        outline: none !important;
+    }
+
+    /* Password Eye Icon Button - Styled in Blue Background */
+    div[data-testid="stTextInput"] button[aria-label*="password"],
+    div[data-testid="stTextInput"] div[data-baseweb="input"] button {
+        background-color: #184B9C !important;
+        border: none !important;
+        border-radius: 0 6px 6px 0 !important;
+        color: #FFFFFF !important;
+        padding: 8px 12px !important;
+    }
+
+    div[data-testid="stTextInput"] button[aria-label*="password"]:hover,
+    div[data-testid="stTextInput"] div[data-baseweb="input"] button:hover {
+        background-color: #0E2C68 !important;
+    }
+
+    div[data-testid="stTextInput"] button svg {
+        fill: #FFFFFF !important;
+        stroke: #FFFFFF !important;
     }
 
     /* Custom Checkbox Styling for Show Password */
     div[data-testid="stCheckbox"] label span p {
-        color: #64748B !important;
+        color: #184B9C !important;
         font-weight: 600 !important;
         font-size: 13.5px !important;
     }
@@ -498,14 +523,14 @@ if not st.session_state.authenticated:
             # 1. Username Field
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # 2. Password Field (Moved above Show Password)
+            # 2. Password Field
             if "show_pwd" not in st.session_state:
                 st.session_state.show_pwd = False
 
             pass_type = "text" if st.session_state.get("show_pwd_checkbox", False) else "password"
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
 
-            # 3. Show Password Checkbox (Placed under Password field)
+            # 3. Show Password Checkbox
             st.checkbox("👁️ Show Password", key="show_pwd_checkbox")
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
