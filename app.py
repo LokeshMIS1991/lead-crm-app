@@ -16,7 +16,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: MINIMAL & PROFESSIONAL INPUTS (WHITE + BLUE)
+# CUSTOM CSS: SIDEBAR NAVIGATION & UI ENHANCEMENTS
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -29,18 +29,73 @@ st.markdown("""
         background-color: #F8FAFC !important;
     }
 
-    /* Sidebar Styling */
+    /* ---------------------------------------------------------
+       SIDEBAR & NAVIGATION STYLING
+       --------------------------------------------------------- */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
+        padding-top: 20px !important;
     }
 
+    /* Sidebar General Typography */
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
-        font-size: 15px !important;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
     }
 
-    /* Container & Form Cards */
+    /* Navigation Radio Text Styling */
+    div[data-testid="stRadio"] label {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        padding: 8px 10px !important;
+        margin-bottom: 4px !important;
+        border-radius: 8px !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    div[data-testid="stRadio"] label:hover {
+        background-color: rgba(255, 255, 255, 0.12) !important;
+        cursor: pointer !important;
+    }
+
+    /* RADIO BUTTON CIRCLES FIX (REPLACING BLACK DOTS WITH WHITE/GREEN) */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+        background-color: #FFFFFF !important;
+        border: 2px solid #FFFFFF !important;
+        border-radius: 50% !important;
+    }
+
+    /* Active Selected Radio Button State */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
+        background-color: #00A859 !important;
+        border: 3px solid #FFFFFF !important;
+        box-shadow: 0 0 8px rgba(0, 168, 89, 0.6) !important;
+    }
+
+    /* SIDEBAR LOGOUT BUTTON STYLING */
+    div[data-testid="stSidebar"] div.stButton > button {
+        background-color: #DC2626 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        padding: 10px 20px !important;
+        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3) !important;
+        transition: all 0.2s ease-in-out !important;
+        width: 100% !important;
+    }
+
+    div[data-testid="stSidebar"] div.stButton > button:hover {
+        background-color: #EF4444 !important;
+        box-shadow: 0 6px 14px rgba(239, 68, 68, 0.4) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ---------------------------------------------------------
+       FORM & MAIN CONTAINER CARDS
+       --------------------------------------------------------- */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -50,7 +105,7 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    /* Page Titles & Headers */
+    /* Page Headers */
     .main-header {
         font-size: 28px !important;
         font-weight: 800 !important;
@@ -77,8 +132,7 @@ st.markdown("""
         font-size: 15px !important;
     }
 
-    /* COMPLETE OVERRIDE FOR ALL STREAMLIT INPUT FIELDS */
-    /* Target Text Inputs, Textareas, Selectboxes, Number Inputs */
+    /* INPUT FIELDS OVERRIDE (WHITE INSIDE + BLUE BORDER) */
     div[data-baseweb="input"], 
     div[data-baseweb="base-input"],
     div[data-baseweb="textarea"],
@@ -93,7 +147,6 @@ st.markdown("""
         font-weight: 500 !important;
     }
 
-    /* Target Text Input Inner Wrappers & Dropdown Options */
     div[data-baseweb="input"] input, 
     div[data-baseweb="base-input"] input,
     div[data-baseweb="textarea"] textarea,
@@ -112,8 +165,37 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.15) !important;
     }
 
-    /* Buttons Styling */
-    .stButton>button, div[data-testid="stFormSubmitButton"]>button {
+    /* SELECTBOX DROPDOWN END-CAP & ARROW FIX */
+    div[data-baseweb="select"] > div > div:last-child {
+        background-color: #164194 !important;
+        border-top-right-radius: 6px !important;
+        border-bottom-right-radius: 6px !important;
+    }
+
+    div[data-baseweb="select"] svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    /* NUMBER INPUT PLUS / MINUS BUTTONS FIX */
+    div[data-testid="stNumberInput"] button {
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border: none !important;
+    }
+
+    div[data-testid="stNumberInput"] button:hover {
+        background-color: #00A859 !important;
+    }
+
+    div[data-testid="stNumberInput"] button svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Main Area Buttons */
+    .stMainBlockContainer .stButton>button, 
+    div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border-radius: 6px !important;
@@ -123,12 +205,22 @@ st.markdown("""
         padding: 10px 24px !important;
     }
 
-    .stButton>button:hover, div[data-testid="stFormSubmitButton"]>button:hover {
+    .stMainBlockContainer .stButton>button:hover, 
+    div[data-testid="stFormSubmitButton"]>button:hover {
         background-color: #00A859 !important;
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25) !important;
     }
+
+    /* Dataframe Container Styling */
+    div[data-testid="stDataFrame"] {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 10px !important;
+        padding: 8px !important;
+    }
     </style>
 """, unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # DATABASE CONNECTIVITY HELPERS
 # ---------------------------------------------------------
@@ -147,7 +239,7 @@ def load_sheet(worksheet_name):
             return pd.DataFrame()
     return pd.DataFrame()
 
-# Master Data Options
+# Master Options
 PRODUCT_LIST = [
     "Motorised Swing Gates", "Motorised Sliding Gates", "Automatic Rolling Shutters",
     "Dock Leveller", "Boom Barriers", "Rolling Shutter motor Part", "Spare Part"
@@ -180,7 +272,6 @@ def login_form():
     c1, col, c2 = st.columns([1, 1.2, 1])
     with col:
         with st.form("login_form"):
-            # Company Logo Integration on Login Page
             try:
                 st.image("Company Logo.jpeg", use_container_width=True)
             except Exception:
@@ -215,8 +306,8 @@ with st.sidebar:
     except Exception:
         st.write("🏭 **SSA CRM**")
         
-    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color: #00A859 !important; font-weight:700; font-size:14px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important; font-weight:700;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:14px !important; margin-bottom:15px;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
     if st.session_state.user_role == "Salesperson":
@@ -236,7 +327,7 @@ with st.sidebar:
             "🔍 Client Inspector"
         ])
 
-    st.markdown("---")
+    st.markdown("<br><br>", unsafe_allow_html=True)
     if st.button("🚪 Logout", use_container_width=True):
         st.session_state.authenticated = False
         st.rerun()
