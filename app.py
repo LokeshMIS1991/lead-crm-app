@@ -508,9 +508,11 @@ def login_form():
             # 1. Username
             user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
-            # 2. Password (shifted right below Username)
+            # 2. Show Password Toggle (evaluated first so pass_type is defined before password input)
             show_pwd = st.checkbox("👁️ Show Password")
             pass_type = "text" if show_pwd else "password"
+            
+            # 3. Password (placed right after Username and Show Password)
             pass_input = st.text_input("Password", type=pass_type, placeholder="Enter password").strip()
 
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -528,10 +530,6 @@ def login_form():
                         st.rerun()
                     else:
                         st.error("Invalid Username or Password.")
-
-if not st.session_state.authenticated:
-    login_form()
-    st.stop()
 
 # ---------------------------------------------------------
 # DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
