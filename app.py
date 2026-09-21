@@ -203,18 +203,18 @@ st.markdown("""
 
     /* CUSTOM STYLING FOR SHOW PASSWORD CHECKBOX SQUARE BLOCK */
     div[data-testid="stCheckbox"] div[role="checkbox"] {
-        background-color: #FAF9F6 !important;
-        border: 2px solid #0C3AB3 !important;
+        background-color: #FFFFFF !important;
+        border: 2px solid #184B9C !important;
         border-radius: 4px !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] {
-        background-color: #FAF9F6 !important;
-        border-color: #0C3AB3 !important;
+        background-color: #184B9C !important;
+        border-color: #184B9C !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"] svg {
-        fill: #FAF9F6 !important;
+        fill: #184B9C !important;
     }
 
     div[data-testid="stCheckbox"] div[role="checkbox"][aria-checked="true"] svg {
@@ -225,6 +225,42 @@ st.markdown("""
         color: #184B9C !important;
         font-weight: 600 !important;
         font-size: 13.5px !important;
+    }
+
+    /* FIX FOR STREAMLIT NOTIFICATION POPUPS (st.warning, st.error, st.success, st.info) */
+    div[data-testid="stAlert"] {
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+
+    div[data-testid="stAlert"] * {
+        color: #1E293B !important;
+    }
+
+    div[data-testid="stAlert"] [data-testid="stNotificationContentWarning"] {
+        background-color: #FEF3C7 !important;
+        color: #92400E !important;
+        border: 1px solid #FCD34D !important;
+    }
+
+    div[data-testid="stAlert"] [data-testid="stNotificationContentError"] {
+        background-color: #FEE2E2 !important;
+        color: #991B1B !important;
+        border: 1px solid #FCA5A5 !important;
+    }
+
+    div[data-testid="stAlert"] [data-testid="stNotificationContentSuccess"] {
+        background-color: #D1FAE5 !important;
+        color: #065F46 !important;
+        border: 1px solid #6EE7B7 !important;
+    }
+
+    div[data-testid="stAlert"] [data-testid="stNotificationContentInfo"] {
+        background-color: #E0F2FE !important;
+        color: #075985 !important;
+        border: 1px solid #7DD3FC !important;
     }
 
     /* Form Submit Buttons */
@@ -540,7 +576,7 @@ if not st.session_state.authenticated:
             st.markdown("<p style='text-align: center; color: #64748B; font-weight: 600; font-size: 14px; margin-top: -10px; margin-bottom: 20px;'>Enterprise CRM & Operations Portal</p>", unsafe_allow_html=True)
             
             # 1. Username Field
-            user_input = st.text_input("Username", placeholder="enter the user name").strip().lower()
+            user_input = st.text_input("Username", placeholder="e.g. admin or dolly").strip().lower()
             
             # 2. Password Field
             if "show_pwd" not in st.session_state:
