@@ -16,7 +16,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: SIDEBAR & NAVIGATION STYLING
+# CUSTOM CSS: SIDEBAR & NAVIGATION & CARDS STYLING
 # ---------------------------------------------------------
 st.markdown("""
     <style>
@@ -91,6 +91,45 @@ st.markdown("""
         background-color: #008f4c !important;
         box-shadow: 0 6px 14px rgba(0, 168, 89, 0.4) !important;
         transform: translateY(-1px) !important;
+    }
+
+    /* ---------------------------------------------------------
+       METRIC CARDS STYLING (FIX FOR INVISIBLE / BLUE HIGHLIGHT TEXT)
+       --------------------------------------------------------- */
+    .metric-card {
+        background-color: #FFFFFF !important;
+        border: 2px solid #164194 !important;
+        border-radius: 10px !important;
+        padding: 16px 20px !important;
+        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08) !important;
+        margin-bottom: 10px !important;
+        text-align: left !important;
+    }
+
+    .metric-card-green {
+        border-color: #00A859 !important;
+        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.1) !important;
+    }
+
+    .metric-card h5 {
+        color: #164194 !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        margin: 0 0 6px 0 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .metric-card-green h5 {
+        color: #00A859 !important;
+    }
+
+    .metric-card h3 {
+        color: #0F172A !important;
+        font-size: 32px !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        line-height: 1.1 !important;
     }
 
     /* ---------------------------------------------------------
