@@ -16,9 +16,6 @@ st.set_page_config(
 
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
-# ---------------------------------------------------------
-# COMPREHENSIVE UI FIX: FORCING LIGHT FORM INPUTS & SIDEBAR OVERRIDES
-# ---------------------------------------------------------
 st.markdown("""
     <style>
     /* 1. Global Page Background */
