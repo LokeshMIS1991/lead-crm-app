@@ -17,30 +17,42 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: STYLING & ACCENTS
+# SCOPED CSS ENGINE (FIXED INVISIBLE TEXT & DISTORTED LAYOUT)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    .stApp { background-color: #F8FAFC !important; }
-    header[data-testid="stHeader"] { background-color: #F8FAFC !important; }
+    /* Global Page Background */
+    .stApp, header[data-testid="stHeader"] { 
+        background-color: #F8FAFC !important; 
+    }
 
-    /* Sidebar Styling */
+    /* ---------------------------------------------------------
+       1. SIDEBAR NAVIGATION STYLING
+       --------------------------------------------------------- */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
-        padding-top: 20px !important;
+        padding-top: 15px !important;
     }
+
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
         font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    /* Radio Inputs Fix */
+    /* Radio Button Navigation Labels */
     div[data-testid="stRadio"] label {
-        font-size: 15px !important;
+        font-size: 14px !important;
         font-weight: 600 !important;
         padding: 6px 10px !important;
+        margin-bottom: 2px !important;
+        border-radius: 6px !important;
     }
+    div[data-testid="stRadio"] label:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    /* Radio Selection Indicator */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         background-color: #FFFFFF !important;
         border: 2px solid #FFFFFF !important;
@@ -51,47 +63,78 @@ st.markdown("""
         border: 3px solid #FFFFFF !important;
     }
 
-    /* Logout Button */
+    /* Sidebar Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
         border: none !important;
-        border-radius: 8px !important;
-        font-size: 16px !important;
+        border-radius: 6px !important;
+        font-size: 15px !important;
         font-weight: 700 !important;
+        padding: 8px 16px !important;
         width: 100% !important;
     }
     div[data-testid="stSidebar"] div.stButton > button:hover {
         background-color: #008f4c !important;
     }
 
-    /* Form & Metric Cards */
-    div[data-testid="stForm"], .saas-card {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        border-radius: 10px !important;
-        padding: 20px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-        margin-bottom: 20px !important;
+    /* ---------------------------------------------------------
+       2. MAIN CONTENT AREA TYPOGRAPHY & HEADERS (FIX FOR BLANK TEXT)
+       --------------------------------------------------------- */
+    .stMainBlockContainer h1, 
+    .stMainBlockContainer h2, 
+    .stMainBlockContainer h3, 
+    .stMainBlockContainer h4, 
+    .stMainBlockContainer p, 
+    .stMainBlockContainer span, 
+    .stMainBlockContainer div {
+        color: #0F172A;
     }
 
+    .main-header {
+        font-size: 26px !important;
+        font-weight: 800 !important;
+        color: #164194 !important;
+        margin-bottom: 15px !important;
+        border-bottom: 3px solid #00A859 !important;
+        padding-bottom: 8px !important;
+    }
+
+    .section-title {
+        color: #164194 !important;
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        margin-top: 15px !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1.5px solid #CBD5E1 !important;
+        padding-bottom: 4px !important;
+    }
+
+    /* ---------------------------------------------------------
+       3. METRIC CARDS & QUEUE CARDS
+       --------------------------------------------------------- */
     .metric-card {
         background-color: #FFFFFF !important;
         border: 2px solid #164194 !important;
-        border-radius: 10px !important;
-        padding: 16px 20px !important;
-        box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08) !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 4px 10px rgba(22, 65, 148, 0.06) !important;
         margin-bottom: 10px !important;
     }
-    .metric-card-green { border-color: #00A859 !important; }
+    .metric-card-green { 
+        border-color: #00A859 !important; 
+    }
     .metric-card h5 {
         color: #164194 !important;
-        font-size: 14px !important;
+        font-size: 13px !important;
         font-weight: 700 !important;
         margin: 0 0 4px 0 !important;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .metric-card-green h5 { color: #00A859 !important; }
+    .metric-card-green h5 { 
+        color: #00A859 !important; 
+    }
     .metric-card h3 {
         color: #0F172A !important;
         font-size: 28px !important;
@@ -99,7 +142,6 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* Action Queue Card */
     .queue-card {
         background-color: #FFFFFF !important;
         border-left: 5px solid #164194 !important;
@@ -107,20 +149,88 @@ st.markdown("""
         border-right: 1px solid #CBD5E1 !important;
         border-bottom: 1px solid #CBD5E1 !important;
         border-radius: 8px !important;
-        padding: 16px !important;
-        margin-bottom: 12px !important;
+        padding: 14px !important;
+        margin-bottom: 10px !important;
     }
 
-    /* Form Inputs Styling */
-    div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="select"] > div {
+    /* ---------------------------------------------------------
+       4. TABS STYLING FIX
+       --------------------------------------------------------- */
+    button[data-baseweb="tab"] {
+        background-color: transparent !important;
+        border-radius: 6px 6px 0 0 !important;
+        padding: 8px 16px !important;
+    }
+    button[data-baseweb="tab"] div p {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }
+    button[aria-selected="true"] {
+        border-bottom: 3px solid #00A859 !important;
+        background-color: #FFFFFF !important;
+    }
+    button[aria-selected="true"] div p {
+        color: #00A859 !important;
+    }
+
+    /* ---------------------------------------------------------
+       5. FORM & INPUT CONTROLS STYLING
+       --------------------------------------------------------- */
+    div[data-testid="stForm"], .saas-card {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 20px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+        margin-bottom: 15px !important;
+    }
+
+    .stMainBlockContainer label, .stMainBlockContainer label * {
+        color: #164194 !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+    }
+
+    div[data-baseweb="input"], 
+    div[data-baseweb="textarea"], 
+    div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         border: 1.5px solid #164194 !important;
         border-radius: 6px !important;
+        color: #0F172A !important;
     }
+
     div[data-baseweb="select"] > div > div:last-child {
         background-color: #164194 !important;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
     }
     div[data-baseweb="select"] svg { fill: #FFFFFF !important; }
+
+    /* Main Area Buttons */
+    .stMainBlockContainer .stButton>button, 
+    div[data-testid="stFormSubmitButton"]>button {
+        background-color: #164194 !important;
+        color: #FFFFFF !important;
+        border-radius: 6px !important;
+        border: none !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        padding: 8px 20px !important;
+    }
+    .stMainBlockContainer .stButton>button:hover, 
+    div[data-testid="stFormSubmitButton"]>button:hover {
+        background-color: #00A859 !important;
+    }
+
+    /* Dataframe Container */
+    div[data-testid="stDataFrame"] {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 6px !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -164,7 +274,7 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# PDF GENERATOR ENGINE (LAZY IMPORT TO PREVENT BUILD CRASHES)
+# PDF GENERATOR ENGINE
 # ---------------------------------------------------------
 def generate_quotation_pdf(quote_details):
     try:
@@ -297,7 +407,7 @@ def login_form():
             except Exception:
                 st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
             
-            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 16px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 15px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
             user_input = st.text_input("Username").strip().lower()
             pass_input = st.text_input("Password", type="password")
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -325,18 +435,17 @@ with st.sidebar:
     except Exception:
         st.write("🏭 **SSA CRM**")
         
-    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:14px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important; font-weight:700;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:13px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Navigation Per Role
     if st.session_state.user_role == "Salesperson":
         menu = st.radio("NAVIGATION", ["⚡ Follow-up Queue & Workday", "📥 Add New Lead", "📄 Quotation Generator", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Back-Office":
         menu = st.radio("NAVIGATION", ["📄 Quotation Generator & Convert", "⚡ Follow-up Queue & Workday", "📞 Follow-up Master", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Operations":
         menu = st.radio("NAVIGATION", ["⚙️ Process Order Execution", "🔍 Client Inspector"])
-    else: # Admin / Executive (SUPER ACCESS)
+    else: # Admin
         menu = st.radio("NAVIGATION", [
             "📈 Admin Performance & Progress Control",
             "⚡ Follow-up Queue & Workday",
@@ -353,7 +462,7 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
-# ADMIN MODULE: EMPLOYEE PERFORMANCE & WORK PROGRESS DASHBOARDS
+# ADMIN PERFORMANCE & PROGRESS CONTROL MODULE
 # ---------------------------------------------------------
 if menu == "📈 Admin Performance & Progress Control":
     st.markdown("<div class='main-header'>📈 Executive Employee Performance & Operational Progress</div>", unsafe_allow_html=True)
@@ -412,10 +521,10 @@ if menu == "📈 Admin Performance & Progress Control":
 
                 e1, e2 = st.columns(2)
                 with e1:
-                    st.markdown(f"<b>Active Leads for {selected_emp}: {len(emp_leads)}</b>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#164194; font-weight:700;'>Active Leads for {selected_emp}: {len(emp_leads)}</p>", unsafe_allow_html=True)
                     st.dataframe(emp_leads, use_container_width=True, hide_index=True)
                 with e2:
-                    st.markdown(f"<b>Issued Quotes for {selected_emp}: {len(emp_quotes)}</b>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color:#164194; font-weight:700;'>Issued Quotes for {selected_emp}: {len(emp_quotes)}</p>", unsafe_allow_html=True)
                     st.dataframe(emp_quotes, use_container_width=True, hide_index=True)
 
     with tab_prog:
