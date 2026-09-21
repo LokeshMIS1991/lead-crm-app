@@ -26,7 +26,7 @@ st.markdown("""
         background-color: #F8FAFC !important; 
     }
 
-    /* Hide Unstyled Icon String Leaks (keyboard_double) */
+    /* Hide Unstyled Icon String Leaks */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
@@ -108,7 +108,7 @@ st.markdown("""
         padding-bottom: 4px !important;
     }
 
-    /* Form Card & Light Input Box Styles */
+    /* Form Card & Input Container Styles */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
         border: 1.5px solid #CBD5E1 !important;
@@ -125,19 +125,19 @@ st.markdown("""
     }
 
     /* Force White Input Field Backgrounds */
-    input[type="text"], input[type="password"], textarea, div[data-baseweb="select"] > div {
+    input[type="text"], input[type="password"], textarea {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
         border: 1.5px solid #CBD5E1 !important;
         border-radius: 6px !important;
     }
 
-    input[type="text"]:focus, textarea:focus, div[data-baseweb="select"] > div:focus-within {
+    input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
         border-color: #164194 !important;
         box-shadow: 0 0 0 1px #164194 !important;
     }
-    
-    /* Password Field Visibility Toggle Container (BaseWeb Override) */
+
+    /* Password Field Visibility Toggle Container (Navy Blue Eye Icon) */
     div[data-baseweb="input"] > div:last-child,
     div[data-testid="stInputIconButton"],
     div[data-testid="stInputIconButton"] button {
@@ -147,7 +147,7 @@ st.markdown("""
         border-bottom-right-radius: 6px !important;
     }
 
-    /* Force Eye Icon to Render Clean White */
+    /* Force Eye Icon SVG to White */
     div[data-baseweb="input"] > div:last-child svg,
     div[data-testid="stInputIconButton"] svg,
     div[data-testid="stInputIconButton"] button * {
@@ -156,12 +156,15 @@ st.markdown("""
         stroke: #FFFFFF !important;
     }
 
-    /* Hover effect for Eye Icon container */
-    div[data-testid="stInputIconButton"] button:hover {
-        background-color: #0e2d6b !important;
+    div[data-baseweb="select"] * {
+        color: #0F172A !important;
+        background-color: #FFFFFF !important;
+    }
+    div[data-baseweb="select"] svg {
+        fill: #164194 !important;
     }
 
-    /* Form Submit Button (Forced Corporate Green - Matching Brand Logo) */
+    /* Login Form Submit Button (Corporate Green) */
     div[data-testid="stFormSubmitButton"] button,
     button[kind="primaryFormSubmit"],
     button[data-testid="baseButton-primaryFormSubmit"] {
@@ -182,69 +185,6 @@ st.markdown("""
     button[data-testid="baseButton-primaryFormSubmit"]:hover {
         background-color: #008f4c !important;
         color: #FFFFFF !important;
-    }
-
-    /* Tabs Styling */
-    button[data-baseweb="tab"] {
-        background-color: transparent !important;
-        border-radius: 6px 6px 0 0 !important;
-        padding: 8px 16px !important;
-    }
-    button[data-baseweb="tab"] div p {
-        color: #164194 !important;
-        font-weight: 700 !important;
-        font-size: 15px !important;
-    }
-    button[aria-selected="true"] {
-        border-bottom: 3px solid #00A859 !important;
-        background-color: #FFFFFF !important;
-    }
-    button[aria-selected="true"] div p {
-        color: #00A859 !important;
-    }
-
-    /* Metric Cards */
-    .metric-card {
-        background-color: #FFFFFF !important;
-        border: 2px solid #164194 !important;
-        border-radius: 8px !important;
-        padding: 14px 18px !important;
-        box-shadow: 0 4px 10px rgba(22, 65, 148, 0.06) !important;
-        margin-bottom: 10px !important;
-    }
-    .metric-card-green { border-color: #00A859 !important; }
-    .metric-card h5 {
-        color: #164194 !important;
-        font-size: 13px !important;
-        font-weight: 700 !important;
-        margin: 0 0 4px 0 !important;
-        text-transform: uppercase;
-    }
-    .metric-card-green h5 { color: #00A859 !important; }
-    .metric-card h3 {
-        color: #0F172A !important;
-        font-size: 28px !important;
-        font-weight: 800 !important;
-        margin: 0 !important;
-    }
-
-    /* Queue Cards */
-    .queue-card {
-        background-color: #FFFFFF !important;
-        border-left: 5px solid #164194 !important;
-        border-top: 1px solid #CBD5E1 !important;
-        border-right: 1px solid #CBD5E1 !important;
-        border-bottom: 1px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-        padding: 14px !important;
-        margin-bottom: 10px !important;
-    }
-
-    div[data-testid="stDataFrame"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-        padding: 6px !important;
     }
     </style>
 """, unsafe_allow_html=True)
