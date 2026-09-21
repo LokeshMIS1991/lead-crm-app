@@ -17,7 +17,7 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CORPORATE BRAND UI ENGINE (ENHANCED & SUBTLE)
+# CORPORATE BRAND UI ENGINE
 # Primary Blue: #184B9C | Dark Blue: #0E2C68 | Accent Blue: #2965C1 | Emerald Green: #00A859
 # ---------------------------------------------------------
 st.markdown("""
@@ -36,7 +36,7 @@ st.markdown("""
         background-color: transparent !important; 
     }
 
-    /* 2. Hide Unstyled Sidebar Strings & Clean Top Edge */
+    /* 2. Hide Unstyled Sidebar Strings */
     [data-testid="stSidebar"] [data-testid="stSidebarCollapseButton"] span {
         display: none !important;
     }
@@ -84,7 +84,7 @@ st.markdown("""
         border: 2px solid #FFFFFF !important;
     }
 
-    /* Sidebar Buttons */
+    /* Sidebar Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background: linear-gradient(135deg, #00A859 0%, #008F4C 100%) !important;
         color: #FFFFFF !important;
@@ -146,7 +146,7 @@ st.markdown("""
     /* 5. Subtly Raised Container Cards & Forms */
     div[data-testid="stForm"], .saas-card {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        border: 1px solid #184B9C !important;
         border-top: 3px solid #184B9C !important;
         border-radius: 12px !important;
         padding: 24px 28px !important;
@@ -158,7 +158,7 @@ st.markdown("""
     input[type="text"], input[type="password"], textarea, div[data-baseweb="select"] > div {
         background-color: #F8FAFC !important;
         color: #0E2C68 !important;
-        border: 1px solid #CBD5E1 !important;
+        border: 1px solid #184B9C !important;
         border-radius: 8px !important;
         padding: 8px 12px !important;
         font-size: 14px !important;
@@ -172,16 +172,35 @@ st.markdown("""
         outline: none !important;
     }
 
-    /* Hide Streamlit's native input icon container leak */
-    div[data-testid="stInputIconButton"],
-    div[data-testid="stInputIconButton"] * {
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
+    /* Custom Show Password Checkbox (Blue Outline Only, Unfilled) */
+    div[data-testid="stCheckbox"] label > span:first-child {
+        background-color: transparent !important;
+        border: 2px solid #184B9C !important;
+        border-radius: 4px !important;
+    }
+    div[data-testid="stCheckbox"] input[type="checkbox"]:checked + span:first-child {
+        background-color: #184B9C !important;
+        border-color: #184B9C !important;
     }
 
-    /* Form Buttons */
+    /* Native Eye Button (Integrated inside password field) Blue Color */
+    button[aria-label="Show password text"],
+    button[aria-label="Hide password text"],
+    div[data-testid="stInputIconButton"] button {
+        background-color: #184B9C !important;
+        border: 1px solid #184B9C !important;
+        color: #FFFFFF !important;
+        border-top-right-radius: 7px !important;
+        border-bottom-right-radius: 7px !important;
+    }
+    button[aria-label="Show password text"] svg,
+    button[aria-label="Hide password text"] svg,
+    div[data-testid="stInputIconButton"] button svg {
+        fill: #FFFFFF !important;
+        color: #FFFFFF !important;
+    }
+
+    /* Form Submit Buttons */
     div[data-testid="stFormSubmitButton"] button,
     button[kind="primaryFormSubmit"] {
         background: linear-gradient(135deg, #00A859 0%, #008F4C 100%) !important;
@@ -232,7 +251,7 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* 7. Subtle Dashboard Metric Cards */
+    /* 7. Dashboard Metric Cards */
     .metric-card {
         background-color: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
