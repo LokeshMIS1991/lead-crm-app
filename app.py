@@ -373,24 +373,34 @@ if "authenticated" not in st.session_state:
     st.session_state.username = None
 
 def fetch_users_from_sheets():
+    # Force TTL=0 to avoid stale caching when users are added/updated in Sheets
     df_users = load_sheet("Users")
     users_dict = {}
 
     if not df_users.empty:
-        # Strip trailing/leading spaces from column names
-        df_users.columns = df_users.columns.str.strip()
+        # Clean column headers
+        df_users.columns = df_users.columns.astype(str).str.strip()
         
         required_cols = {"Username", "Password", "Role", "Display Name"}
         if required_cols.issubset(set(df_users.columns)):
             for _, row in df_users.iterrows():
+                # Read username cleanly
                 uname = str(row["Username"]).strip().lower()
-                pwd = str(row["Password"]).strip()
+                
+                # Format password: convert float numbers like '1234.0' back to string '1234'
+                pwd_raw = row["Password"]
+                if pd.api.types.is_float_dtype(type(pwd_raw)) and pwd_raw.is_integer():
+                    pwd = str(int(pwd_raw)).strip()
+                else:
+                    pwd = str(pwd_raw).split('.')[0] if str(pwd_raw).endswith('.0') else str(pwd_raw).strip()
+                
                 role = str(row["Role"]).strip()
                 disp = str(row["Display Name"]).strip()
-                if uname and pwd:
+                
+                if uname and uname != "nan" and pwd and pwd != "nan":
                     users_dict[uname] = (pwd, role, disp)
 
-    # Built-in fallback administrator if sheet is empty or unreadable
+    # Built-in default fallback administrator
     if "admin" not in users_dict:
         users_dict["admin"] = ("admin123", "Admin", "System Administrator")
 
