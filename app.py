@@ -1,14 +1,8 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime
 from streamlit_gsheets import GSheetsConnection
 import io
-
-# ReportLab Imports for Branded PDF Generation
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
 
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
@@ -108,7 +102,7 @@ st.markdown("""
     /* Action Queue Card */
     .queue-card {
         background-color: #FFFFFF !important;
-        border-left: 5px solid #EF4444 !important;
+        border-left: 5px solid #164194 !important;
         border-top: 1px solid #CBD5E1 !important;
         border-right: 1px solid #CBD5E1 !important;
         border-bottom: 1px solid #CBD5E1 !important;
@@ -170,15 +164,23 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# PDF GENERATOR ENGINE (REPORTLAB)
+# PDF GENERATOR ENGINE (LAZY IMPORT TO PREVENT BUILD CRASHES)
 # ---------------------------------------------------------
 def generate_quotation_pdf(quote_details):
+    try:
+        from reportlab.lib.pagesizes import letter
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib import colors
+    except ImportError:
+        st.error("The ReportLab library is missing. Please ensure 'reportlab' is added to requirements.txt.")
+        return None
+
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
     story = []
     styles = getSampleStyleSheet()
 
-    # Brand Header Colors
     navy = colors.HexColor("#164194")
     green = colors.HexColor("#00A859")
     dark_text = colors.HexColor("#0F172A")
@@ -188,7 +190,6 @@ def generate_quotation_pdf(quote_details):
     normal_style = ParagraphStyle('NormStyle', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=14, textColor=dark_text)
     bold_style = ParagraphStyle('BoldStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=14, textColor=dark_text)
 
-    # Header Row
     header_data = [
         [
             Paragraph("<b>SIDHARTH SHUTTER & AUTOMATION</b>", title_style),
@@ -205,7 +206,6 @@ def generate_quotation_pdf(quote_details):
     story.append(Spacer(1, 10))
     story.append(HRFlowable(width="100%", thickness=2, color=green, spaceAfter=15))
 
-    # Client & Project Block
     client_info = [
         [Paragraph("<b>CUSTOMER DETAILS</b>", ParagraphStyle('H1', fontName='Helvetica-Bold', fontSize=11, textColor=navy)),
          Paragraph("<b>PROJECT SUMMARY</b>", ParagraphStyle('H2', fontName='Helvetica-Bold', fontSize=11, textColor=navy))],
@@ -229,7 +229,6 @@ def generate_quotation_pdf(quote_details):
     story.append(info_table)
     story.append(Spacer(1, 15))
 
-    # Itemized Pricing Table
     qty = float(quote_details.get('Quantity', 1))
     total_amt = float(quote_details.get('Qut. Amount', 0))
     unit_price = total_amt / qty if qty > 0 else total_amt
@@ -257,7 +256,6 @@ def generate_quotation_pdf(quote_details):
     story.append(items_table)
     story.append(Spacer(1, 20))
 
-    # Terms & Conditions
     terms_text = (
         "<b>Terms & Conditions:</b><br>"
         "1. 50% advance payment with purchase order; balance 50% prior to dispatch.<br>"
@@ -331,16 +329,16 @@ with st.sidebar:
     st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:14px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Custom Navigation Per Role
+    # Navigation Per Role
     if st.session_state.user_role == "Salesperson":
         menu = st.radio("NAVIGATION", ["⚡ Follow-up Queue & Workday", "📥 Add New Lead", "📄 Quotation Generator", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Back-Office":
         menu = st.radio("NAVIGATION", ["📄 Quotation Generator & Convert", "⚡ Follow-up Queue & Workday", "📞 Follow-up Master", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Operations":
         menu = st.radio("NAVIGATION", ["⚙️ Process Order Execution", "🔍 Client Inspector"])
-    else: # Admin / Executive
+    else: # Admin / Executive (SUPER ACCESS)
         menu = st.radio("NAVIGATION", [
-            "🏆 Sales Leaderboard & Analytics",
+            "📈 Admin Performance & Progress Control",
             "⚡ Follow-up Queue & Workday",
             "📥 Add New Lead",
             "📄 Quotation Generator & Convert",
@@ -355,15 +353,112 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
-# MODULE 1: AUTOMATED FOLLOW-UP QUEUE & OUTCOME BUTTONS
+# ADMIN MODULE: EMPLOYEE PERFORMANCE & WORK PROGRESS DASHBOARDS
 # ---------------------------------------------------------
-if menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
+if menu == "📈 Admin Performance & Progress Control":
+    st.markdown("<div class='main-header'>📈 Executive Employee Performance & Operational Progress</div>", unsafe_allow_html=True)
+
+    df_leads = load_sheet("Leads Data")
+    df_quotes = load_sheet("Quotation Sheet")
+    df_follow = load_sheet("Quotation Follow Up Tracker")
+    df_orders = load_sheet("Process Order")
+
+    tab_perf, tab_prog = st.tabs(["👤 Employee Performance Tracker", "⚙️ Work & Operations Progress"])
+
+    with tab_perf:
+        st.markdown("<div class='section-title'>📊 Salesperson Activity & Performance Matrix</div>", unsafe_allow_html=True)
+
+        if not df_leads.empty and "Assigned Salesperson" in df_leads.columns:
+            leads_per_rep = df_leads["Assigned Salesperson"].value_counts().reset_index()
+            leads_per_rep.columns = ["Salesperson", "Total Leads Assigned"]
+
+            if not df_quotes.empty and "Assigned Salesperson" in df_quotes.columns:
+                quotes_per_rep = df_quotes.groupby("Assigned Salesperson").agg(
+                    Quotes_Sent=('Quotation Number', 'count'),
+                    Quoted_Value=('Qut. Amount', lambda x: pd.to_numeric(x, errors='coerce').sum())
+                ).reset_index()
+
+                perf_matrix = pd.merge(leads_per_rep, quotes_per_rep, on="Salesperson", how="left").fillna(0)
+            else:
+                perf_matrix = leads_per_rep
+                perf_matrix["Quotes_Sent"] = 0
+                perf_matrix["Quoted_Value"] = 0
+
+            if not df_follow.empty and "Assigned Salesperson" in df_follow.columns and "Follow-up Status" in df_follow.columns:
+                closed_df = df_follow[df_follow["Follow-up Status"] == "Closed / Converted"]
+                closed_per_rep = closed_df.groupby("Assigned Salesperson").size().reset_index(name="Deals_Won")
+                perf_matrix = pd.merge(perf_matrix, closed_per_rep, on="Salesperson", how="left").fillna(0)
+            else:
+                perf_matrix["Deals_Won"] = 0
+
+            st.dataframe(perf_matrix, use_container_width=True, hide_index=True)
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            c1, c2 = st.columns(2)
+            with c1:
+                st.markdown("<div class='section-title'>📈 Total Inquiries Handled Per Rep</div>", unsafe_allow_html=True)
+                st.bar_chart(data=perf_matrix, x="Salesperson", y="Total Leads Assigned", color="#164194")
+            with c2:
+                st.markdown("<div class='section-title'>💰 Total Pipeline Quoted Value (₹)</div>", unsafe_allow_html=True)
+                st.bar_chart(data=perf_matrix, x="Salesperson", y="Quoted_Value", color="#00A859")
+
+            st.markdown("---")
+            st.markdown("<div class='section-title'>🔍 Individual Employee Inspector</div>", unsafe_allow_html=True)
+            selected_emp = st.selectbox("Select Employee to View Assigned Work:", SALESPERSONS)
+
+            if selected_emp:
+                emp_leads = df_leads[df_leads["Assigned Salesperson"] == selected_emp] if not df_leads.empty else pd.DataFrame()
+                emp_quotes = df_quotes[df_quotes["Assigned Salesperson"] == selected_emp] if not df_quotes.empty else pd.DataFrame()
+
+                e1, e2 = st.columns(2)
+                with e1:
+                    st.markdown(f"<b>Active Leads for {selected_emp}: {len(emp_leads)}</b>", unsafe_allow_html=True)
+                    st.dataframe(emp_leads, use_container_width=True, hide_index=True)
+                with e2:
+                    st.markdown(f"<b>Issued Quotes for {selected_emp}: {len(emp_quotes)}</b>", unsafe_allow_html=True)
+                    st.dataframe(emp_quotes, use_container_width=True, hide_index=True)
+
+    with tab_prog:
+        st.markdown("<div class='section-title'>⚙️ Operational Progress & Factory Execution Funnel</div>", unsafe_allow_html=True)
+
+        o1, o2, o3 = st.columns(3)
+        with o1:
+            st.markdown(f"<div class='metric-card'><h5>Total Inquiries</h5><h3>{len(df_leads)}</h3></div>", unsafe_allow_html=True)
+        with o2:
+            st.markdown(f"<div class='metric-card metric-card-green'><h5>Quotations Generated</h5><h3>{len(df_quotes)}</h3></div>", unsafe_allow_html=True)
+        with o3:
+            st.markdown(f"<div class='metric-card'><h5>Orders in Execution</h5><h3>{len(df_orders)}</h3></div>", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        col_a, col_b = st.columns(2)
+
+        with col_a:
+            st.markdown("<div class='section-title'>📊 Factory Order Status Progress</div>", unsafe_allow_html=True)
+            if not df_orders.empty and "Current Status" in df_orders.columns:
+                status_counts = df_orders["Current Status"].value_counts().reset_index()
+                status_counts.columns = ["Execution Status", "Total Jobs"]
+                st.bar_chart(data=status_counts, x="Execution Status", y="Total Jobs", color="#00A859")
+            else:
+                st.info("No operational orders recorded in sheet.")
+
+        with col_b:
+            st.markdown("<div class='section-title'>📋 Quotation Status Pipeline</div>", unsafe_allow_html=True)
+            if not df_quotes.empty and "Quotation Status" in df_quotes.columns:
+                q_status_counts = df_quotes["Quotation Status"].value_counts().reset_index()
+                q_status_counts.columns = ["Quote Status", "Count"]
+                st.bar_chart(data=q_status_counts, x="Quote Status", y="Count", color="#164194")
+            else:
+                st.info("No quotation pipeline data available.")
+
+# ---------------------------------------------------------
+# FOLLOW-UP QUEUE & WORKDAY
+# ---------------------------------------------------------
+elif menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
     st.markdown(f"<div class='main-header'>⚡ Active Follow-up Queue: {st.session_state.user_display_name}</div>", unsafe_allow_html=True)
 
     df_follow = load_sheet("Quotation Follow Up Tracker")
 
     if not df_follow.empty:
-        # Filter reps if logged in as Salesperson
         if st.session_state.user_role == "Salesperson" and "Assigned Salesperson" in df_follow.columns:
             queue_df = df_follow[df_follow["Assigned Salesperson"] == st.session_state.user_display_name]
         else:
@@ -386,7 +481,6 @@ if menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
 
         if not active_queue.empty:
             for idx, row in active_queue.iterrows():
-                client_id = row.get("Client ID", f"Ref-{idx}")
                 client_name = row.get("Client Name", "Client")
                 phone = row.get("Contact Number", "N/A")
                 amt = row.get("Quotation Amount", "0")
@@ -437,7 +531,7 @@ if menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
     st.dataframe(df_follow, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# MODULE 2: BRANDED PDF QUOTATION GENERATOR & CONVERT
+# BRANDED PDF QUOTATION GENERATOR & CONVERT
 # ---------------------------------------------------------
 elif menu in ["📄 Quotation Generator", "📄 Quotation Generator & Convert"]:
     st.markdown("<div class='main-header'>📄 Branded PDF Quotation Generator</div>", unsafe_allow_html=True)
@@ -491,24 +585,23 @@ elif menu in ["📄 Quotation Generator", "📄 Quotation Generator & Convert"]:
                             "Remarks": remarks
                         }
 
-                        # Save quote row to Master Quotation Sheet
                         conn = get_connection()
                         if conn:
                             df_q_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet")
                             df_q_updated = pd.concat([df_q_existing, pd.DataFrame([quote_payload])], ignore_index=True)
                             conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet", data=df_q_updated)
 
-                        # Generate PDF
                         pdf_bytes = generate_quotation_pdf(quote_payload)
                         st.success(f"✅ Quotation {quote_no} Generated Successfully!")
 
-                        st.download_button(
-                            label="📥 Download Official PDF Quotation",
-                            data=pdf_bytes,
-                            file_name=f"{quote_no.replace('/', '_')}_{c_name}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
-                        )
+                        if pdf_bytes:
+                            st.download_button(
+                                label="📥 Download Official PDF Quotation",
+                                data=pdf_bytes,
+                                file_name=f"{quote_no.replace('/', '_')}_{c_name}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
 
     with tab2:
         st.markdown("<div class='section-title'>📋 Issued Quotation Registry</div>", unsafe_allow_html=True)
@@ -519,67 +612,16 @@ elif menu in ["📄 Quotation Generator", "📄 Quotation Generator & Convert"]:
             if selected_q_no and st.button("📄 Generate PDF for Selected Quote"):
                 q_row = df_quotes[df_quotes["Quotation Number"] == selected_q_no].iloc[0].to_dict()
                 pdf_bytes = generate_quotation_pdf(q_row)
-                st.download_button(
-                    label=f"📥 Download PDF ({selected_q_no})",
-                    data=pdf_bytes,
-                    file_name=f"{selected_q_no.replace('/', '_')}.pdf",
-                    mime="application/pdf"
-                )
+                if pdf_bytes:
+                    st.download_button(
+                        label=f"📥 Download PDF ({selected_q_no})",
+                        data=pdf_bytes,
+                        file_name=f"{selected_q_no.replace('/', '_')}.pdf",
+                        mime="application/pdf"
+                    )
 
 # ---------------------------------------------------------
-# MODULE 3: SALES LEADERBOARD & ANALYTICS CHARTS (ADMIN VIEW)
-# ---------------------------------------------------------
-elif menu == "🏆 Sales Leaderboard & Analytics":
-    st.markdown("<div class='main-header'>🏆 Sales Performance & Revenue Leaderboard</div>", unsafe_allow_html=True)
-
-    df_leads = load_sheet("Leads Data")
-    df_quotes = load_sheet("Quotation Sheet")
-    df_follow = load_sheet("Quotation Follow Up Tracker")
-
-    # Executive KPI Overview
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f"<div class='metric-card'><h5>Total Inquiries</h5><h3>{len(df_leads)}</h3></div>", unsafe_allow_html=True)
-    with c2:
-        st.markdown(f"<div class='metric-card metric-card-green'><h5>Quotations Sent</h5><h3>{len(df_quotes)}</h3></div>", unsafe_allow_html=True)
-    with c3:
-        val = pd.to_numeric(df_quotes['Qut. Amount'], errors='coerce').sum() if not df_quotes.empty and 'Qut. Amount' in df_quotes.columns else 0
-        st.markdown(f"<div class='metric-card'><h5>Pipeline Value</h5><h3>₹{val:,.0f}</h3></div>", unsafe_allow_html=True)
-    with c4:
-        closed_deals = len(df_follow[df_follow["Follow-up Status"] == "Closed / Converted"]) if not df_follow.empty and "Follow-up Status" in df_follow.columns else 0
-        st.markdown(f"<div class='metric-card metric-card-green'><h5>Won Orders</h5><h3>{closed_deals}</h3></div>", unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    col_left, col_right = st.columns(2)
-
-    with col_left:
-        st.markdown("<div class='section-title'>🥇 Rep Leaderboard (By Quoted Value)</div>", unsafe_allow_html=True)
-        if not df_quotes.empty and "Assigned Salesperson" in df_quotes.columns:
-            df_quotes['Numeric_Amt'] = pd.to_numeric(df_quotes['Qut. Amount'], errors='coerce').fillna(0)
-            rep_summary = df_quotes.groupby("Assigned Salesperson")["Numeric_Amt"].agg(['sum', 'count']).reset_index()
-            rep_summary.columns = ["Salesperson", "Total Revenue (₹)", "Quotes Issued"]
-            rep_summary = rep_summary.sort_values(by="Total Revenue (₹)", ascending=False)
-            st.dataframe(rep_summary, use_container_width=True, hide_index=True)
-        else:
-            st.info("No sales rep activity recorded yet.")
-
-    with col_right:
-        st.markdown("<div class='section-title'>📊 Lead Distribution by Source</div>", unsafe_allow_html=True)
-        if not df_leads.empty and "Source" in df_leads.columns:
-            source_counts = df_leads["Source"].value_counts().reset_index()
-            source_counts.columns = ["Lead Source", "Total Leads"]
-            st.bar_chart(data=source_counts, x="Lead Source", y="Total Leads", color="#164194")
-        else:
-            st.info("No lead source data available.")
-
-    st.markdown("<div class='section-title'>📦 Product Demand Breakdown</div>", unsafe_allow_html=True)
-    if not df_leads.empty and "Product " in df_leads.columns:
-        prod_counts = df_leads["Product "].value_counts().reset_index()
-        prod_counts.columns = ["Product Category", "Inquiries"]
-        st.bar_chart(data=prod_counts, x="Product Category", y="Inquiries", color="#00A859")
-
-# ---------------------------------------------------------
-# OTHER EXISTING MODULES
+# ADD NEW LEAD
 # ---------------------------------------------------------
 elif menu == "📥 Add New Lead":
     st.markdown("<div class='main-header'>📥 Lead Capture Portal</div>", unsafe_allow_html=True)
@@ -642,10 +684,16 @@ elif menu == "📥 Add New Lead":
                     conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_up)
                     st.success(f"✅ Lead Created! Client ID: {client_id}")
 
+# ---------------------------------------------------------
+# PROCESS ORDER EXECUTION
+# ---------------------------------------------------------
 elif menu == "⚙️ Process Order Execution":
     st.markdown("<div class='main-header'>⚙️ Operational & Factory Execution</div>", unsafe_allow_html=True)
     st.dataframe(load_sheet("Process Order"), use_container_width=True, hide_index=True)
 
+# ---------------------------------------------------------
+# CLIENT INSPECTOR
+# ---------------------------------------------------------
 elif menu == "🔍 Client Inspector":
     st.markdown("<div class='main-header'>🔍 Client 360 Degree Inspector</div>", unsafe_allow_html=True)
     df_leads = load_sheet("Leads Data")
