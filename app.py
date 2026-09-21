@@ -1,7 +1,14 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 from streamlit_gsheets import GSheetsConnection
+import io
+
+# ReportLab Imports for Branded PDF Generation
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
 
 # ---------------------------------------------------------
 # PAGE CONFIGURATION
@@ -16,64 +23,41 @@ st.set_page_config(
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ajDjxHOqfQw_7qRNvMT4I6q9jujJ6tjPqe6M4kOdoIo/edit"
 
 # ---------------------------------------------------------
-# CUSTOM CSS: SIDEBAR & NAVIGATION & CARDS STYLING
+# CUSTOM CSS: STYLING & ACCENTS
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Global Page Background */
-    .stApp {
-        background-color: #F8FAFC !important;
-    }
+    .stApp { background-color: #F8FAFC !important; }
+    header[data-testid="stHeader"] { background-color: #F8FAFC !important; }
 
-    header[data-testid="stHeader"] {
-        background-color: #F8FAFC !important;
-    }
-
-    /* ---------------------------------------------------------
-       SIDEBAR & NAVIGATION STYLING
-       --------------------------------------------------------- */
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #164194 !important;
         border-right: 2px solid #0e2d6b !important;
         padding-top: 20px !important;
     }
-
-    /* Sidebar General Typography */
     [data-testid="stSidebar"] * {
         color: #FFFFFF !important;
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        font-family: 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    /* Navigation Radio Text Styling */
+    /* Radio Inputs Fix */
     div[data-testid="stRadio"] label {
-        font-size: 16px !important;
+        font-size: 15px !important;
         font-weight: 600 !important;
-        padding: 8px 10px !important;
-        margin-bottom: 4px !important;
-        border-radius: 8px !important;
-        transition: background-color 0.2s ease !important;
+        padding: 6px 10px !important;
     }
-
-    div[data-testid="stRadio"] label:hover {
-        background-color: rgba(255, 255, 255, 0.12) !important;
-        cursor: pointer !important;
-    }
-
-    /* UNSELECTED RADIO BUTTON DOTS - WHITE COLOR */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         background-color: #FFFFFF !important;
         border: 2px solid #FFFFFF !important;
         border-radius: 50% !important;
     }
-
-    /* ACTIVE SELECTED RADIO BUTTON DOT */
     div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > div:first-child {
         background-color: #00A859 !important;
         border: 3px solid #FFFFFF !important;
-        box-shadow: 0 0 8px rgba(0, 168, 89, 0.6) !important;
     }
 
-    /* LOGOUT BUTTON - LOGO BRAND GREEN */
+    /* Logout Button */
     div[data-testid="stSidebar"] div.stButton > button {
         background-color: #00A859 !important;
         color: #FFFFFF !important;
@@ -81,21 +65,22 @@ st.markdown("""
         border-radius: 8px !important;
         font-size: 16px !important;
         font-weight: 700 !important;
-        padding: 10px 20px !important;
-        box-shadow: 0 4px 10px rgba(0, 168, 89, 0.3) !important;
-        transition: all 0.2s ease-in-out !important;
         width: 100% !important;
     }
-
     div[data-testid="stSidebar"] div.stButton > button:hover {
         background-color: #008f4c !important;
-        box-shadow: 0 6px 14px rgba(0, 168, 89, 0.4) !important;
-        transform: translateY(-1px) !important;
     }
 
-    /* ---------------------------------------------------------
-       METRIC CARDS STYLING (FIX FOR INVISIBLE / BLUE HIGHLIGHT TEXT)
-       --------------------------------------------------------- */
+    /* Form & Metric Cards */
+    div[data-testid="stForm"], .saas-card {
+        background-color: #FFFFFF !important;
+        border: 1.5px solid #CBD5E1 !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        margin-bottom: 20px !important;
+    }
+
     .metric-card {
         background-color: #FFFFFF !important;
         border: 2px solid #164194 !important;
@@ -103,165 +88,45 @@ st.markdown("""
         padding: 16px 20px !important;
         box-shadow: 0 4px 12px rgba(22, 65, 148, 0.08) !important;
         margin-bottom: 10px !important;
-        text-align: left !important;
     }
-
-    .metric-card-green {
-        border-color: #00A859 !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.1) !important;
-    }
-
+    .metric-card-green { border-color: #00A859 !important; }
     .metric-card h5 {
         color: #164194 !important;
-        font-size: 15px !important;
+        font-size: 14px !important;
         font-weight: 700 !important;
-        margin: 0 0 6px 0 !important;
+        margin: 0 0 4px 0 !important;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
-
-    .metric-card-green h5 {
-        color: #00A859 !important;
-    }
-
+    .metric-card-green h5 { color: #00A859 !important; }
     .metric-card h3 {
         color: #0F172A !important;
-        font-size: 32px !important;
-        font-weight: 800 !important;
-        margin: 0 !important;
-        line-height: 1.1 !important;
-    }
-
-    /* ---------------------------------------------------------
-       FORM & MAIN CONTAINER CARDS
-       --------------------------------------------------------- */
-    div[data-testid="stForm"], .saas-card {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        border-radius: 10px !important;
-        padding: 24px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-        margin-bottom: 20px !important;
-    }
-
-    /* Page Headers */
-    .main-header {
         font-size: 28px !important;
         font-weight: 800 !important;
-        color: #164194 !important;
-        margin-bottom: 15px;
-        border-bottom: 3px solid #00A859;
-        padding-bottom: 8px;
+        margin: 0 !important;
     }
 
-    .section-title {
-        color: #164194 !important;
-        font-size: 18px !important;
-        font-weight: 800 !important;
-        margin-top: 10px !important;
-        margin-bottom: 14px !important;
-        border-bottom: 1.5px solid #E2E8F0;
-        padding-bottom: 6px;
+    /* Action Queue Card */
+    .queue-card {
+        background-color: #FFFFFF !important;
+        border-left: 5px solid #EF4444 !important;
+        border-top: 1px solid #CBD5E1 !important;
+        border-right: 1px solid #CBD5E1 !important;
+        border-bottom: 1px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+        padding: 16px !important;
+        margin-bottom: 12px !important;
     }
 
-    /* FORM FIELD LABELS */
-    .stMainBlockContainer label, label * {
-        color: #164194 !important;
-        font-weight: 700 !important;
-        font-size: 15px !important;
-    }
-
-    /* INPUT FIELDS OVERRIDE (WHITE INSIDE + BLUE BORDER) */
-    div[data-baseweb="input"], 
-    div[data-baseweb="base-input"],
-    div[data-baseweb="textarea"],
-    div[data-baseweb="select"] > div,
-    input,
-    textarea {
+    /* Form Inputs Styling */
+    div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="select"] > div {
         background-color: #FFFFFF !important;
         border: 1.5px solid #164194 !important;
         border-radius: 6px !important;
-        color: #0F172A !important;
-        font-size: 15px !important;
-        font-weight: 500 !important;
     }
-
-    div[data-baseweb="input"] input, 
-    div[data-baseweb="base-input"] input,
-    div[data-baseweb="textarea"] textarea,
-    div[data-baseweb="select"] input,
-    div[data-baseweb="select"] div {
-        background-color: transparent !important;
-        color: #0F172A !important;
-        font-size: 15px !important;
-    }
-
-    /* Active Focus State for Inputs */
-    div[data-baseweb="textarea"]:focus-within, 
-    div[data-baseweb="input"]:focus-within,
-    div[data-baseweb="select"] > div:focus-within {
-        border-color: #00A859 !important;
-        box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.15) !important;
-    }
-
-    /* SELECTBOX / DROPDOWN END-CAP & ARROW FIX */
     div[data-baseweb="select"] > div > div:last-child {
         background-color: #164194 !important;
-        border-top-right-radius: 5px !important;
-        border-bottom-right-radius: 5px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
     }
-
-    div[data-baseweb="select"] svg {
-        fill: #FFFFFF !important;
-        color: #FFFFFF !important;
-    }
-
-    /* NUMBER INPUT PLUS / MINUS BUTTONS FIX */
-    div[data-testid="stNumberInput"] button {
-        background-color: #164194 !important;
-        color: #FFFFFF !important;
-        border: none !important;
-    }
-
-    div[data-testid="stNumberInput"] button:hover {
-        background-color: #00A859 !important;
-    }
-
-    div[data-testid="stNumberInput"] button svg {
-        fill: #FFFFFF !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Main Area Buttons */
-    .stMainBlockContainer .stButton>button, 
-    div[data-testid="stFormSubmitButton"]>button {
-        background-color: #164194 !important;
-        color: #FFFFFF !important;
-        border-radius: 6px !important;
-        border: none !important;
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        padding: 10px 24px !important;
-    }
-
-    .stMainBlockContainer .stButton>button:hover, 
-    div[data-testid="stFormSubmitButton"]>button:hover {
-        background-color: #00A859 !important;
-        box-shadow: 0 4px 12px rgba(0, 168, 89, 0.25) !important;
-    }
-
-    /* Dataframe Container Styling */
-    div[data-testid="stDataFrame"] {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #CBD5E1 !important;
-        border-radius: 10px !important;
-        padding: 8px !important;
-    }
+    div[data-baseweb="select"] svg { fill: #FFFFFF !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -283,7 +148,18 @@ def load_sheet(worksheet_name):
             return pd.DataFrame()
     return pd.DataFrame()
 
-# Master Options
+def save_sheet(worksheet_name, df_updated):
+    conn = get_connection()
+    if conn:
+        try:
+            conn.update(spreadsheet=SPREADSHEET_URL, worksheet=worksheet_name, data=df_updated)
+            return True
+        except Exception as e:
+            st.error(f"Failed to update sheet: {e}")
+            return False
+    return False
+
+# Master Configuration Options
 PRODUCT_LIST = [
     "Motorised Swing Gates", "Motorised Sliding Gates", "Automatic Rolling Shutters",
     "Dock Leveller", "Boom Barriers", "Rolling Shutter motor Part", "Spare Part"
@@ -294,7 +170,109 @@ CLIENT_TYPES = ["New Buy", "Dealer", "Architect", "Contractor", "Service", "OEM"
 TEAM_MEMBERS = ["Pooja", "Dolly", "Albert", "Rishabh", "Bhavya", "Other"]
 
 # ---------------------------------------------------------
-# AUTHENTICATION & USER SESSION MANAGEMENT
+# PDF GENERATOR ENGINE (REPORTLAB)
+# ---------------------------------------------------------
+def generate_quotation_pdf(quote_details):
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
+    story = []
+    styles = getSampleStyleSheet()
+
+    # Brand Header Colors
+    navy = colors.HexColor("#164194")
+    green = colors.HexColor("#00A859")
+    dark_text = colors.HexColor("#0F172A")
+
+    title_style = ParagraphStyle('TitleStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=20, leading=24, textColor=navy)
+    subtitle_style = ParagraphStyle('SubTitleStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=12, textColor=green)
+    normal_style = ParagraphStyle('NormStyle', parent=styles['Normal'], fontName='Helvetica', fontSize=10, leading=14, textColor=dark_text)
+    bold_style = ParagraphStyle('BoldStyle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, leading=14, textColor=dark_text)
+
+    # Header Row
+    header_data = [
+        [
+            Paragraph("<b>SIDHARTH SHUTTER & AUTOMATION</b>", title_style),
+            Paragraph("<b>QUOTATION</b><br><font size=8 color='#64748B'>Date: " + datetime.now().strftime('%d-%b-%Y') + "</font>", title_style)
+        ],
+        [
+            Paragraph("Industrial Shutters, Automatic Gates & Automation Solutions", subtitle_style),
+            Paragraph(f"<b>Quote No:</b> {quote_details.get('Quotation Number', 'SSA/2026/01')}", bold_style)
+        ]
+    ]
+    header_table = Table(header_data, colWidths=[340, 200])
+    header_table.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1), 'TOP')]))
+    story.append(header_table)
+    story.append(Spacer(1, 10))
+    story.append(HRFlowable(width="100%", thickness=2, color=green, spaceAfter=15))
+
+    # Client & Project Block
+    client_info = [
+        [Paragraph("<b>CUSTOMER DETAILS</b>", ParagraphStyle('H1', fontName='Helvetica-Bold', fontSize=11, textColor=navy)),
+         Paragraph("<b>PROJECT SUMMARY</b>", ParagraphStyle('H2', fontName='Helvetica-Bold', fontSize=11, textColor=navy))],
+        [
+            Paragraph(f"<b>Client:</b> {quote_details.get('Client Name', '')}<br>"
+                      f"<b>Company:</b> {quote_details.get('Company Name', 'N/A')}<br>"
+                      f"<b>Phone:</b> {quote_details.get('Customer Contact Number', '')}<br>"
+                      f"<b>City:</b> {quote_details.get('City', '')}", normal_style),
+            Paragraph(f"<b>Client ID:</b> {quote_details.get('Client  ID', '')}<br>"
+                      f"<b>Assigned Rep:</b> {quote_details.get('Assigned Salesperson', '')}<br>"
+                      f"<b>Source:</b> {quote_details.get('Source', '')}", normal_style)
+        ]
+    ]
+    info_table = Table(client_info, colWidths=[270, 270])
+    info_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#F1F5F9")),
+        ('PADDING', (0,0), (-1,-1), 8),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#CBD5E1"))
+    ]))
+    story.append(info_table)
+    story.append(Spacer(1, 15))
+
+    # Itemized Pricing Table
+    qty = float(quote_details.get('Quantity', 1))
+    total_amt = float(quote_details.get('Qut. Amount', 0))
+    unit_price = total_amt / qty if qty > 0 else total_amt
+    gst_amt = total_amt * 0.18
+    grand_total = total_amt + gst_amt
+
+    items_data = [
+        [Paragraph("<b>Item / Specification</b>", bold_style), Paragraph("<b>Qty</b>", bold_style), Paragraph("<b>Unit Price (₹)</b>", bold_style), Paragraph("<b>Total (₹)</b>", bold_style)],
+        [Paragraph(f"<b>{quote_details.get('Product ', 'Automation Equipment')}</b><br><font size=8 color='#475569'>{quote_details.get('Remarks', '')}</font>", normal_style),
+         Paragraph(str(qty), normal_style), Paragraph(f"{unit_price:,.2f}", normal_style), Paragraph(f"{total_amt:,.2f}", normal_style)],
+        ["", "", Paragraph("<b>Sub Total:</b>", normal_style), Paragraph(f"₹{total_amt:,.2f}", normal_style)],
+        ["", "", Paragraph("<b>GST (18%):</b>", normal_style), Paragraph(f"₹{gst_amt:,.2f}", normal_style)],
+        ["", "", Paragraph("<b>Grand Total:</b>", bold_style), Paragraph(f"<b>₹{grand_total:,.2f}</b>", bold_style)]
+    ]
+
+    items_table = Table(items_data, colWidths=[280, 50, 100, 110])
+    items_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), navy),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('PADDING', (0,0), (-1,-1), 8),
+        ('GRID', (0,0), (-1,1), 1, colors.HexColor("#CBD5E1")),
+        ('LINEBELOW', (2,2), (-1,-1), 1, colors.HexColor("#E2E8F0"))
+    ]))
+    story.append(items_table)
+    story.append(Spacer(1, 20))
+
+    # Terms & Conditions
+    terms_text = (
+        "<b>Terms & Conditions:</b><br>"
+        "1. 50% advance payment with purchase order; balance 50% prior to dispatch.<br>"
+        "2. Delivery timeline: 10-15 working days from order confirmation.<br>"
+        "3. Warranty: 12 Months manufacturer warranty against manufacturing defects.<br>"
+        "4. Taxes: GST @ 18% extra as applicable."
+    )
+    story.append(Paragraph(terms_text, ParagraphStyle('Terms', fontName='Helvetica', fontSize=8, leading=12, textColor=colors.HexColor("#475569"))))
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer.getvalue()
+
+# ---------------------------------------------------------
+# AUTHENTICATION & USER ROLES
 # ---------------------------------------------------------
 USERS = {
     "admin": ("admin123", "Admin", "System Administrator"),
@@ -321,8 +299,7 @@ def login_form():
             except Exception:
                 st.markdown("<h2 style='text-align: center; color: #164194; font-weight:800;'>🏭 SIDHARTH SHUTTER</h2>", unsafe_allow_html=True)
             
-            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 16px; margin-top: 10px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
-            
+            st.markdown("<p style='text-align: center; color: #164194; font-weight: 700; font-size: 16px;'>Sales CRM & Workflow Portal</p>", unsafe_allow_html=True)
             user_input = st.text_input("Username").strip().lower()
             pass_input = st.text_input("Password", type="password")
             submit = st.form_submit_button("🔑 Login to Dashboard", use_container_width=True)
@@ -342,7 +319,7 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ---------------------------------------------------------
-# SIDEBAR NAVIGATION
+# DYNAMIC ROLE-BASED SIDEBAR NAVIGATION
 # ---------------------------------------------------------
 with st.sidebar:
     try:
@@ -350,23 +327,24 @@ with st.sidebar:
     except Exception:
         st.write("🏭 **SSA CRM**")
         
-    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important; font-weight:700;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:14px !important; margin-bottom:15px;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='margin-bottom:2px; font-size: 18px !important;'>👋 {st.session_state.user_display_name}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color: #38BDF8 !important; font-weight:700; font-size:14px !important;'>Role: {st.session_state.user_role}</p>", unsafe_allow_html=True)
     st.markdown("---")
 
+    # Custom Navigation Per Role
     if st.session_state.user_role == "Salesperson":
-        menu = st.radio("NAVIGATION", ["🎯 My Workday & Tasks", "📥 Add New Lead", "🔍 Client Inspector"])
+        menu = st.radio("NAVIGATION", ["⚡ Follow-up Queue & Workday", "📥 Add New Lead", "📄 Quotation Generator", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Back-Office":
-        menu = st.radio("NAVIGATION", ["📄 Convert Leads to Quotes", "📞 Follow-up Tracker", "🔍 Client Inspector"])
+        menu = st.radio("NAVIGATION", ["📄 Quotation Generator & Convert", "⚡ Follow-up Queue & Workday", "📞 Follow-up Master", "🔍 Client Inspector"])
     elif st.session_state.user_role == "Operations":
         menu = st.radio("NAVIGATION", ["⚙️ Process Order Execution", "🔍 Client Inspector"])
-    else: # Admin
+    else: # Admin / Executive
         menu = st.radio("NAVIGATION", [
-            "📊 Executive Dashboard",
-            "🎯 My Workday & Tasks",
+            "🏆 Sales Leaderboard & Analytics",
+            "⚡ Follow-up Queue & Workday",
             "📥 Add New Lead",
-            "📄 Convert Leads to Quotes",
-            "📞 Follow-up Tracker",
+            "📄 Quotation Generator & Convert",
+            "📞 Follow-up Master",
             "⚙️ Process Order Execution",
             "🔍 Client Inspector"
         ])
@@ -377,42 +355,236 @@ with st.sidebar:
         st.rerun()
 
 # ---------------------------------------------------------
-# WORKFLOW PAGE 1: MY WORKDAY & TASKS
+# MODULE 1: AUTOMATED FOLLOW-UP QUEUE & OUTCOME BUTTONS
 # ---------------------------------------------------------
-if menu == "🎯 My Workday & Tasks":
-    st.markdown(f"<div class='main-header'>🎯 Workday Portal: {st.session_state.user_display_name}</div>", unsafe_allow_html=True)
+if menu in ["⚡ Follow-up Queue & Workday", "📞 Follow-up Master"]:
+    st.markdown(f"<div class='main-header'>⚡ Active Follow-up Queue: {st.session_state.user_display_name}</div>", unsafe_allow_html=True)
 
-    df_leads = load_sheet("Leads Data")
     df_follow = load_sheet("Quotation Follow Up Tracker")
 
-    if not df_leads.empty and "Assigned Salesperson" in df_leads.columns:
-        my_leads = df_leads[df_leads["Assigned Salesperson"] == st.session_state.user_display_name] if st.session_state.user_role == "Salesperson" else df_leads
-    else:
-        my_leads = pd.DataFrame()
+    if not df_follow.empty:
+        # Filter reps if logged in as Salesperson
+        if st.session_state.user_role == "Salesperson" and "Assigned Salesperson" in df_follow.columns:
+            queue_df = df_follow[df_follow["Assigned Salesperson"] == st.session_state.user_display_name]
+        else:
+            queue_df = df_follow
 
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown(f"<div class='metric-card'><h5>My Active Leads</h5><h3>{len(my_leads)}</h3></div>", unsafe_allow_html=True)
-    with c2:
-        st.markdown(f"<div class='metric-card metric-card-green'><h5>Total Pipeline Leads</h5><h3>{len(df_leads)}</h3></div>", unsafe_allow_html=True)
-    with c3:
-        st.markdown(f"<div class='metric-card'><h5>Pending Follow-ups</h5><h3>{len(df_follow)}</h3></div>", unsafe_allow_html=True)
+        active_queue = queue_df[queue_df["Follow-up Status"] != "Closed / Converted"] if "Follow-up Status" in queue_df.columns else queue_df
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📋 My Assigned Lead Records</div>", unsafe_allow_html=True)
-    if not my_leads.empty:
-        st.dataframe(my_leads, use_container_width=True, hide_index=True)
-    else:
-        st.info("No active leads currently assigned to your profile.")
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            st.markdown(f"<div class='metric-card'><h5>Pending Calls</h5><h3>{len(active_queue)}</h3></div>", unsafe_allow_html=True)
+        with c2:
+            approved_count = len(queue_df[queue_df["Follow-up Status"] == "Approved"]) if "Follow-up Status" in queue_df.columns else 0
+            st.markdown(f"<div class='metric-card metric-card-green'><h5>Approved Deals</h5><h3>{approved_count}</h3></div>", unsafe_allow_html=True)
+        with c3:
+            val = pd.to_numeric(queue_df['Quotation Amount'], errors='coerce').sum() if 'Quotation Amount' in queue_df.columns else 0
+            st.markdown(f"<div class='metric-card'><h5>Queue Value</h5><h3>₹{val:,.0f}</h3></div>", unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>🎯 Pending Action Items (1-Click Logging)</div>", unsafe_allow_html=True)
+
+        if not active_queue.empty:
+            for idx, row in active_queue.iterrows():
+                client_id = row.get("Client ID", f"Ref-{idx}")
+                client_name = row.get("Client Name", "Client")
+                phone = row.get("Contact Number", "N/A")
+                amt = row.get("Quotation Amount", "0")
+                quote_no = row.get("Quotation Number", "N/A")
+
+                st.markdown(f"""
+                <div class='queue-card'>
+                    <b style='color:#164194; font-size:16px;'>{client_name}</b> | <span style='color:#64748B;'>Quote: {quote_no}</span><br>
+                    📞 <b>Contact:</b> {phone} | 💰 <b>Amount:</b> ₹{amt} | 👤 <b>Rep:</b> {row.get('Assigned Salesperson', 'Unassigned')}
+                </div>
+                """, unsafe_allow_html=True)
+
+                b1, b2, b3, b4 = st.columns(4)
+                with b1:
+                    if st.button("✅ Connected - Interested", key=f"int_{idx}"):
+                        df_follow.at[idx, "Follow-up Status"] = "Interested - Followup Scheduled"
+                        df_follow.at[idx, "Last Follow-up Date"] = datetime.now().strftime("%Y-%m-%d")
+                        save_sheet("Quotation Follow Up Tracker", df_follow)
+                        st.success("Updated: Scheduled next follow-up.")
+                        st.rerun()
+                with b2:
+                    if st.button("⏳ Busy - Reschedule", key=f"res_{idx}"):
+                        df_follow.at[idx, "Follow-up Status"] = "Rescheduled"
+                        df_follow.at[idx, "Last Follow-up Date"] = datetime.now().strftime("%Y-%m-%d")
+                        save_sheet("Quotation Follow Up Tracker", df_follow)
+                        st.warning("Updated: Marked as Rescheduled.")
+                        st.rerun()
+                with b3:
+                    if st.button("🎉 Approved & Closed", key=f"app_{idx}"):
+                        df_follow.at[idx, "Follow-up Status"] = "Closed / Converted"
+                        df_follow.at[idx, "Last Follow-up Date"] = datetime.now().strftime("%Y-%m-%d")
+                        save_sheet("Quotation Follow Up Tracker", df_follow)
+                        st.balloons()
+                        st.success("Deal Won! Closed successfully.")
+                        st.rerun()
+                with b4:
+                    if st.button("❌ Lost / Dropped", key=f"lost_{idx}"):
+                        df_follow.at[idx, "Follow-up Status"] = "Lost"
+                        df_follow.at[idx, "Last Follow-up Date"] = datetime.now().strftime("%Y-%m-%d")
+                        save_sheet("Quotation Follow Up Tracker", df_follow)
+                        st.error("Updated: Marked as Lost.")
+                        st.rerun()
+                st.markdown("---")
+        else:
+            st.info("🎉 No pending follow-ups in your queue!")
+
+    st.markdown("<div class='section-title'>📋 Full Follow-up Database</div>", unsafe_allow_html=True)
+    st.dataframe(df_follow, use_container_width=True, hide_index=True)
 
 # ---------------------------------------------------------
-# WORKFLOW PAGE 2: ADD NEW LEAD
+# MODULE 2: BRANDED PDF QUOTATION GENERATOR & CONVERT
+# ---------------------------------------------------------
+elif menu in ["📄 Quotation Generator", "📄 Quotation Generator & Convert"]:
+    st.markdown("<div class='main-header'>📄 Branded PDF Quotation Generator</div>", unsafe_allow_html=True)
+
+    df_quotes = load_sheet("Quotation Sheet")
+    df_leads = load_sheet("Leads Data")
+
+    tab1, tab2 = st.tabs(["⚡ Convert Lead to Quote & PDF", "📋 Existing Quotation PDFs"])
+
+    with tab1:
+        if not df_leads.empty:
+            selected_client = st.selectbox("Select Lead Record:", df_leads["Client ID"].tolist() if "Client ID" in df_leads.columns else [])
+            if selected_client:
+                lead_row = df_leads[df_leads["Client ID"] == selected_client].iloc[0]
+
+                with st.form("pdf_quote_form"):
+                    c1, c2, c3 = st.columns(3)
+                    with c1:
+                        c_name = st.text_input("Client Name", value=str(lead_row.get("Client Name", "")))
+                        comp_name = st.text_input("Company Name", value=str(lead_row.get("Company Name", "")))
+                    with c2:
+                        phone = st.text_input("Contact Number", value=str(lead_row.get("Number", "")))
+                        city = st.text_input("City", value=str(lead_row.get("City", "")))
+                    with c3:
+                        quote_no = st.text_input("Quotation Number", value=f"SSA/2026/{datetime.now().strftime('%M%S')}")
+                        product = st.selectbox("Product Requirement", PRODUCT_LIST, index=0)
+
+                    c4, c5 = st.columns(2)
+                    with c4:
+                        qty = st.number_input("Quantity", min_value=1, value=int(lead_row.get("Qty", 1)))
+                        amt = st.number_input("Subtotal Amount (₹)", min_value=1000, step=5000, value=45000)
+                    with c5:
+                        assigned_sp = st.selectbox("Salesperson", SALESPERSONS)
+                        remarks = st.text_area("Quotation Remarks", value=f"Supply & installation of {product}")
+
+                    generate_btn = st.form_submit_button("📄 Issue Quotation & Build PDF", use_container_width=True)
+
+                    if generate_btn:
+                        quote_payload = {
+                            "Client  ID": selected_client,
+                            "Client Name": c_name,
+                            "Company Name": comp_name,
+                            "Customer Contact Number": phone,
+                            "City": city,
+                            "Quotation Number": quote_no,
+                            "Product ": product,
+                            "Quantity": qty,
+                            "Qut. Amount": amt,
+                            "Assigned Salesperson": assigned_sp,
+                            "Source": lead_row.get("Source", "Marketing"),
+                            "Remarks": remarks
+                        }
+
+                        # Save quote row to Master Quotation Sheet
+                        conn = get_connection()
+                        if conn:
+                            df_q_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet")
+                            df_q_updated = pd.concat([df_q_existing, pd.DataFrame([quote_payload])], ignore_index=True)
+                            conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet", data=df_q_updated)
+
+                        # Generate PDF
+                        pdf_bytes = generate_quotation_pdf(quote_payload)
+                        st.success(f"✅ Quotation {quote_no} Generated Successfully!")
+
+                        st.download_button(
+                            label="📥 Download Official PDF Quotation",
+                            data=pdf_bytes,
+                            file_name=f"{quote_no.replace('/', '_')}_{c_name}.pdf",
+                            mime="application/pdf",
+                            use_container_width=True
+                        )
+
+    with tab2:
+        st.markdown("<div class='section-title'>📋 Issued Quotation Registry</div>", unsafe_allow_html=True)
+        if not df_quotes.empty:
+            st.dataframe(df_quotes, use_container_width=True, hide_index=True)
+
+            selected_q_no = st.selectbox("Select Issued Quote to Re-generate PDF:", df_quotes["Quotation Number"].dropna().unique() if "Quotation Number" in df_quotes.columns else [])
+            if selected_q_no and st.button("📄 Generate PDF for Selected Quote"):
+                q_row = df_quotes[df_quotes["Quotation Number"] == selected_q_no].iloc[0].to_dict()
+                pdf_bytes = generate_quotation_pdf(q_row)
+                st.download_button(
+                    label=f"📥 Download PDF ({selected_q_no})",
+                    data=pdf_bytes,
+                    file_name=f"{selected_q_no.replace('/', '_')}.pdf",
+                    mime="application/pdf"
+                )
+
+# ---------------------------------------------------------
+# MODULE 3: SALES LEADERBOARD & ANALYTICS CHARTS (ADMIN VIEW)
+# ---------------------------------------------------------
+elif menu == "🏆 Sales Leaderboard & Analytics":
+    st.markdown("<div class='main-header'>🏆 Sales Performance & Revenue Leaderboard</div>", unsafe_allow_html=True)
+
+    df_leads = load_sheet("Leads Data")
+    df_quotes = load_sheet("Quotation Sheet")
+    df_follow = load_sheet("Quotation Follow Up Tracker")
+
+    # Executive KPI Overview
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(f"<div class='metric-card'><h5>Total Inquiries</h5><h3>{len(df_leads)}</h3></div>", unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"<div class='metric-card metric-card-green'><h5>Quotations Sent</h5><h3>{len(df_quotes)}</h3></div>", unsafe_allow_html=True)
+    with c3:
+        val = pd.to_numeric(df_quotes['Qut. Amount'], errors='coerce').sum() if not df_quotes.empty and 'Qut. Amount' in df_quotes.columns else 0
+        st.markdown(f"<div class='metric-card'><h5>Pipeline Value</h5><h3>₹{val:,.0f}</h3></div>", unsafe_allow_html=True)
+    with c4:
+        closed_deals = len(df_follow[df_follow["Follow-up Status"] == "Closed / Converted"]) if not df_follow.empty and "Follow-up Status" in df_follow.columns else 0
+        st.markdown(f"<div class='metric-card metric-card-green'><h5>Won Orders</h5><h3>{closed_deals}</h3></div>", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_left, col_right = st.columns(2)
+
+    with col_left:
+        st.markdown("<div class='section-title'>🥇 Rep Leaderboard (By Quoted Value)</div>", unsafe_allow_html=True)
+        if not df_quotes.empty and "Assigned Salesperson" in df_quotes.columns:
+            df_quotes['Numeric_Amt'] = pd.to_numeric(df_quotes['Qut. Amount'], errors='coerce').fillna(0)
+            rep_summary = df_quotes.groupby("Assigned Salesperson")["Numeric_Amt"].agg(['sum', 'count']).reset_index()
+            rep_summary.columns = ["Salesperson", "Total Revenue (₹)", "Quotes Issued"]
+            rep_summary = rep_summary.sort_values(by="Total Revenue (₹)", ascending=False)
+            st.dataframe(rep_summary, use_container_width=True, hide_index=True)
+        else:
+            st.info("No sales rep activity recorded yet.")
+
+    with col_right:
+        st.markdown("<div class='section-title'>📊 Lead Distribution by Source</div>", unsafe_allow_html=True)
+        if not df_leads.empty and "Source" in df_leads.columns:
+            source_counts = df_leads["Source"].value_counts().reset_index()
+            source_counts.columns = ["Lead Source", "Total Leads"]
+            st.bar_chart(data=source_counts, x="Lead Source", y="Total Leads", color="#164194")
+        else:
+            st.info("No lead source data available.")
+
+    st.markdown("<div class='section-title'>📦 Product Demand Breakdown</div>", unsafe_allow_html=True)
+    if not df_leads.empty and "Product " in df_leads.columns:
+        prod_counts = df_leads["Product "].value_counts().reset_index()
+        prod_counts.columns = ["Product Category", "Inquiries"]
+        st.bar_chart(data=prod_counts, x="Product Category", y="Inquiries", color="#00A859")
+
+# ---------------------------------------------------------
+# OTHER EXISTING MODULES
 # ---------------------------------------------------------
 elif menu == "📥 Add New Lead":
     st.markdown("<div class='main-header'>📥 Lead Capture Portal</div>", unsafe_allow_html=True)
-
     with st.form("add_lead_form", clear_on_submit=True):
-        st.markdown("<div class='section-title'>👤 Client & Corporate Details</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>👤 Client Details</div>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         with c1:
             client_name = st.text_input("Client Name *")
@@ -424,200 +596,60 @@ elif menu == "📥 Add New Lead":
             city = st.text_input("City")
             state = st.text_input("State")
 
-        address = st.text_area("Address Details", height=100)
-
-        st.markdown("<div class='section-title'>📦 Requirement & Sales Assignment</div>", unsafe_allow_html=True)
+        st.markdown("<div class='section-title'>📦 Requirement Details</div>", unsafe_allow_html=True)
         c4, c5, c6 = st.columns(3)
         with c4:
-            product = st.selectbox("Product Requirement *", PRODUCT_LIST)
+            product = st.selectbox("Product *", PRODUCT_LIST)
             qty = st.number_input("Quantity", min_value=1, value=1)
         with c5:
-            source = st.selectbox("Lead Source", SOURCE_LIST)
-            client_type = st.selectbox("Type of Client", CLIENT_TYPES)
+            source = st.selectbox("Source", SOURCE_LIST)
+            client_type = st.selectbox("Client Type", CLIENT_TYPES)
         with c6:
-            default_sp_idx = SALESPERSONS.index(st.session_state.user_display_name) if st.session_state.user_display_name in SALESPERSONS else 0
-            assigned_sp = st.selectbox("Assigned Salesperson", SALESPERSONS, index=default_sp_idx)
-            handle_by = st.selectbox("Leads Handle By", TEAM_MEMBERS)
+            assigned_sp = st.selectbox("Assigned Rep", SALESPERSONS)
+            handle_by = st.selectbox("Handled By", TEAM_MEMBERS)
 
-        c7, c8 = st.columns(2)
-        with c7:
-            quotation_status = st.selectbox("Quotation Status", ["Not Sent", "Sent", "Under Review"])
-            quotation_sent_by = st.selectbox("Quotation Sent By", TEAM_MEMBERS)
-        with c8:
-            remarks = st.text_area("Initial Remarks / Notes", height=100)
-
-        submit_lead = st.form_submit_button("💾 Save Lead to Master Sheet", use_container_width=True)
+        remarks = st.text_area("Initial Remarks", height=80)
+        submit_lead = st.form_submit_button("💾 Save Lead", use_container_width=True)
 
         if submit_lead:
             if not client_name or not number:
-                st.error("Please complete all required fields: Client Name and Contact Number.")
+                st.error("Please fill in Client Name and Number.")
             else:
-                date_stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 client_id = f"SSA-{datetime.now().strftime('%b-%y')}-{datetime.now().strftime('%M%S')}"
-
                 new_lead = {
                     "Sr. No": len(load_sheet("Leads Data")) + 1,
                     "Client ID": client_id,
-                    "Date Stamp": date_stamp,
+                    "Date Stamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     "Client Name": client_name,
                     "Company Name": company_name,
                     "Number": number,
                     "Email": email,
                     "Product ": product,
                     "Qty": qty,
-                    "Address": address,
                     "City": city,
                     "State": state,
                     "Source": source,
                     "Assigned Salesperson": assigned_sp,
                     "Type of client": client_type,
-                    "Quotation Status": quotation_status,
+                    "Quotation Status": "Not Sent",
                     "Leads Handle By": handle_by,
-                    "Quotation Sent By": quotation_sent_by,
                     "Remarks": remarks
                 }
-
                 conn = get_connection()
                 if conn:
-                    df_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
-                    df_updated = pd.concat([df_existing, pd.DataFrame([new_lead])], ignore_index=True)
-                    conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_updated)
-                    st.success(f"✅ Lead Created Successfully! Client ID: {client_id}")
+                    df_ex = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data")
+                    df_up = pd.concat([df_ex, pd.DataFrame([new_lead])], ignore_index=True)
+                    conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Leads Data", data=df_up)
+                    st.success(f"✅ Lead Created! Client ID: {client_id}")
 
-# ---------------------------------------------------------
-# WORKFLOW PAGE 3: CONVERT LEADS TO QUOTES
-# ---------------------------------------------------------
-elif menu == "📄 Convert Leads to Quotes":
-    st.markdown("<div class='main-header'>📄 Quotation Creation & Master</div>", unsafe_allow_html=True)
-
-    df_leads = load_sheet("Leads Data")
-    
-    if not df_leads.empty:
-        st.markdown("<div class='section-title'>⚡ Quick Convert Lead to Quotation</div>", unsafe_allow_html=True)
-        unquoted = df_leads[df_leads["Quotation Status"] != "Sent"] if "Quotation Status" in df_leads.columns else df_leads
-
-        if not unquoted.empty:
-            selected_client = st.selectbox("Select Lead to Generate Quotation:", unquoted["Client ID"].tolist())
-            lead_row = unquoted[unquoted["Client ID"] == selected_client].iloc[0]
-
-            with st.form("create_quote_form"):
-                c1, c2, c3 = st.columns(3)
-                with c1:
-                    st.text_input("Client ID", value=lead_row.get("Client ID", ""), disabled=True)
-                    st.text_input("Client Name", value=lead_row.get("Client Name", ""), disabled=True)
-                with c2:
-                    quote_no = st.text_input("Quotation Number *", value=f"SSA/2026-27/{datetime.now().strftime('%M%S')}")
-                    quote_amt = st.number_input("Quotation Amount (₹) *", min_value=0, step=5000)
-                with c3:
-                    shared_by = st.selectbox("Quotation Shared By", TEAM_MEMBERS)
-                    q_status = st.selectbox("Status", ["Sent", "Approved", "Revised Required"])
-
-                quote_remarks = st.text_area("Quotation Remarks", value=f"Quoted for {lead_row.get('Product ', '')} - Qty: {lead_row.get('Qty', 1)}", height=100)
-                submit_quote = st.form_submit_button("📄 Save & Issue Quotation", use_container_width=True)
-
-                if submit_quote:
-                    new_quote = {
-                        "Client  ID": lead_row.get("Client ID", ""),
-                        "Date Stamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "Client Name": lead_row.get("Client Name", ""),
-                        "Company Name": lead_row.get("Company Name", ""),
-                        "Customer Contact Number": lead_row.get("Number", ""),
-                        "Product ": lead_row.get("Product ", ""),
-                        "Quantity": lead_row.get("Qty", 1),
-                        "City": lead_row.get("City", ""),
-                        "Source": lead_row.get("Source", ""),
-                        "Assigned Salesperson": lead_row.get("Assigned Salesperson", ""),
-                        "Quotation Status": q_status,
-                        "Quotation Shared By": shared_by,
-                        "Quotation Number": quote_no,
-                        "Qut. Amount": quote_amt,
-                        "Remarks": quote_remarks
-                    }
-                    conn = get_connection()
-                    if conn:
-                        df_q_existing = conn.read(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet")
-                        df_q_updated = pd.concat([df_q_existing, pd.DataFrame([new_quote])], ignore_index=True)
-                        conn.update(spreadsheet=SPREADSHEET_URL, worksheet="Quotation Sheet", data=df_q_updated)
-                        st.success(f"✅ Quotation {quote_no} linked to {selected_client} successfully!")
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📋 Master Quotation Registry</div>", unsafe_allow_html=True)
-    st.dataframe(load_sheet("Quotation Sheet"), use_container_width=True, hide_index=True)
-
-# ---------------------------------------------------------
-# WORKFLOW PAGE 4: FOLLOW-UP TRACKER
-# ---------------------------------------------------------
-elif menu == "📞 Follow-up Tracker":
-    st.markdown("<div class='main-header'>📞 Quotation Follow-up Management</div>", unsafe_allow_html=True)
-    st.dataframe(load_sheet("Quotation Follow Up Tracker"), use_container_width=True, hide_index=True)
-
-# ---------------------------------------------------------
-# WORKFLOW PAGE 5: PROCESS ORDER EXECUTION
-# ---------------------------------------------------------
 elif menu == "⚙️ Process Order Execution":
-    st.markdown("<div class='main-header'>⚙️ Operational & Factory Pipeline Execution</div>", unsafe_allow_html=True)
+    st.markdown("<div class='main-header'>⚙️ Operational & Factory Execution</div>", unsafe_allow_html=True)
     st.dataframe(load_sheet("Process Order"), use_container_width=True, hide_index=True)
 
-# ---------------------------------------------------------
-# WORKFLOW PAGE 6: CLIENT INSPECTOR
-# ---------------------------------------------------------
 elif menu == "🔍 Client Inspector":
-    st.markdown("<div class='main-header'>🔍 Client 360 Degree View</div>", unsafe_allow_html=True)
-    
+    st.markdown("<div class='main-header'>🔍 Client 360 Degree Inspector</div>", unsafe_allow_html=True)
     df_leads = load_sheet("Leads Data")
-    df_quotes = load_sheet("Quotation Sheet")
-    df_followup = load_sheet("Quotation Follow Up Tracker")
-    df_orders = load_sheet("Process Order")
-
-    client_id_list = []
-    if not df_leads.empty:
-        col_name = [c for c in df_leads.columns if "client id" in c.lower() or "client_id" in c.lower()]
-        if col_name:
-            client_id_list = df_leads[col_name[0]].dropna().unique().tolist()
-
-    if client_id_list:
-        selected_client_id = st.selectbox("🔎 Select Client ID to Inspect:", client_id_list)
-
-        def filter_by_client_id(df, cid):
-            if df.empty:
-                return pd.DataFrame()
-            matching_cols = [c for c in df.columns if "client id" in c.lower() or "client_id" in c.lower()]
-            if matching_cols:
-                return df[df[matching_cols[0]].astype(str) == str(cid)]
-            return pd.DataFrame()
-
-        t1, t2, t3, t4 = st.tabs(["📥 Lead Record", "📄 Quotations", "📞 Follow-ups", "⚙️ Operations"])
-        with t1:
-            st.dataframe(filter_by_client_id(df_leads, selected_client_id), use_container_width=True, hide_index=True)
-        with t2:
-            st.dataframe(filter_by_client_id(df_quotes, selected_client_id), use_container_width=True, hide_index=True)
-        with t3:
-            st.dataframe(filter_by_client_id(df_followup, selected_client_id), use_container_width=True, hide_index=True)
-        with t4:
-            st.dataframe(filter_by_client_id(df_orders, selected_client_id), use_container_width=True, hide_index=True)
-
-# ---------------------------------------------------------
-# WORKFLOW PAGE 7: EXECUTIVE DASHBOARD
-# ---------------------------------------------------------
-elif menu == "📊 Executive Dashboard":
-    st.markdown("<div class='main-header'>📊 Executive Sales & Operations Analytics</div>", unsafe_allow_html=True)
-
-    df_leads = load_sheet("Leads Data")
-    df_quotes = load_sheet("Quotation Sheet")
-    df_orders = load_sheet("Process Order")
-
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f"<div class='metric-card'><h5>Total Inquiries</h5><h3>{len(df_leads)}</h3></div>", unsafe_allow_html=True)
-    with c2:
-        st.markdown(f"<div class='metric-card metric-card-green'><h5>Quotations Issued</h5><h3>{len(df_quotes)}</h3></div>", unsafe_allow_html=True)
-    with c3:
-        st.markdown(f"<div class='metric-card'><h5>Orders in Production</h5><h3>{len(df_orders)}</h3></div>", unsafe_allow_html=True)
-    with c4:
-        val = df_quotes['Qut. Amount'].sum() if not df_quotes.empty and 'Qut. Amount' in df_quotes.columns else 0
-        st.markdown(f"<div class='metric-card metric-card-green'><h5>Pipeline Value</h5><h3>₹{val:,.0f}</h3></div>", unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>📋 Recent Activity Feed</div>", unsafe_allow_html=True)
-    if not df_leads.empty:
-        st.dataframe(df_leads.tail(10), use_container_width=True, hide_index=True)
+    if not df_leads.empty and "Client ID" in df_leads.columns:
+        cid = st.selectbox("Select Client ID:", df_leads["Client ID"].dropna().unique())
+        if cid:
+            st.dataframe(df_leads[df_leads["Client ID"] == cid], use_container_width=True, hide_index=True)
