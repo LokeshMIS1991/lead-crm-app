@@ -117,7 +117,7 @@ st.markdown("""
         font-size: 14px !important;
     }
 
-    /* Form Inputs and Dropdowns */
+    /* Form Input Boxes & Dropdowns Matching Logo Blue */
     .stTextInput>div>div>input, 
     .stSelectbox>div>div, 
     .stSelectbox [data-baseweb="select"]>div,
@@ -131,6 +131,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
+    /* Dropdown selected text & chevron icons */
     .stSelectbox [data-baseweb="select"] * {
         color: #164194 !important;
     }
@@ -145,6 +146,7 @@ st.markdown("""
         color: #164194 !important;
     }
 
+    /* Active field outline on click */
     .stTextInput>div>div>input:focus, 
     .stSelectbox>div>div:focus, 
     .stTextArea>div>div>textarea:focus, 
@@ -166,13 +168,14 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
+    /* Quantity Plus/Minus Buttons */
     .stNumberInput button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
         border: none !important;
     }
 
-    /* Buttons */
+    /* Submit / Save Buttons */
     .stButton>button, div[data-testid="stFormSubmitButton"]>button {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -189,7 +192,7 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 168, 89, 0.35) !important;
     }
     
-    /* Accordion / Expander */
+    /* Expander Header Accordion Styling */
     .stExpander [data-baseweb="accordion"] [role="button"] {
         background-color: #164194 !important;
         color: #FFFFFF !important;
@@ -200,7 +203,7 @@ st.markdown("""
         color: #FFFFFF !important;
     }
 
-    /* Permanent Red Tab Labels */
+    /* Permanent Red Tab Labels (Selected & Unselected) */
     .stTabs [data-baseweb="tab"],
     .stTabs [data-baseweb="tab"] *,
     .stTabs [data-baseweb="tab-list"] button,
@@ -216,11 +219,12 @@ st.markdown("""
         -webkit-text-fill-color: #FF0000 !important;
     }
 
+    /* Red underline indicator for current tab */
     .stTabs [data-baseweb="tab-highlight"] {
         background-color: #FF0000 !important;
     }
 
-    /* Container Box */
+    /* Outer Container Box */
     [data-testid="stForm"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #164194 !important;
@@ -409,6 +413,7 @@ elif menu == "📥 Stage 1: Leads Data":
                         df_updated = pd.concat([df_existing_leads, pd.DataFrame([new_lead])], ignore_index=True)
                         conn.update(worksheet="Leads Data", data=df_updated)
                         
+                        # Auto-transfer common details to Quotation Sheet if quotation status is 'Sent'
                         if quotation_status == "Sent":
                             auto_quote = {
                                 "Client ID": client_id,
@@ -456,7 +461,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
             c1, c2, c3 = st.columns(3)
             with c1:
                 q_client_id = st.text_input("Client ID *")
-                q_number = st.text_input("Quotation Number (e.g. SSA/2025-26/1827)")
+                q_number = st.text_input("Quotation Number (e.g. SSA/2026-27/0182)")
             with c2:
                 q_amount = st.number_input("Quotation Amount (₹)", min_value=0, step=1000)
                 q_status = st.selectbox("Quotation Status", ["Sent", "Approved", "Revised", "Cancelled"])
@@ -476,7 +481,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
                     if conn:
                         df_q_existing = load_sheet("Quotation Sheet")
                         
-                        # Check if record exists to update, or add a new record
+                        # Match existing Client ID record to update or create a new row
                         if not df_q_existing.empty and "Client ID" in df_q_existing.columns and q_client_id in df_q_existing["Client ID"].values:
                             idx = df_q_existing[df_q_existing["Client ID"] == q_client_id].index[0]
                             df_q_existing.loc[idx, "Quotation Number"] = q_number
@@ -501,7 +506,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
                         
                         conn.update(worksheet="Quotation Sheet", data=df_q_updated)
                         
-                        # Auto-move to Process Order when status becomes Approved
+                        # Auto-move record to Process Order when status is 'Approved'
                         if q_status == "Approved":
                             df_o_existing = load_sheet("Process Order")
                             auto_order = {
@@ -515,7 +520,7 @@ elif menu == "📄 Stage 2: Quotations & Follow-ups":
                                 "Dispatch Status": "Pending",
                                 "Purchase Order Number": "",
                                 "Advance Amount": 0,
-                                "Measurement Status": "Pending",
+                                "Measurement": "Pending",
                                 "Document Submission": "Pending",
                                 "Material Receiving": "Pending",
                                 "Invoice Status": "Pending",
@@ -576,7 +581,7 @@ elif menu == "⚙️ Stage 3: Process Order Execution":
                             "Advance Amount": advance_amt,
                             "Payment Status": payment_status,
                             "Drawing Status": drawing_status,
-                            "Measurement Status": measurement_status,
+                            "Measurement": measurement_status,
                             "Production Status": production_status,
                             "Dispatch Status": dispatch_status,
                             "Document Submission": doc_sub,
